@@ -1,2 +1,3 @@
-public class AbstractNodeBase {
+public abstract class AbstractNodeBase {
+
 }
