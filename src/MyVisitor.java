@@ -1,5 +1,6 @@
 public class MyVisitor extends gBaseVisitor <Object>{
 
+
     @Override public Object visitProgram(gParser.ProgramContext ctx) {
 
         System.out.println("Visited Prog");
@@ -53,8 +54,11 @@ public class MyVisitor extends gBaseVisitor <Object>{
         return visitChildren(ctx); }
 
     @Override public Object visitInit(gParser.InitContext ctx) {
-
-        return visitChildren(ctx); }
+        System.out.println(ctx.Id());
+        InitializationNode node = new InitializationNode();
+        node.Left = visitChildren(ctx);
+        visitChildren(ctx);
+        return  }
 
     @Override public Object visitAssigns(gParser.AssignsContext ctx) {
 
