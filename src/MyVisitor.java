@@ -56,9 +56,11 @@ public class MyVisitor extends gBaseVisitor <Object>{
     @Override public Object visitInit(gParser.InitContext ctx) {
         System.out.println(ctx.Id());
         InitializationNode node = new InitializationNode();
-        node.Left = visitChildren(ctx);
-        visitChildren(ctx);
-        return  }
+        node.Left = new IdNode(ctx.Id(0).toString());
+        node.Right = new IdNode(ctx.Id(1).toString());
+        System.out.println(node.Left.value);
+        System.out.println((node.Right.value));
+        return  visitChildren(ctx);}
 
     @Override public Object visitAssigns(gParser.AssignsContext ctx) {
 
@@ -75,4 +77,5 @@ public class MyVisitor extends gBaseVisitor <Object>{
     @Override public Object visitMethodcall(gParser.MethodcallContext ctx) {
 
         return visitChildren(ctx); }
+
 }
