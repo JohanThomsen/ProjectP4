@@ -40,12 +40,6 @@ public interface gVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCtrlstrucparam(gParser.CtrlstrucparamContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link gParser#classdcls}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitClassdcls(gParser.ClassdclsContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link gParser#classdcl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -70,12 +64,6 @@ public interface gVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBody(gParser.BodyContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link gParser#inits}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInits(gParser.InitsContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link gParser#init}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -93,6 +81,12 @@ public interface gVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAssign(gParser.AssignContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link gParser#attributes}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAttributes(gParser.AttributesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link gParser#math}.
 	 * @param ctx the parse tree

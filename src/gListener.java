@@ -57,16 +57,6 @@ public interface gListener extends ParseTreeListener {
 	 */
 	void exitCtrlstrucparam(gParser.CtrlstrucparamContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link gParser#classdcls}.
-	 * @param ctx the parse tree
-	 */
-	void enterClassdcls(gParser.ClassdclsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link gParser#classdcls}.
-	 * @param ctx the parse tree
-	 */
-	void exitClassdcls(gParser.ClassdclsContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link gParser#classdcl}.
 	 * @param ctx the parse tree
 	 */
@@ -107,16 +97,6 @@ public interface gListener extends ParseTreeListener {
 	 */
 	void exitBody(gParser.BodyContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link gParser#inits}.
-	 * @param ctx the parse tree
-	 */
-	void enterInits(gParser.InitsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link gParser#inits}.
-	 * @param ctx the parse tree
-	 */
-	void exitInits(gParser.InitsContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link gParser#init}.
 	 * @param ctx the parse tree
 	 */
@@ -146,6 +126,16 @@ public interface gListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAssign(gParser.AssignContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link gParser#attributes}.
+	 * @param ctx the parse tree
+	 */
+	void enterAttributes(gParser.AttributesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link gParser#attributes}.
+	 * @param ctx the parse tree
+	 */
+	void exitAttributes(gParser.AttributesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link gParser#math}.
 	 * @param ctx the parse tree

@@ -1,81 +1,101 @@
-public class MyVisitor extends gBaseVisitor <Object>{
+public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
 
-    @Override public Object visitProgram(gParser.ProgramContext ctx) {
+    @Override public AbstractNodeBase visitProgram(gParser.ProgramContext ctx) {
 
         System.out.println("Visited Prog");
+        AbstractNodeBase node = new AbstractNodeBase();
 
-        return visitChildren(ctx); }
+        node.Children.add(visitChildren(ctx.declares()));
 
-    @Override public Object visitDeclares(gParser.DeclaresContext ctx) {
+        System.out.println("Visited Prog end");
+        return node; }
+
+    @Override public AbstractNodeBase visitDeclares(gParser.DeclaresContext ctx) {
 
         System.out.println("Visited Declares");
 
-        return visitChildren(ctx); }
 
-    @Override public Object visitDeclare(gParser.DeclareContext ctx) {
+        return visitChildren(ctx.declare());
+    }
+
+    @Override public AbstractNodeBase visitDeclare(gParser.DeclareContext ctx) {
 
         System.out.println("Visited Declare");
 
-        return visitChildren(ctx); }
+        if(ctx.getChild(0) instanceof gParser.InitContext){
+            return visitChildren(ctx.init());
+        }else if (ctx.getChild(0) instanceof gParser.AssignsContext){
+            return visit(ctx.assigns());
+        }else if (ctx.getChild(0) instanceof  gParser.ClassdclContext){
+            return visit(ctx.classdcl());
+        }else if (ctx.getChild(0) instanceof  gParser.MethoddclContext){
+            return visit(ctx.methoddcl());
+        }
 
-    @Override public Object visitCtrlstruc(gParser.CtrlstrucContext ctx) {
+        return null;
+        }
 
-        System.out.println("Visited Control Structure");
+    @Override public AbstractNodeBase visitCtrlstruc(gParser.CtrlstrucContext ctx) {
 
-        return visitChildren(ctx); }
-
-    @Override public Object visitCtrlstrucparam(gParser.CtrlstrucparamContext ctx) {
-
-        return visitChildren(ctx); }
-
-    @Override public Object visitClassdcls(gParser.ClassdclsContext ctx) {
-
-        return visitChildren(ctx); }
-
-    @Override public Object visitClassdcl(gParser.ClassdclContext ctx) {
-
-        return visitChildren(ctx); }
-
-    @Override public Object visitMethoddcl(gParser.MethoddclContext ctx) {
+        //System.out.println("Visited Control Structure");
 
         return visitChildren(ctx); }
 
-    @Override public Object visitBodies(gParser.BodiesContext ctx) {
+    @Override public AbstractNodeBase visitCtrlstrucparam(gParser.CtrlstrucparamContext ctx) {
 
         return visitChildren(ctx); }
 
-    @Override public Object visitBody(gParser.BodyContext ctx) {
+    @Override public AbstractNodeBase visitAttributes(gParser.AttributesContext ctx) {
 
         return visitChildren(ctx); }
 
-    @Override public Object visitInits(gParser.InitsContext ctx) {
+    @Override public AbstractNodeBase visitClassdcl(gParser.ClassdclContext ctx) {
 
         return visitChildren(ctx); }
 
-    @Override public Object visitInit(gParser.InitContext ctx) {
-        System.out.println(ctx.Id());
+    @Override public AbstractNodeBase visitMethoddcl(gParser.MethoddclContext ctx) {
+
+        return visitChildren(ctx); }
+
+    @Override public AbstractNodeBase visitBodies(gParser.BodiesContext ctx) {
+
+        return visitChildren(ctx); }
+
+    @Override public AbstractNodeBase visitBody(gParser.BodyContext ctx) {
+
+        return visitChildren(ctx); }
+
+    @Override public AbstractNodeBase visitInit(gParser.InitContext ctx) {
+
+        System.out.println("Visited Init");
         InitializationNode node = new InitializationNode();
-        node.Left = new IdNode(ctx.Id(0).toString());
-        node.Right = new IdNode(ctx.Id(1).toString());
-        System.out.println(node.Left.value);
-        System.out.println((node.Right.value));
-        return  visitChildren(ctx);}
+        if(ctx.Id(0).toString() != null){
+            node.Type = new IdNode(ctx.Id(0).toString());
 
-    @Override public Object visitAssigns(gParser.AssignsContext ctx) {
+            if(ctx.Id(1).toString() != null){
+                node.Identifier = new IdNode(ctx.Id(1).toString());
+            }
+        }
 
-        return visitChildren(ctx); }
+        return  node;
+        }
 
-    @Override public Object visitAssign(gParser.AssignContext ctx) {
-
-        return visitChildren(ctx); }
-
-    @Override public Object visitMath(gParser.MathContext ctx) {
+    @Override public AbstractNodeBase visitAssigns(gParser.AssignsContext ctx) {
 
         return visitChildren(ctx); }
 
-    @Override public Object visitMethodcall(gParser.MethodcallContext ctx) {
+    @Override public AbstractNodeBase visitAssign(gParser.AssignContext ctx) {
 
         return visitChildren(ctx); }
+
+    @Override public AbstractNodeBase visitMath(gParser.MathContext ctx) {
+
+        return visitChildren(ctx); }
+
+    @Override public AbstractNodeBase visitMethodcall(gParser.MethodcallContext ctx) {
+
+        return visitChildren(ctx); }
+
 
 }

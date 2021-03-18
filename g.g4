@@ -2,12 +2,12 @@ grammar g;
 
 program: declares 'xd';
 
-declares: declare declares
+declares: declare '.' declares
 | declare;
 
-declare: inits
+declare: init
 | assigns
-| classdcls
+| classdcl
 | methoddcl;
 
 ctrlstruc: 'if' ctrlstrucparam 'is equal to' ctrlstrucparam
@@ -18,11 +18,8 @@ ctrlstrucparam: Number
 | Id
 | math;
 
-classdcls: classdcl classdcls
-| classdcl;
-
-classdcl: 'There can exist a' Id ':' declares
-| 'There can exist an' Id ':' declares;
+classdcl: 'There can exist a' Id ':' assigns
+| 'There can exist an' Id ':' assigns;
 
 methoddcl: 'can' Id Id ':' bodies;
 
@@ -34,18 +31,18 @@ body: Id 'is' Id '-' Id
 | ctrlstruc ':'
 | methodcall;
 
-inits: init inits
-| init;
-
 init: 'There is a'('n'?) Id 'called' Id
 | 'There is a'('n'?) Id
 | 'upon action' methodcall;
 
-assigns: assign '.' assigns
+assigns: assign ',' assigns
 | assign;
 
-assign: 'which' ('has'?) ('a'?) ('is'?) Id
-| 'which' ('has'?) ('a'?) ('is'?) String;
+assign: Id 'which' ('has'?) ('a'?'an'?) ('is'?) Id
+| Id 'which' ('has'?) ('a'?) ('is'?) attributes;
+
+attributes: String
+|String 'and' attributes;
 
 math: Number WS '-' WS Number
 | Number WS '+' WS Number
@@ -54,7 +51,7 @@ math: Number WS '-' WS Number
 
 methodcall: Id Id; //TODO Fix to just call
 
-Id: ([a-zA-Z]+);
+Id: [a-zA-Z]+;
 
 //Type: ([a-zA-Z]+);
 

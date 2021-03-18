@@ -17,8 +17,8 @@ public class Main {
             ParseTree tree = parser.program();
 
             MyVisitor visitor = new MyVisitor();
-            visitor.visit(tree);
-
+            AbstractNodeBase node = visitor.visit(tree);
+            //System.out.println(node.Children);
         }
 	    catch(IOException e){
             e.printStackTrace();
