@@ -6,7 +6,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         System.out.println("Visited Prog");
         AbstractNodeBase node = new AbstractNodeBase();
 
-        node.Children.add(visitChildren(ctx.declares()));
+        node.Children.add(visitChildren(ctx));
 
         System.out.println("Visited Prog end");
         return node; }
@@ -16,24 +16,14 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         System.out.println("Visited Declares");
 
 
-        return visitChildren(ctx.declare());
+        return visitChildren(ctx);
     }
 
     @Override public AbstractNodeBase visitDeclare(gParser.DeclareContext ctx) {
 
         System.out.println("Visited Declare");
 
-        if(ctx.getChild(0) instanceof gParser.InitContext){
-            return visitChildren(ctx.init());
-        }else if (ctx.getChild(0) instanceof gParser.AssignsContext){
-            return visit(ctx.assigns());
-        }else if (ctx.getChild(0) instanceof  gParser.ClassdclContext){
-            return visit(ctx.classdcl());
-        }else if (ctx.getChild(0) instanceof  gParser.MethoddclContext){
-            return visit(ctx.methoddcl());
-        }
-
-        return null;
+        return visitChildren(ctx);
         }
 
     @Override public AbstractNodeBase visitCtrlstruc(gParser.CtrlstrucContext ctx) {
@@ -97,5 +87,16 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
         return visitChildren(ctx); }
 
+    @Override public AbstractNodeBase aggregateResult(AbstractNodeBase aggregate, AbstractNodeBase nextResult) {
+        if(aggregate != null && nextResult != null){
 
+            aggregate.Children.add(nextResult);
+        }else if(aggregate == null && nextResult != null){
+            /*aggregate = new AbstractNodeBase();
+            aggregate.Children.add(nextResult);*/
+            aggregate = nextResult;
+        }
+
+        return aggregate;
+    }
 }

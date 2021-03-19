@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 
 public class AbstractNodeBase {
-    ArrayList<AbstractNodeBase> Children = new ArrayList<AbstractNodeBase>();
+    public ArrayList<AbstractNodeBase> Children = new ArrayList<>();
 
     public AbstractNodeBase(AbstractNodeBase node){
         this.Children.addAll(node.Children);
     }
 
-    public AbstractNodeBase(){};
+    public AbstractNodeBase(){}
 }

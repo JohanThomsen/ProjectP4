@@ -1,12 +1,14 @@
 // Generated from C:/Users/Christoffer/IdeaProjects/ProjectP4\g.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
+import java.util.ArrayList;
+
 /**
  * This class provides an empty implementation of {@link gVisitor},
  * which can be extended to create a visitor which only needs to handle a subset
  * of the available methods.
  *
- * @param <T> The return type of the visit operation. Use {@link Void} for
+ * @param <T>> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
 public class gBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements gVisitor<T> {
@@ -116,8 +118,10 @@ public class gBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements gVis
 	 */
 	@Override public T visitMethodcall(gParser.MethodcallContext ctx) { return visitChildren(ctx); }
 
-	public AbstractNodeBase aggregateResult(AbstractNodeBase aggregate, AbstractNodeBase nextResult) {
-		aggregate.Children.add(nextResult);
+	/*@Override public T aggregateResult(T aggregate, T nextResult) {
+		T acc = aggregate;
+
+
 		return aggregate;
-	}
+	}*/
 }
