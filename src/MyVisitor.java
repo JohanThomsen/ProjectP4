@@ -4,7 +4,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     @Override public AbstractNodeBase visitProgram(gParser.ProgramContext ctx) {
 
         System.out.println("Visited Prog");
-        AbstractNodeBase node = new AbstractNodeBase();
+        AbstractNodeBase node;
 
         node = visitChildren(ctx);
         node = reduce(node);
