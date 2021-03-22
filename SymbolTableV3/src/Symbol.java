@@ -21,11 +21,11 @@ public class Symbol {
     }
 
     public String fullToString(){
-        return String.format(Name + "," + Type + ", Var |" + Var + "|, Backwards|" + HashBackwards + "|, Forwards |" + HashForwards + "|," + "Depth:" + Depth);
+        return String.format("Name: " + Name + ", Type: " + Type + ", Var(" + Var + "), Backwards(" + HashBackwards + "), Forwards (" + HashForwards + ")," + " Depth:" + Depth);
     }
 
     @Override
     public String toString() {
-        return String.format(Name + "," + Type + "Depth:" + Depth);
+        return String.format("Name: " + Name + ", Type: " + Type + ", Depth: " + Depth);
     }
 }
