@@ -6,7 +6,17 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         System.out.println("Visited Prog");
         AbstractNodeBase node = new AbstractNodeBase();
 
-        node.Children.add(visitChildren(ctx));
+        node = visitChildren(ctx);
+        node = reduce(node);
+        while(node.Children.get(node.Children.size()-1).getClass() == node.getClass()){
+            node.Children.addAll(node.Children.get(node.Children.size()-1).Children);
+        }
+
+        for(int i = 0; i < node.Children.size(); i++)
+            if(node.Children.get(i).getClass() == node.getClass()){
+                node.Children.remove(i);
+            }
+
 
         System.out.println("Visited Prog end");
         return node; }
@@ -76,8 +86,15 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         return visitChildren(ctx); }
 
     @Override public AbstractNodeBase visitAssign(gParser.AssignContext ctx) {
+        AssignNode node = new AssignNode();
+        node.Target = new IdNode(ctx.Id(0).toString());
+        if(ctx.Id(1) != null){
+            node.Extra = new IdNode(ctx.Id(1).toString());
+        }else{
+            node.attributes.add(visitChildren(ctx.attributes()));
+        }
 
-        return visitChildren(ctx); }
+        return node; }
 
     @Override public AbstractNodeBase visitMath(gParser.MathContext ctx) {
 
@@ -88,15 +105,31 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         return visitChildren(ctx); }
 
     @Override public AbstractNodeBase aggregateResult(AbstractNodeBase aggregate, AbstractNodeBase nextResult) {
-        if(aggregate != null && nextResult != null){
 
-            aggregate.Children.add(nextResult);
-        }else if(aggregate == null && nextResult != null){
-            /*aggregate = new AbstractNodeBase();
-            aggregate.Children.add(nextResult);*/
-            aggregate = nextResult;
+        if(nextResult != null){
+            nextResult = reduce(nextResult);
+
+            if(aggregate != null){
+
+                aggregate.Children.add(nextResult);
+
+            }else if(aggregate == null){
+
+                aggregate = new AbstractNodeBase();
+                aggregate.Children.add(nextResult);
+                /*aggregate = nextResult;*/
+            }
         }
 
         return aggregate;
+    }
+
+    private AbstractNodeBase reduce(AbstractNodeBase root){
+        if(root != null){
+            while(root.Children.size() == 1){
+                root = root.Children.get(0);
+            }
+        }
+        return root;
     }
 }
