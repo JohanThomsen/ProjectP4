@@ -18,8 +18,9 @@ public class Main {
         Table.enterSymbol("RoomName", "string");
         Symbol RetrievedRoom = Table.retrieveSymbol("RoomName");
         System.out.println(RetrievedRoom.fullToString());
-        ArrayList<Symbol> allEntries = Table.getAllEntries();
-        allEntries.forEach(System.out::println);
+        Table.printCurrentScope();
+        Table.closeScope();
+        Table.printCurrentScope();
 
     }
 }

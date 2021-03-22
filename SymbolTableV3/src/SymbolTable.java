@@ -1,39 +1,44 @@
-import javax.naming.Name;
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.function.Function;
 
 public class SymbolTable {
-    Hashtable<String, Symbol> Table = new Hashtable<>();
-    //ArrayList<Symbol> ScopeDisplay = new ArrayList<>();
-    //Hashtable<Integer, Symbol> ScopeDisplay = new Hashtable<>();
-    Symbol[] ScopeDisplay = {null, null, null, null, null, null, null, null, null,};
-    protected int Depth = 0;
+    Hashtable<String, Symbol> Table;
+    ArrayList<Symbol> ScopeDisplay;
+    protected int Depth;
+
+    public SymbolTable(){
+        Table = new Hashtable<>();
+        ScopeDisplay = new ArrayList<>();
+        Depth = 0;
+        ScopeDisplay.add(Depth, null);
+    }
 
     public void openScope(){
         Depth++;
-        ScopeDisplay[Depth] = null;
+        if (ScopeDisplay.size() > Depth) {
+            ScopeDisplay.set(Depth, null);
+        }
+        ScopeDisplay.add(Depth, null);
     }
     
     public void closeScope(){
         Symbol currentSym;
-        Symbol nextSym = ScopeDisplay[Depth];
+        Symbol nextSym = ScopeDisplay.get(Depth);
         Symbol prevSym = null;
         while (nextSym != null) {
             currentSym = nextSym;
             nextSym = currentSym.Level;
 
             prevSym = currentSym.Var;
-            Delete(currentSym);
+            delete(currentSym);
 
             if (prevSym != null){
-                Add(prevSym);
+                add(prevSym);
             }
         }
             Depth--;
     }
+
     public Symbol retrieveSymbol(String name){
         Symbol sym = Table.get(name);
         while (sym != null){
@@ -46,8 +51,6 @@ public class SymbolTable {
     }
 
     public void enterSymbol(String name, String type){
-
-
         Symbol newsym = null;
         Symbol oldsym = retrieveSymbol(name);
         //Checking for duplicate
@@ -69,29 +72,32 @@ public class SymbolTable {
     //Adding to Hash Table
     private void addToHashTable(Symbol newsym, Symbol oldsym) {
         if (oldsym == null){
-            Add(newsym);
+            add(newsym);
         } else {
-            Delete(oldsym);
-            Add(newsym);
+            delete(oldsym);
+            add(newsym);
         }
     }
-    //adding to scopedisplays
+
+    //Adding to the level linked list via the scope display.
     private Symbol addToScopeDisplay(String name, String type) {
         Symbol newsym;
         newsym = new Symbol(name, type);
-        if (ScopeDisplay[Depth] != null){
-            newsym.Level = ScopeDisplay[Depth];
+        if (ScopeDisplay.get(Depth) != null){
+            newsym.Level = ScopeDisplay.get(Depth);
         }
         newsym.Depth = Depth;
-        ScopeDisplay[Depth] = newsym;
+        ScopeDisplay.set(Depth, newsym);
         return newsym;
     }
 
-    private void Add(Symbol sym){
+    private void add(Symbol sym){
         Symbol oldsym = Table.get(sym.Name);
+        //Check for collision
         if (oldsym == null){
             Table.put(sym.Name, sym);
         } else {
+            //Handle Collision with linked list
             Symbol next = oldsym;
             while (next != null){
                 oldsym = next;
@@ -101,7 +107,8 @@ public class SymbolTable {
             oldsym.HashForwards = sym;
         }
     }
-    private void Delete(Symbol sym){
+    //Remove symbol from hashtable and collision chain
+    private void delete(Symbol sym){
         Symbol Backward = null;
         Symbol Forward = null;
         if (sym.HashForwards != null) {
@@ -121,11 +128,10 @@ public class SymbolTable {
         Table.remove(sym.Name, sym);
     }
 
-    public ArrayList<Symbol> getAllEntries(){
-        ArrayList<Symbol> list = new ArrayList<>();
+    public void printCurrentScope(){
+        System.out.println("------------Scope " + Depth + " Entries------------");
         Table.forEach((name, sym) -> {
-            list.add(sym);
+            System.out.println(sym);
         });
-        return list;
     }
 }
