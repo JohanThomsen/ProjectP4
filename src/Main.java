@@ -18,7 +18,14 @@ public class Main {
 
             MyVisitor visitor = new MyVisitor();
             AbstractNodeBase node = visitor.visit(tree);
-            //System.out.println(node.Children);
+            System.out.println(node.Children.size());
+            System.out.println(node.Children.get(1).Children.size());
+            if(node.Children.get(1).getClass() == node.getClass()){
+                System.out.println("Eureka");
+            }
+            if(node.Children.get(0).getClass() == node.Children.get(1).getClass()){
+                System.out.println("HAHAHAHAHAHAHAHAHAHAHA");
+            }
         }
 	    catch(IOException e){
             e.printStackTrace();
