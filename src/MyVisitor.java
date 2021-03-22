@@ -1,9 +1,14 @@
-public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
+import org.abego.treelayout.internal.util.java.lang.string.StringUtil;
 
+import java.util.Collections;
+
+public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
+    private int indentation = 0;
 
     @Override public AbstractNodeBase visitProgram(gParser.ProgramContext ctx) {
-
-        System.out.println("Visited Prog");
+        printTabs(indentation);
+        System.out.println("ProgramNode");
+        indentation++;
         AbstractNodeBase node;
 
         node = visitChildren(ctx);
@@ -16,59 +21,103 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
             if(node.Children.get(i).getClass() == node.getClass()){
                 node.Children.remove(i);
             }
-
-
-        System.out.println("Visited Prog end");
+        indentation--;
         return node; }
 
     @Override public AbstractNodeBase visitDeclares(gParser.DeclaresContext ctx) {
+        printTabs(indentation);
+        System.out.println("Declares");
+        indentation++;
 
-        System.out.println("Visited Declares");
-
-
-        return visitChildren(ctx);
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node;
     }
 
     @Override public AbstractNodeBase visitDeclare(gParser.DeclareContext ctx) {
+        printTabs(indentation);
+        System.out.println("Declare");
+        indentation++;
 
-        System.out.println("Visited Declare");
-
-        return visitChildren(ctx);
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node;
         }
 
     @Override public AbstractNodeBase visitCtrlstruc(gParser.CtrlstrucContext ctx) {
+        printTabs(indentation);
+        System.out.println("Ctrlstruc");
+        indentation++;
 
-        //System.out.println("Visited Control Structure");
-
-        return visitChildren(ctx); }
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node;
+    }
 
     @Override public AbstractNodeBase visitCtrlstrucparam(gParser.CtrlstrucparamContext ctx) {
+        printTabs(indentation);
+        System.out.println("Ctrlstrucparam");
+        indentation++;
 
-        return visitChildren(ctx); }
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node;
+    }
 
     @Override public AbstractNodeBase visitAttributes(gParser.AttributesContext ctx) {
 
-        return visitChildren(ctx); }
+        printTabs(indentation);
+        System.out.println("Attributes");
+        indentation++;
+
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node; }
 
     @Override public AbstractNodeBase visitClassdcl(gParser.ClassdclContext ctx) {
 
-        return visitChildren(ctx); }
+        printTabs(indentation);
+        System.out.println("Classdcl");
+        indentation++;
+
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node; }
 
     @Override public AbstractNodeBase visitMethoddcl(gParser.MethoddclContext ctx) {
 
-        return visitChildren(ctx); }
+        printTabs(indentation);
+        System.out.println("Methoddcl");
+        indentation++;
+
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node; }
 
     @Override public AbstractNodeBase visitBodies(gParser.BodiesContext ctx) {
 
-        return visitChildren(ctx); }
+        printTabs(indentation);
+        System.out.println("Bodies");
+        indentation++;
+
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node;}
 
     @Override public AbstractNodeBase visitBody(gParser.BodyContext ctx) {
 
-        return visitChildren(ctx); }
+        printTabs(indentation);
+        System.out.println("Body");
+        indentation++;
+
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node;}
 
     @Override public AbstractNodeBase visitInit(gParser.InitContext ctx) {
-
-        System.out.println("Visited Init");
+        printTabs(indentation);
+        System.out.println("Init");
+        indentation++;
         InitializationNode node = new InitializationNode();
         if(ctx.Id(0).toString() != null){
             node.Type = new IdNode(ctx.Id(0).toString());
@@ -78,14 +127,25 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
             }
         }
 
+
+        indentation--;
         return  node;
         }
 
     @Override public AbstractNodeBase visitAssigns(gParser.AssignsContext ctx) {
 
-        return visitChildren(ctx); }
+        printTabs(indentation);
+        System.out.println("Assigns");
+        indentation++;
+
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node;}
 
     @Override public AbstractNodeBase visitAssign(gParser.AssignContext ctx) {
+        printTabs(indentation);
+        System.out.println("Assigns");
+        indentation++;
         AssignNode node = new AssignNode();
         node.Target = new IdNode(ctx.Id(0).toString());
         if(ctx.Id(1) != null){
@@ -93,16 +153,28 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         }else{
             node.attributes.add(visitChildren(ctx.attributes()));
         }
-
+        indentation--;
         return node; }
 
     @Override public AbstractNodeBase visitMath(gParser.MathContext ctx) {
 
-        return visitChildren(ctx); }
+        printTabs(indentation);
+        System.out.println("Math");
+        indentation++;
+
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node; }
 
     @Override public AbstractNodeBase visitMethodcall(gParser.MethodcallContext ctx) {
 
-        return visitChildren(ctx); }
+        printTabs(indentation);
+        System.out.println("Methodcall");
+        indentation++;
+
+        AbstractNodeBase node = visitChildren(ctx);
+        indentation--;
+        return node;}
 
     @Override public AbstractNodeBase aggregateResult(AbstractNodeBase aggregate, AbstractNodeBase nextResult) {
 
@@ -120,7 +192,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
                 /*aggregate = nextResult;*/
             }
         }
-
         return aggregate;
     }
 
@@ -131,5 +202,8 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
             }
         }
         return root;
+    }
+    private void printTabs(int indentation){
+        System.out.print(String.join("",Collections.nCopies(indentation,"    ")));
     }
 }
