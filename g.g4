@@ -1,35 +1,34 @@
 grammar g;
 
-program: declares 'xd';
+program: expressions 'xd';
 
-declares: declare '.' declares
-| declare;
+expressions: expression '.' expressions
+| expression;
 
-declare: init
-| assigns
+expression: Id
+| assign
 | classdcl
-| methoddcl;
+| methoddcl
+//| methodcall
+| init
+| math;
 
-ctrlstruc: 'if' ctrlstrucparam 'is equal to' ctrlstrucparam
+ctrlstruc: if;
+//| while
+//| for
+//| switch
+
+if: 'if' ctrlstrucparam 'is equal to' ctrlstrucparam
 | 'if' ctrlstrucparam 'is less than' ctrlstrucparam
 | 'if' ctrlstrucparam 'is more than' ctrlstrucparam;
 
 ctrlstrucparam: Number
 | Id
-| math;
+| expression;
 
-classdcl: 'There can exist a' Id ':' assigns
-| 'There can exist an' Id ':' assigns;
+classdcl: 'There can exist a'('n'?) Id ':' assigns;
 
-methoddcl: 'can' Id Id ':' bodies;
-
-bodies: body bodies
-| ;
-
-body: Id 'is' Id '-' Id
-| Id 'is' Id ' + ' Id
-| ctrlstruc ':'
-| methodcall;
+methoddcl: 'can' Id Id ':' expressions;
 
 init: 'There is a'('n'?) Id 'called' Id
 | 'There is a'('n'?) Id
@@ -38,18 +37,20 @@ init: 'There is a'('n'?) Id 'called' Id
 assigns: assign ',' assigns
 | assign;
 
-assign: Id 'which' ('has'?) ('a'?'an'?) ('is'?) Id
-| Id 'which' ('has'?) ('a'?) ('is'?) attributes;
+assign: Id ('has'?) ('a'?'an'?) ('is'?) expression
+| Id ('has'?) ('a'?) ('is'?) attributes;
 
 attributes: String
 |String 'and' attributes;
 
-math: Number WS '-' WS Number
-| Number WS '+' WS Number
-| Number WS '*' WS Number
-| Number WS '/' WS Number;
+math: math mult='*' math  #mathMult
+| math div='/' math       #mathDiv
+| math add=('+' | '-') math #mathAdd
+| Id                      #Id
+| Number                  #Number
+;
 
-methodcall: Id Id; //TODO Fix to just call
+//methodcall: ('d'|'D')'o' Id expressions; //TODO Fix to just call
 
 Id: [a-zA-Z]+;
 
