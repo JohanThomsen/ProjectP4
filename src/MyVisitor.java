@@ -7,23 +7,14 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         AbstractNodeBase node;
 
         node = visitChildren(ctx);
+
         node = reduce(node);
-        while(node.Children.get(node.Children.size()-1).getClass() == node.getClass()){
-            node.Children.addAll(node.Children.get(node.Children.size()-1).Children);
-        }
 
-        for(int i = 0; i < node.Children.size(); i++)
-            if(node.Children.get(i).getClass() == node.getClass()){
-                node.Children.remove(i);
-            }
+        node = AbstractRemoval(node);
 
-
-        System.out.println("Visited Prog end");
         return node; }
 
     @Override public AbstractNodeBase visitDeclares(gParser.DeclaresContext ctx) {
-
-        System.out.println("Visited Declares");
 
 
         return visitChildren(ctx);
@@ -31,14 +22,11 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override public AbstractNodeBase visitDeclare(gParser.DeclareContext ctx) {
 
-        System.out.println("Visited Declare");
 
         return visitChildren(ctx);
         }
 
     @Override public AbstractNodeBase visitCtrlstruc(gParser.CtrlstrucContext ctx) {
-
-        //System.out.println("Visited Control Structure");
 
         return visitChildren(ctx); }
 
@@ -52,7 +40,12 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override public AbstractNodeBase visitClassdcl(gParser.ClassdclContext ctx) {
 
-        return visitChildren(ctx); }
+        ClassDCLNode node = new ClassDCLNode();
+        node.Type = new IdNode(ctx.Id().toString());
+        AbstractNodeBase temp = visitChildren(ctx);
+        node.Fields = temp.Children.get(0);
+
+        return node; }
 
     @Override public AbstractNodeBase visitMethoddcl(gParser.MethoddclContext ctx) {
 
@@ -68,14 +61,18 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override public AbstractNodeBase visitInit(gParser.InitContext ctx) {
 
-        System.out.println("Visited Init");
         InitializationNode node = new InitializationNode();
-        if(ctx.Id(0).toString() != null){
-            node.Type = new IdNode(ctx.Id(0).toString());
+        if(ctx.Id(0) != null){
+            node.Type = new IdNode(ctx.Id(0).getText());
 
-            if(ctx.Id(1).toString() != null){
-                node.Identifier = new IdNode(ctx.Id(1).toString());
+            if(ctx.Id(1) != null){
+                node.Identifier = new IdNode(ctx.Id(1).getText());
             }
+        }
+        else{
+            node.Children.add(visitChildren(ctx));
+            node.Children.add(reduce(node.Children.get(0)));
+            node.Children.remove(0);
         }
 
         return  node;
@@ -101,8 +98,8 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         return visitChildren(ctx); }
 
     @Override public AbstractNodeBase visitMethodcall(gParser.MethodcallContext ctx) {
-
-        return visitChildren(ctx); }
+        MethodCallNode node = new MethodCallNode(new IdNode(ctx.Id(0).getText()), new IdNode(ctx.Id(1).getText()));
+        return node; }
 
     @Override public AbstractNodeBase aggregateResult(AbstractNodeBase aggregate, AbstractNodeBase nextResult) {
 
@@ -117,7 +114,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
                 aggregate = new AbstractNodeBase();
                 aggregate.Children.add(nextResult);
-                /*aggregate = nextResult;*/
+
             }
         }
 
@@ -130,6 +127,19 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
                 root = root.Children.get(0);
             }
         }
+        return root;
+    }
+
+    private AbstractNodeBase AbstractRemoval(AbstractNodeBase root){
+        while(root.Children.get(root.Children.size()-1).getClass() == root.getClass()){
+            root.Children.addAll(root.Children.get(root.Children.size()-1).Children);
+        }
+
+        for(int i = 0; i < root.Children.size(); i++)
+            if(root.Children.get(i).getClass() == root.getClass()){
+                root.Children.remove(i);
+            }
+
         return root;
     }
 }
