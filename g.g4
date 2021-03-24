@@ -1,24 +1,25 @@
 grammar g;
 
-program: expressions 'xd';
+program: expressions '.' ('\n')? '¤';
 
-expressions: expression '.' expressions
+expressions: expression '.' ('\n')? expressions
 | expression;
 
 expression: Id
 | assign
 | classdcl
-| methoddcl
+//| methoddcl
 //| methodcall
+| ctrlstruc
 | init
 | math;
 
-ctrlstruc: if;
+ctrlstruc: ctrlif ':' expressions;
 //| while
 //| for
 //| switch
 
-if: 'if' ctrlstrucparam 'is equal to' ctrlstrucparam
+ctrlif: 'if' ctrlstrucparam 'is equal to' ctrlstrucparam
 | 'if' ctrlstrucparam 'is less than' ctrlstrucparam
 | 'if' ctrlstrucparam 'is more than' ctrlstrucparam;
 
@@ -28,29 +29,38 @@ ctrlstrucparam: Number
 
 classdcl: 'There can exist a'('n'?) Id ':' assigns;
 
-methoddcl: 'can' Id Id ':' expressions;
+//methoddcl:  'can' Id ':' expressions
+//| Id 'can' Id 'with' expressions ':' expressions;
 
-init: 'There is a'('n'?) Id 'called' Id
-| 'There is a'('n'?) Id
-| 'upon action' methodcall;
+init: 'There is a'('n'?) (Id | INT | STRING) 'called' Id
+| 'There is a'('n'?) (Id | INT | STRING);
+//| 'upon action' methodcall;
 
 assigns: assign ',' assigns
 | assign;
 
-assign: Id ('has'?) ('a'?'an'?) ('is'?) expression
-| Id ('has'?) ('a'?) ('is'?) attributes;
+assign: Id ('has'|'is') ('an'|'a')? expression //Make so its needs at least one of these, to avoid "Id expression" assignments
+| Id ('has'|'is') ('an'|'a')? attributes;
 
 attributes: String
-|String 'and' attributes;
+| String 'and' attributes;
 
-math: math mult='*' math  #mathMult
-| math div='/' math       #mathDiv
+//methodcall: 'Do' Id
+//| 'Do' Id 'with' expressions; //TODO Fix to just call
+
+math: math mult='*' math    #mathMult
+| math div='/' math         #mathDiv
 | math add=('+' | '-') math #mathAdd
-| Id                      #Id
-| Number                  #Number
+| '(' math ')'              #mathParenthesis
+| Id                        #Id
+| Number                    #Number
 ;
 
-//methodcall: ('d'|'D')'o' Id expressions; //TODO Fix to just call
+
+
+//Keywords:
+INT: 'number' | 'Number';
+STRING: 'text' | 'Text';
 
 Id: [a-zA-Z]+;
 
