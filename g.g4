@@ -8,7 +8,7 @@ declares: declare '.' declares
 declare: init
 | assigns
 | classdcl
-| methoddcl;
+| methoddcl; //Todo fix
 
 ctrlstruc: 'if' ctrlstrucparam 'is equal to' ctrlstrucparam
 | 'if' ctrlstrucparam 'is less than' ctrlstrucparam
