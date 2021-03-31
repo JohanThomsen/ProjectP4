@@ -2,6 +2,6 @@ import java.util.ArrayList;
 
 public class AssignNode extends AbstractNodeBase{
     IdNode Target;
-    IdNode Extra;
-    ArrayList<AbstractNodeBase> attributes;
+    AbstractNodeBase Value;
+    AbstractNodeBase attributes = new AbstractNodeBase();
 }

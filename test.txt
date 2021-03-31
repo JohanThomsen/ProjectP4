@@ -1,1 +1,15 @@
-There is a number called Malthe. Malthe is 2. There is a VisualStudioCodeAddonMaker called Thor. Thor is "Great". Thor + Malthe. Thor has a Malthe. if Thor is equal to Malthe : Thor is Malthe. xd
+There is a number called Malthe.
+    Malthe is 2.
+There is a VisualStudioCodeAddonMaker called Thor.
+    Thor is "Great".
+    Thor + Malthe.
+    Thor has a Malthe.
+if not (Thor contains Malthe and Thor contains Great):
+    Thor is Malthe.
+    Thor is Me.
+    Thor is Same;.
+There can exist a King:
+    King has a Kong.
+    King is "Big dumb".
+    King has a Number called Brain.
+(1 + 2) / (3 - 4 * 5).
