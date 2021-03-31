@@ -1,15 +1,15 @@
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
+import java.io.PrintStream;
 import static org.antlr.v4.runtime.CharStreams.fromFileName;
 
 public class Main {
-
+    PrintStream ps;
+    int level;
     public static void main(String[] args) {
+
 	    try{
 	        String source = "test.txt";
 	        CharStream stream = fromFileName(source);
@@ -24,7 +24,9 @@ public class Main {
             SymbolTable Table = new SymbolTable();
             Table = TableBuild(Table, node);
             Table.printCurrentScope();
+            ASTTypeCheck test = new ASTTypeCheck();
 
+            AbstractNodeBase NODE = test.Visit(node.Children.get(0));
 
         }
 	    catch(IOException e){
@@ -46,5 +48,17 @@ public class Main {
         }
 
         return Target;
+    }
+    private void emit(String s) {
+        PrintStream ps = System.out;
+        out(ps, s);
+    }
+    public void out(String s) {
+        out(this.ps, s);
+    }//ps is a PrintStream
+    public void out(PrintStream ps, String s)  {
+        String tab = "";
+        for (int i=1; i <= level; ++i) tab += "  ";//level is an int
+        ps.println(tab + s);
     }
 }

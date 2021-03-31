@@ -99,6 +99,9 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override public AbstractNodeBase visitMethodcall(gParser.MethodcallContext ctx) {
         MethodCallNode node = new MethodCallNode(new IdNode(ctx.Id(0).getText()), new IdNode(ctx.Id(1).getText()));
+
+
+
         return node; }
 
     @Override public AbstractNodeBase aggregateResult(AbstractNodeBase aggregate, AbstractNodeBase nextResult) {

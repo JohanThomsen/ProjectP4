@@ -1,4 +1,4 @@
-public class CtrlStrucNode {
+public class CtrlStrucNode extends AbstractNodeBase {
 
     AbstractNodeBase Left;
     String ActionType;
