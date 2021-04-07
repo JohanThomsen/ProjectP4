@@ -3,7 +3,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override public AbstractNodeBase visitProgram(gParser.ProgramContext ctx) {
 
-        System.out.println("Visited Prog");
         AbstractNodeBase node;
 
         node = visitChildren(ctx);
@@ -41,7 +40,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     @Override public AbstractNodeBase visitClassdcl(gParser.ClassdclContext ctx) {
 
         ClassDCLNode node = new ClassDCLNode();
-        node.Type = new IdNode(ctx.Id().toString());
+        node.ID = new IdNode(ctx.Id().toString());
         AbstractNodeBase temp = visitChildren(ctx);
         node.Fields = temp.Children.get(0);
 

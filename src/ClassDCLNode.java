@@ -1,4 +1,4 @@
 public class ClassDCLNode extends AbstractNodeBase {
-    IdNode Type;
+    IdNode ID;
     AbstractNodeBase Fields;
 }

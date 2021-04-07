@@ -27,11 +27,14 @@ public abstract class ASTVisitor<T> {
         }
         else if(node instanceof MethodDCLNode){
             return Visit((MethodDCLNode) node);
-        }else if(node instanceof IdNode){
+        }
+        else if(node instanceof IdNode){
             return Visit((IdNode) node);
-        }else if(node instanceof CtrlStrucNode){
+        }
+        else if(node instanceof CtrlStrucNode){
             return Visit((CtrlStrucNode) node);
-        }else if(node != null){
+        }
+        else if(node != null){
             return Visit(node.Children.get(0));
         }
 

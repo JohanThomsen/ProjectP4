@@ -1,50 +1,66 @@
-public class ASTTypeCheck extends ASTVisitor<AbstractNodeBase>{
-    public SymbolTable Table = new SymbolTable();
+public class ASTTypeCheck extends ASTVisitor<String>{
+    public SymbolTable Table;
 
-    @Override
-    public AbstractNodeBase Visit(InitializationNode node) {
-
-
-
-        return node;
+    ASTTypeCheck(SymbolTable tablet){
+        this.Table = tablet;
     }
 
     @Override
-    public AbstractNodeBase Visit(AssignNode node) {
+    public String Visit(InitializationNode node) {
 
-        return node;
-    }
 
-    @Override
-    public AbstractNodeBase Visit(ClassDCLNode node) {
-        System.out.println("CD visited");
-        return node;
-    }
-
-    @Override
-    public AbstractNodeBase Visit(MathNode node) {
-        System.out.println("Mat visited");
-        return node;
-    }
-
-    @Override
-    public AbstractNodeBase Visit(MethodCallNode node) {
-        System.out.println("MC visited");
-        return node;
-    }
-
-    @Override
-    public AbstractNodeBase Visit(MethodDCLNode node) {
         return null;
     }
 
     @Override
-    public AbstractNodeBase Visit(IdNode node) {
+    public String Visit(AssignNode node) {
+        Symbol temp = Table.retrieveSymbol(node.Target.value);
+        if(temp != null){
+                System.out.println(temp.Name + " Is a legal assignment");
+                return temp.Name;
+        }else {
+            System.out.println(node.Target.value + " Has not been initialized");
+        }
         return null;
     }
 
     @Override
-    public AbstractNodeBase Visit(CtrlStrucNode node) {
+    public String Visit(ClassDCLNode node) {
+
+        return null;
+    }
+
+    @Override
+    public String Visit(MathNode node) {
+
+        return null;
+    }
+
+    @Override
+    public String Visit(MethodCallNode node) {
+        Symbol temp = Table.retrieveSymbol(node.Left.value);
+        if(temp != null && temp.Type.equals("method")){
+            System.out.println(temp.Name + " Is a legal methodcall");
+        }
+        return null;
+    }
+
+    @Override
+    public String Visit(MethodDCLNode node) {
+        return null;
+    }
+
+    @Override
+    public String Visit(IdNode node) {
+        return null;
+    }
+
+    @Override
+    public String Visit(CtrlStrucNode node) {
+        return null;
+    }
+
+    public AbstractNodeBase Visit(NumberNode node){
         return null;
     }
 }
