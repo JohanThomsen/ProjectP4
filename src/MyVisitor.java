@@ -32,6 +32,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         return node;
     }
 
+
     @Override public AbstractNodeBase visitExpression(gParser.ExpressionContext ctx) {
         printTabs(indentation);
         System.out.println("Expression");
@@ -42,11 +43,13 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         return node;
         }
 
+
     @Override public AbstractNodeBase visitCtrlif(gParser.CtrlifContext ctx) {
 
         printTabs(indentation);
         System.out.println("CtrlIf");
         indentation++;
+
 
         AbstractNodeBase nodeBase = visitChildren(ctx);
         IfNode node = new IfNode(nodeBase.Children.get(0), AbstractRemoval(nodeBase.Children.get(1)).Children);
@@ -227,7 +230,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
                 aggregate = new AbstractNodeBase();
                 aggregate.Children.add(nextResult);
-                /*aggregate = nextResult;*/
+
             }
         }
         return aggregate;

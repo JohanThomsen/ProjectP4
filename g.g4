@@ -56,6 +56,7 @@ bool: '(' bool ')'                   #boolParanthesis
 | Number                             #BoolNumber
 ;
 
+
 attributes: String
 | String 'and' attributes;
 
