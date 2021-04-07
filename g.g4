@@ -1,55 +1,67 @@
 grammar g;
 
-program: declares 'xd';
+program: expressions '.' EOF;
 
-declares: declare '.' declares
-| declare;
+expressions: expression '.' expressions
+| expression;
 
-declare: init
-| assigns
+expression: Id
+| assign
 | classdcl
-| methoddcl; //Todo fix
+//| methoddcl
+//| methodcall
+| ctrlstruc
+| init
+| math
+| bool;
 
-ctrlstruc: 'if' ctrlstrucparam 'is equal to' ctrlstrucparam
-| 'if' ctrlstrucparam 'is less than' ctrlstrucparam
-| 'if' ctrlstrucparam 'is more than' ctrlstrucparam;
+ctrlstruc: 'if' expression ':' expressions ';' #ctrlif;
+//| while
+//| for
+//| switch
 
-ctrlstrucparam: Number
-| Id
-| math;
+classdcl: 'There can exist a'('n'?) Id ':' expressions;
 
-classdcl: 'There can exist a' Id ':' assigns
-| 'There can exist an' Id ':' assigns;
+//methoddcl:  'can' Id ':' expressions
+//| Id 'can' Id 'with' expressions ':' expressions;
 
-methoddcl: 'can' Id Id ':' bodies;
+assign: Id ('has'|'is') ('an'|'a')? (Id | Number | math) //Make so its needs at least one of these, to avoid "Id expression" assignments
+| Id ('has'|'is') ('an'|'a')? attributes;
 
-bodies: body bodies
-| ;
+init: 'There is a'('n'?) Id
+| 'There is a'('n'?) Id 'called' Id
+| Id 'has' 'a'('n'?) Id 'called' Id
+;
+//| 'upon action' methodcall;
 
-body: Id 'is' Id '-' Id
-| Id 'is' Id ' + ' Id
-| ctrlstruc ':'
-| methodcall;
+math: '(' math ')'          #mathParenthesis
+| math mult='*' math        #mathMult
+| math div='/' math         #mathDiv
+| math add=('+' | '-') math #mathAdd
+| Id                        #MathId
+| Number                    #MathNumber
+;
 
-init: 'There is a'('n'?) Id 'called' Id
-| 'There is a'('n'?) Id
-| 'upon action' methodcall;
+bool: '(' bool ')'                   #boolParanthesis
+| bool 'is equal to' bool            #boolEquals
+| bool 'is less than' bool           #boolLess
+| bool 'is greater than' bool        #boolGreater
+| bool 'is less or equal to' bool    #boolLE
+| bool 'is greater or equal to' bool #boolGE
+| bool 'contains' bool               #boolContains
+| bool 'and' bool                    #boolAnd
+| bool 'or' bool                     #boolOr
+| 'not' bool                         #boolNot
+| Id                                 #BoolId
+| Number                             #BoolNumber
+;
 
-assigns: assign ',' assigns
-| assign;
-
-assign: Id 'which' ('has'?) ('a'?'an'?) ('is'?) Id
-| Id 'which' ('has'?) ('a'?) ('is'?) attributes;
 
 attributes: String
-|String 'and' attributes;
+| String 'and' attributes;
 
-math: Number WS '-' WS Number
-| Number WS '+' WS Number
-| Number WS '*' WS Number
-| Number WS '/' WS Number;
-
-methodcall: Id Id; //TODO Fix to just call
+//methodcall: 'Do' Id
+//| 'Do' Id 'with' expressions; //TODO Fix to just call
 
 Id: [a-zA-Z]+;
 
@@ -57,8 +69,8 @@ Id: [a-zA-Z]+;
 
 //Indent: '    ';
 
-String: '"' [ a-zA-Z0-9]+ '"';
+String: '"' [ a-zA-Z0-9]* '"';
 
 Number: [0-9]+ ('.' [0-9]+)?;
 
-WS: (' '|'\t')+ -> channel(HIDDEN);
+WS: (' '| '\t' | '\n' | '\r\n' )+ -> channel(HIDDEN);
