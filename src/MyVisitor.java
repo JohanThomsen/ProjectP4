@@ -246,7 +246,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     }
 
     private AbstractNodeBase AbstractRemoval(AbstractNodeBase root){
-        while(root.Children.get(root.Children.size()-1).getClass() == root.getClass()){
+        while(root.Children.size()-1 >= 0 && root.Children.get(root.Children.size()-1).getClass() == root.getClass()){
             root.Children.addAll(root.Children.get(root.Children.size()-1).Children);
         }
 
