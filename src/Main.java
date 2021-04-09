@@ -1,6 +1,8 @@
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import java.io.FileWriter;
 import java.io.IOException;
 /*import java.io.PrintStream;*/
 import static org.antlr.v4.runtime.CharStreams.fromFileName;
@@ -24,6 +26,13 @@ public class Main {
 
             Table = Builder.TableBuild(Table, node);
             Table.printCurrentScope();
+            FileWriter writer = new FileWriter("out.txt");
+            writer.write("Test it");
+
+            ASTCodeGenVisitor gen = new ASTCodeGenVisitor();
+            writer.write("TYest");
+            writer.close();
+            gen.Visit(node);
 
         }
 	    catch(IOException e){

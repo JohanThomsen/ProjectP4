@@ -1,4 +1,6 @@
 import java.io.PrintStream;
+import java.io.IOException;
+import java.io.FileWriter;
 
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
@@ -115,23 +117,64 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathAddNode node) {
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+        }
+
+        emit("fadd");
+
         return null;
-    }
+    }//TODO find difference between Add and Subtract.
 
     @Override
     public String Visit(MathDivNode node) {
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+        }
+
+        emit("fdiv");
+
         return null;
-    }
+    }//Done for now
 
     @Override
     public String Visit(MathMultNode node) {
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+        }
+
+        emit("fmul");
         return null;
-    }
+    }//Done for now
 
     @Override
     public String Visit(MathParenthesisNode node) {
+
+        this.Visit(node.Operand);
+
         return null;
-    }
+    }//Done for now
 
     @Override
     public String Visit(MethodCallNode node) {
@@ -146,20 +189,20 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     @Override
     public String Visit(MultiplicationNode node) {
         return null;
-    }
+    }//Not important for now
 
     @Override
     public String Visit(NumberNode node) {
         return null;
-    }
+    }//Not important for now
 
     @Override
     public String Visit(StringNode node) {
         return null;
-    }
+    }//Not important for now
 
     @Override
     public String Visit(SubtractionNode node) {
         return null;
-    }
+    }//Not important for now
 }

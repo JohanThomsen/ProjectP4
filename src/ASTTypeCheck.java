@@ -100,6 +100,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathAddNode node) {
+        System.out.println("Math is here");
         return null;
     }
 
