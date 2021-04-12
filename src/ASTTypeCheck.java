@@ -85,23 +85,39 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathDivNode node) {
-        return null;
+        System.out.println("Math is here");
+        String temp = this.Visit(node.LeftOperand);
+        if(temp != this.Visit(node.RightOperand)){
+            System.out.println("Error");
+        }
+        return temp;
     }
 
     @Override
     public String Visit(MathMultNode node) {
-        return null;
+        System.out.println("Math is here");
+        String temp = this.Visit(node.LeftOperand);
+        if(temp != this.Visit(node.RightOperand)){
+            System.out.println("Error");
+        }
+        return temp;
     }
 
     @Override
     public String Visit(MathParenthesisNode node) {
-        return null;
+        System.out.println("Math is here");
+
+        return this.Visit(node.Operand);
     }
 
     @Override
     public String Visit(MathAddNode node) {
         System.out.println("Math is here");
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+        if(temp != this.Visit(node.RightOperand)){
+            System.out.println("Error");
+        }
+        return temp;
     }
 
     @Override
@@ -125,7 +141,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(IdNode node) {
-        return null;
+        return "Id";
     }
 
     @Override
@@ -152,7 +168,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(NumberNode node){
-        return null;
+        return "Num";
     }
 
     @Override

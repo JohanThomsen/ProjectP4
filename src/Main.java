@@ -25,12 +25,16 @@ public class Main {
             AbstractNodeBase node = visitor.visit(tree);
 
             Table = Builder.TableBuild(Table, node);
-            Table.printCurrentScope();
+
 
             ASTCodeGenVisitor gen = new ASTCodeGenVisitor();
-            for(int i = 0; i < node.Children.size(); i++){
-                gen.Visit(node.Children.get(i));
-            }
+            if(node.Children.size() > 0){
+                for(int i = 0; i < node.Children.size(); i++){
+                    gen.Visit(node.Children.get(i));
+                }
+            }else{gen.Visit(node);}
+
+
 
 
         }
