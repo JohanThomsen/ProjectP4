@@ -2,16 +2,26 @@ import java.io.PrintStream;
 import java.io.IOException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Hashtable;
 
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
+
+    private Hashtable<String, Integer> VarTable = new Hashtable<>();
+    Incrementer incrementer = new Incrementer();
     private PrintStream ps;
-    public PrintWriter exit = new PrintWriter("out.txt");
+    //public PrintWriter exit = new PrintWriter("out.txt");
     int level = 0;
     private void emit(String s) {
         PrintStream ps = System.out;
         out(ps, s);
     }
+
+    //Returns the JVM index of the variable
+    private int getReference(IdNode node) {
+        return VarTable.get(node.value);
+    }
+
     public void out(String s) {
         out(this.ps, s);
     }//ps is a PrintStream
@@ -28,6 +38,30 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(AssignNode node) {
+
+        if (VarTable.containsKey(node.Target.value)){
+            if (node.Value instanceof NumberNode){
+                emit("fstore " + ((NumberNode) node.Value).value + getReference(node.Target));
+            } else if (node.Value instanceof StringNode){
+                emit("astore " + ((StringNode) node.Value).value + getReference(node.Target));
+            } else if (node.Value instanceof IdNode) {
+                if (VarTable.containsKey("Number/" + ((IdNode) node.Value).value)){
+                    emit("fstore " + "fload" + getReference(((IdNode) node.Value)) + getReference(node.Target)); //TODO This is probably illegal
+                } else if (VarTable.containsKey("String/" + ((IdNode) node.Value).value)){
+                    emit("astore " + "aload" + getReference(((IdNode) node.Value)) + getReference(node.Target)); //TODO This is probably illegal
+                }
+            }
+        } else {
+            //Everything under here is essentially an Initialization
+            int nextID = incrementer.GetNextID();
+            if (node.Value instanceof NumberNode){
+                VarTable.put("Number/" + node.Target.value, nextID);
+                emit("fstore " + ((NumberNode) node.Value).value + nextID);
+            } else if (node.Value instanceof StringNode){
+                VarTable.put("String/" + node.Target.value, nextID);
+                emit("astore " + ((StringNode) node.Value).value + nextID);
+            }
+        }
         return null;
     }
 
@@ -73,7 +107,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }
 
         emit("fcmpg");
-        exit.append("ldc");
+        //exit.append("ldc");
         return null;
     }
 
@@ -220,7 +254,13 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(InitializationNode node) {
-
+        //Everything under here is essentially an Initialization
+        int nextID = incrementer.GetNextID();
+        if (node.Type.value.equals("Number")){
+            VarTable.put("Number/" + node.Identifier.value, nextID);
+        } else if (node.Type.value.equals("String")){
+            VarTable.put("String/" + node.Identifier.value, nextID);
+        }
         return null;
     }
 
@@ -238,7 +278,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }
 
         emit("fadd");
-        exit.append("fadd");
+        //exit.append("fadd");
 
         return null;
     }//TODO find difference between Add and Subtract.
