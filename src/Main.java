@@ -26,13 +26,12 @@ public class Main {
 
             Table = Builder.TableBuild(Table, node);
             Table.printCurrentScope();
-            FileWriter writer = new FileWriter("out.txt");
-            writer.write("Test it");
 
             ASTCodeGenVisitor gen = new ASTCodeGenVisitor();
-            writer.write("TYest");
-            writer.close();
-            gen.Visit(node);
+            for(int i = 0; i < node.Children.size(); i++){
+                gen.Visit(node.Children.get(i));
+            }
+
 
         }
 	    catch(IOException e){

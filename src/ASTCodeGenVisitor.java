@@ -1,10 +1,12 @@
 import java.io.PrintStream;
 import java.io.IOException;
 import java.io.FileWriter;
+import java.io.PrintWriter;
 
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
-    PrintStream ps;
+    private PrintStream ps;
+    public PrintWriter exit = new PrintWriter("out.txt");
     int level = 0;
     private void emit(String s) {
         PrintStream ps = System.out;
@@ -31,6 +33,21 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolAndNode node) {
+
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+            emit("i2f");
+        }
+
+        emit("fcmpg");
         return null;
     }
 
@@ -41,26 +58,102 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolEqualNode node) {
+
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+            emit("i2f");
+        }
+
+        emit("fcmpg");
+        exit.append("ldc");
         return null;
     }
 
     @Override
     public String Visit(BoolGreaterEqualNode node) {
+
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+            emit("i2f");
+        }
+
+        emit("fcmpg");
+
         return null;
     }
 
     @Override
     public String Visit(BoolGreaterNode node) {
+
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+            emit("i2f");
+        }
+
+        emit("fcmpg");
+
         return null;
     }
 
     @Override
     public String Visit(BoolLessEqualNode node) {
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+            emit("i2f");
+        }
+
+        emit("fcmpl");
         return null;
     }
 
     @Override
     public String Visit(BoolLessNode node) {
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+            emit("i2f");
+        }
+
+        emit("fcmpl");
         return null;
     }
 
@@ -71,11 +164,27 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolOrNode node) {
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+            emit("i2f");
+        }
+
         return null;
     }
 
     @Override
     public String Visit(BoolParenthesisNode node) {
+
+        this.Visit(node.Operand);
+
         return null;
     }
 
@@ -129,6 +238,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }
 
         emit("fadd");
+        exit.append("fadd");
 
         return null;
     }//TODO find difference between Add and Subtract.

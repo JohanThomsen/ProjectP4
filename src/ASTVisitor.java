@@ -31,6 +31,7 @@ public abstract class ASTVisitor<T> {
     /*public abstract T Visit(node);For Copying, so that it is easier to expand.*/
 
     public T Visit(AbstractNodeBase node){//Remember to expand this when a new node is made.
+
         if(node instanceof AddNode){return Visit((AddNode) node);}
        //Remember to downcast, otherwise an overflow will happen.
         else if(node instanceof AssignNode){return Visit((AssignNode) node);}
@@ -57,9 +58,9 @@ public abstract class ASTVisitor<T> {
         else if(node instanceof MathParenthesisNode){return Visit((MathParenthesisNode) node);}
         else if(node instanceof MethodCallNode){return Visit((MethodCallNode) node);}
         else if(node instanceof MethodDCLNode){return Visit((MethodDCLNode) node);}
-        else if(node instanceof MultiplicationNode){return Visit((MultiplicationNode) node);}
-        else if(node instanceof NumberNode){return Visit((NumberNode) node);}
-        else if(node instanceof StringNode){return Visit((StringNode)node);}
+        else if(node instanceof MultiplicationNode){ return Visit((MultiplicationNode) node);}
+        else if(node instanceof NumberNode){ return Visit((NumberNode) node);}
+        else if(node instanceof StringNode){ return Visit((StringNode)node);}
         else if(node instanceof SubtractionNode){return Visit((SubtractionNode) node);}
         /*else if(node instanceof ){return Visit(()node);} For copying*/
         else if(node != null){
