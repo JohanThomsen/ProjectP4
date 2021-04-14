@@ -160,8 +160,8 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(InitializationNode node) {
-        if(Table.retrieveSymbol(node.Identifier.value) != null){//Checks the symboltable, if the it exists then it returns the value else it returns null.
-            return node.Identifier.value;
+        if(Table.retrieveSymbol(node.Type.value) != null){//Checks the symboltable, if the id has been declared
+            return "exists";
         }
 
         return null;
