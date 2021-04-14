@@ -2,26 +2,16 @@ import java.io.PrintStream;
 import java.io.IOException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Hashtable;
 
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
-
-    private Hashtable<String, Integer> VarTable = new Hashtable<>();
-    Incrementer incrementer = new Incrementer();
     private PrintStream ps;
-    //public PrintWriter exit = new PrintWriter("out.txt");
+    /*public PrintWriter exit = new PrintWriter("out.txt");*/
     int level = 0;
     private void emit(String s) {
         PrintStream ps = System.out;
         out(ps, s);
     }
-
-    //Returns the JVM index of the variable
-    private int getReference(String target) {
-        return VarTable.get(target);
-    }
-
     public void out(String s) {
         out(this.ps, s);
     }//ps is a PrintStream
@@ -34,36 +24,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     @Override
     public String Visit(AddNode node) {
         return null;
-    }
+    }//Not Important right now
 
     @Override
     public String Visit(AssignNode node) {
-
-        if (VarTable.containsKey("Number/" + node.Target.value) || VarTable.containsKey("String/" + node.Target.value)){
-            if (node.Value instanceof NumberNode){
-                emit("fstore " + ((NumberNode) node.Value).value + "" + getReference("Number/" + node.Target.value));
-            } else if (node.Value instanceof IdNode) {
-                if (VarTable.containsKey("Number/" + ((IdNode) node.Value).value)){
-                    emit("fstore " + "fload" + getReference("Number/" + ((IdNode) node.Value).value) + " " + getReference("Number/" + node.Target.value)); //TODO This is probably illegal
-                } else if (VarTable.containsKey("String/" + ((IdNode) node.Value).value)){
-                    emit("astore " + "aload" + getReference("String/" + ((IdNode) node.Value).value) + " " + getReference("String/" + node.Target.value)); //TODO This is probably illegal
-                }
-            } else if (node.attributes.Children.get(0) instanceof StringNode){
-                emit("astore " + ((StringNode) node.attributes.Children.get(0)).value + " " + getReference("String/" + node.Target.value));
-            }
-        }
-        /*
-        else {
-            //Everything under here is essentially an Initialization
-            int nextID = incrementer.GetNextID();
-            if (node.Value instanceof NumberNode){
-                VarTable.put("Number/" + node.Target.value, nextID);
-                emit("fstore " + ((NumberNode) node.Value).value + nextID);
-            } else if (node.Value instanceof StringNode){
-                VarTable.put("String/" + node.Target.value, nextID);
-                emit("astore " + ((StringNode) node.Value).value + nextID);
-            }
-        }*/
         return null;
     }
 
@@ -195,6 +159,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolNotNode node) {
+
+        emit("ldc " + ((NumberNode)node.Operand).value);
+        emit("fneg");
+
         return null;
     }
 
@@ -251,18 +219,18 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(IfNode node) {
+        this.Visit(node.Predicate);
+        emit("ifeq BranchEnd");
+        for (AbstractNodeBase a:  node.Statements) {
+            this.Visit(a);
+        }
+        emit("BranchEnd:");
         return null;
     }
 
     @Override
     public String Visit(InitializationNode node) {
-        //Everything under here is essentially an Initialization
-        int nextID = incrementer.GetNextID();
-        if (node.Type.value.equals("number")){
-            VarTable.put("Number/" + node.Identifier.value, nextID);
-        } else if (node.Type.value.equals("string")){
-            VarTable.put("String/" + node.Identifier.value, nextID);
-        }
+
         return null;
     }
 
