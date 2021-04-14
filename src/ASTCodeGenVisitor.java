@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     private PrintStream ps;
-    public PrintWriter exit = new PrintWriter("out.txt");
+    //public PrintWriter exit = new PrintWriter("out.txt");
     int level = 0;
     private void emit(String s) {
         PrintStream ps = System.out;
@@ -73,7 +73,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }
 
         emit("fcmpg");
-        exit.append("ldc");
+        //exit.append("ldc");
         return null;
     }
 
@@ -159,6 +159,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolNotNode node) {
+
+        emit("ldc " + ((NumberNode)node.Operand).value);
+        emit("fneg");
+
         return null;
     }
 
@@ -238,7 +242,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }
 
         emit("fadd");
-        exit.append("fadd");
+        //exit.append("fadd");
 
         return null;
     }//TODO find difference between Add and Subtract.
