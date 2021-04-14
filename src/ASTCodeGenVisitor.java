@@ -159,6 +159,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolNotNode node) {
+
+        emit("ldc " + ((NumberNode)node.Operand).value);
+        emit("fneg");
+
         return null;
     }
 
