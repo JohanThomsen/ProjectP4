@@ -1,1 +1,6 @@
-(3+2)*2. 10 is equal to 10.
+There is a string called book.
+There is a string called shelf.
+There is a number called five.
+book is "The great book of life".
+shelf has book.
+five is 5.

@@ -18,6 +18,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
                 return temp.Name;
         }else {
             System.out.println(node.Target.value + " Has not been initialized");
+            Table.printCurrentScope();
         }
         return null;
     }
@@ -137,7 +138,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     public String Visit(InitializationNode node) {
 
 
-        return null;
+        return "hej";
     }
 
     @Override

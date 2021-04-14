@@ -18,8 +18,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     //Returns the JVM index of the variable
-    private int getReference(IdNode node) {
-        return VarTable.get(node.value);
+    private int getReference(String target) {
+        return VarTable.get(target);
     }
 
     public void out(String s) {
@@ -39,19 +39,21 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     @Override
     public String Visit(AssignNode node) {
 
-        if (VarTable.containsKey(node.Target.value)){
+        if (VarTable.containsKey("Number/" + node.Target.value) || VarTable.containsKey("String/" + node.Target.value)){
             if (node.Value instanceof NumberNode){
-                emit("fstore " + ((NumberNode) node.Value).value + getReference(node.Target));
-            } else if (node.Value instanceof StringNode){
-                emit("astore " + ((StringNode) node.Value).value + getReference(node.Target));
+                emit("fstore " + ((NumberNode) node.Value).value + "" + getReference("Number/" + node.Target.value));
             } else if (node.Value instanceof IdNode) {
                 if (VarTable.containsKey("Number/" + ((IdNode) node.Value).value)){
-                    emit("fstore " + "fload" + getReference(((IdNode) node.Value)) + getReference(node.Target)); //TODO This is probably illegal
+                    emit("fstore " + "fload" + getReference("Number/" + ((IdNode) node.Value).value) + " " + getReference("Number/" + node.Target.value)); //TODO This is probably illegal
                 } else if (VarTable.containsKey("String/" + ((IdNode) node.Value).value)){
-                    emit("astore " + "aload" + getReference(((IdNode) node.Value)) + getReference(node.Target)); //TODO This is probably illegal
+                    emit("astore " + "aload" + getReference("String/" + ((IdNode) node.Value).value) + " " + getReference("String/" + node.Target.value)); //TODO This is probably illegal
                 }
+            } else if (node.attributes.Children.get(0) instanceof StringNode){
+                emit("astore " + ((StringNode) node.attributes.Children.get(0)).value + " " + getReference("String/" + node.Target.value));
             }
-        } else {
+        }
+        /*
+        else {
             //Everything under here is essentially an Initialization
             int nextID = incrementer.GetNextID();
             if (node.Value instanceof NumberNode){
@@ -61,7 +63,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 VarTable.put("String/" + node.Target.value, nextID);
                 emit("astore " + ((StringNode) node.Value).value + nextID);
             }
-        }
+        }*/
         return null;
     }
 
@@ -256,9 +258,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(InitializationNode node) {
         //Everything under here is essentially an Initialization
         int nextID = incrementer.GetNextID();
-        if (node.Type.value.equals("Number")){
+        if (node.Type.value.equals("number")){
             VarTable.put("Number/" + node.Identifier.value, nextID);
-        } else if (node.Type.value.equals("String")){
+        } else if (node.Type.value.equals("string")){
             VarTable.put("String/" + node.Identifier.value, nextID);
         }
         return null;

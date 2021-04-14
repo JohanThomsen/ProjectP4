@@ -93,7 +93,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         System.out.println("Assign");
         indentation++;
         AssignNode node = new AssignNode();
-        node.Target = new IdNode(ctx.Id().toString());
+        node.Target = new IdNode(ctx.Id(0).toString());
         if(ctx.math() != null || ctx.Id(1) != null || ctx.Number() != null){
             node.Value = visitChildren(ctx).Children.get(1);
         }else{

@@ -25,7 +25,7 @@ classdcl: 'There can exist a'('n'?) Id ':' expressions;
 //methoddcl:  'can' Id ':' expressions
 //| Id 'can' Id 'with' expressions ':' expressions;
 
-assign: Id ('has'|'is') ('an'|'a')? (Id | Number | math) //Make so its needs at least one of these, to avoid "Id expression" assignments
+assign: Id ('has'|'is') ('an'|'a')? (Id | Number | String | math ) //Make so its needs at least one of these, to avoid "Id expression" assignments
 | Id ('has'|'is') ('an'|'a')? attributes;
 
 init: 'There is a'('n'?) Id
