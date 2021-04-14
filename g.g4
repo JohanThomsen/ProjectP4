@@ -28,8 +28,7 @@ classdcl: 'There can exist a'('n'?) Id ':' expressions;
 assign: Id ('has'|'is') ('an'|'a')? (Id | Number | math) //Make so its needs at least one of these, to avoid "Id expression" assignments
 | Id ('has'|'is') ('an'|'a')? attributes;
 
-init: 'There is a'('n'?) Id
-| 'There is a'('n'?) Id 'called' Id
+init: 'There is a'('n'?) Id 'called' Id
 | Id 'has' 'a'('n'?) Id 'called' Id
 ;
 //| 'upon action' methodcall;
