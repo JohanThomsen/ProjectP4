@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     private PrintStream ps;
-    //public PrintWriter exit = new PrintWriter("out.txt");
+    /*public PrintWriter exit = new PrintWriter("out.txt");*/
     int level = 0;
     private void emit(String s) {
         PrintStream ps = System.out;
@@ -24,7 +24,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     @Override
     public String Visit(AddNode node) {
         return null;
-    }
+    }//Not Important right now
 
     @Override
     public String Visit(AssignNode node) {
@@ -219,6 +219,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(IfNode node) {
+        this.Visit(node.Predicate);
+        emit("ifeq BranchEnd");
+        for (AbstractNodeBase a:  node.Statements) {
+            this.Visit(a);
+        }
+        emit("BranchEnd:");
         return null;
     }
 

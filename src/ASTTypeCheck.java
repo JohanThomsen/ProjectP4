@@ -13,13 +13,17 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     @Override
     public String Visit(AssignNode node) {
         Symbol temp = Table.retrieveSymbol(node.Target.value);
-        if(temp != null){
-                System.out.println(temp.Name + " Is a legal assignment");
+        if(temp != null){//Checks if the target exists in the symbol table, if it does not the it has nowhere to assign to and is illegal.
+            if(temp.Type == this.Visit(node.Value)){
                 return temp.Name;
+            }
+            else{
+                System.out.println(node.Target.value + " does not match " + node.Value);
+            }
         }else {
             System.out.println(node.Target.value + " Has not been initialized");
         }
-        return null;
+        return "error";
     }
 
     @Override
@@ -85,23 +89,42 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathDivNode node) {
-        return null;
+        System.out.println("Math is here");
+        String temp = this.Visit(node.LeftOperand);
+        if(temp == this.Visit(node.RightOperand))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            if(temp == "float"){
+                return temp;
+            }
+        return "error";
     }
 
     @Override
     public String Visit(MathMultNode node) {
-        return null;
+        System.out.println("Math is here");
+        String temp = this.Visit(node.LeftOperand);
+        if(temp == this.Visit(node.RightOperand))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            if(temp == "float"){
+                return temp;
+            }
+        return "error";
     }
 
     @Override
     public String Visit(MathParenthesisNode node) {
-        return null;
+        System.out.println("Math is here");
+
+        return this.Visit(node.Operand);
     }
 
     @Override
     public String Visit(MathAddNode node) {
         System.out.println("Math is here");
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+        if(temp == this.Visit(node.RightOperand))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            if(temp == "float"){
+                return temp;
+            }
+        return "error";
     }
 
     @Override
@@ -125,7 +148,9 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(IdNode node) {
-        return null;
+        Symbol temp = Table.retrieveSymbol(node.value);
+
+        return temp.Type;//Returns the type to checks in expressions
     }
 
     @Override
@@ -135,7 +160,9 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(InitializationNode node) {
-
+        if(Table.retrieveSymbol(node.Identifier.value) != null){//Checks the symboltable, if the it exists then it returns the value else it returns null.
+            return node.Identifier.value;
+        }
 
         return null;
     }
@@ -152,8 +179,8 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(NumberNode node){
-        return null;
-    }
+        return "float";
+    }//Returns a the string float to check against other strings
 
     @Override
     public String Visit(StringNode node) {
