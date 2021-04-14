@@ -215,6 +215,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(IfNode node) {
+        this.Visit(node.Predicate);
+        emit("ifeq BranchEnd");
+        for (AbstractNodeBase a:  node.Statements) {
+            this.Visit(a);
+        }
+        emit("BranchEnd:");
         return null;
     }
 
