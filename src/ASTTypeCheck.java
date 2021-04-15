@@ -19,7 +19,6 @@ public class ASTTypeCheck extends ASTVisitor<String>{
             }
         }else {
             System.out.println(node.Target.value + " Has not been initialized");
-            Table.printCurrentScope();
         }
         return "error";
     }

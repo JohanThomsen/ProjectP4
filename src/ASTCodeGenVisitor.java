@@ -33,15 +33,20 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(AssignNode node) {
         if (VarTable.containsKey("Number/" + node.Target.value) || VarTable.containsKey("String/" + node.Target.value)){
             if (node.Value instanceof NumberNode){
-                emit("fstore " + ((NumberNode) node.Value).value + "" + getReference("Number/" + node.Target.value));
+                emit("fstore " + ((NumberNode) node.Value).value + " " + getReference("Number/" + node.Target.value));
             } else if (node.Value instanceof IdNode) {
                 if (VarTable.containsKey("Number/" + ((IdNode) node.Value).value)){
-                    emit("fstore " + "fload" + getReference("Number/" + ((IdNode) node.Value).value) + " " + getReference("Number/" + node.Target.value)); //TODO This is probably illegal
+                    emit("fload " +  getReference("Number/" + ((IdNode) node.Value).value));
+                    emit("fstore " + getReference("Number/" + node.Target.value));
                 } else if (VarTable.containsKey("String/" + ((IdNode) node.Value).value)){
-                    emit("astore " + "aload" + getReference("String/" + ((IdNode) node.Value).value) + " " + getReference("String/" + node.Target.value)); //TODO This is probably illegal
+                    emit("aload " +  getReference("String/" + ((IdNode) node.Value).value));
+                    emit("astore " + getReference("String/" + node.Target.value));
                 }
             } else if (node.Value instanceof StringNode){
                 emit("astore " + ((StringNode) node.Value).value + " " + getReference("String/" + node.Target.value));
+            } else if (node.Value instanceof BinaryOperator) {
+                this.Visit(node.Value);
+                emit("fstore " + getReference("Number/" + node.Target.value));
             }
         }
         /* This would allow for initialization in assignment
@@ -85,20 +90,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(BoolEqualNode node) {
+    public String Visit(BoolEqualNode node) { //TODO make comment to explain what outputs to expect
 
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        }else{
-            this.Visit(node.LeftOperand);
-            emit("i2f");
-        }
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else{
-            this.Visit(node.RightOperand);
-            emit("i2f");
-        }
+        BoolLoadNumber(node);
 
         emit("fcmpg");
         //exit.append("ldc");
@@ -106,20 +100,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(BoolGreaterEqualNode node) {
+    public String Visit(BoolGreaterEqualNode node) { //TODO make comment to explain what outputs to expect
 
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        }else{
-            this.Visit(node.LeftOperand);
-            emit("i2f");
-        }
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else{
-            this.Visit(node.RightOperand);
-            emit("i2f");
-        }
+        BoolLoadNumber(node);
 
         emit("fcmpg");
 
@@ -127,20 +110,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(BoolGreaterNode node) {
+    public String Visit(BoolGreaterNode node) { //TODO make comment to explain what outputs to expect
 
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        }else{
-            this.Visit(node.LeftOperand);
-            emit("i2f");
-        }
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else{
-            this.Visit(node.RightOperand);
-            emit("i2f");
-        }
+        BoolLoadNumber(node);
 
         emit("fcmpg");
 
@@ -148,38 +120,16 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(BoolLessEqualNode node) {
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        }else{
-            this.Visit(node.LeftOperand);
-            emit("i2f");
-        }
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else{
-            this.Visit(node.RightOperand);
-            emit("i2f");
-        }
+    public String Visit(BoolLessEqualNode node) { //TODO make comment to explain what outputs to expect
+        BoolLoadNumber(node);
 
         emit("fcmpl");
         return null;
     }
 
     @Override
-    public String Visit(BoolLessNode node) {
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        }else{
-            this.Visit(node.LeftOperand);
-            emit("i2f");
-        }
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else{
-            this.Visit(node.RightOperand);
-            emit("i2f");
-        }
+    public String Visit(BoolLessNode node) { //TODO make comment to explain what outputs to expect
+        BoolLoadNumber(node);
 
         emit("fcmpl");
         return null;
@@ -265,16 +215,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathAddNode node) {
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        }else{
-            this.Visit(node.LeftOperand);
-        }
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else{
-            this.Visit(node.RightOperand);
-        }
+        LoadNumber(node);
 
         emit("fadd");
         //exit.append("fadd");
@@ -284,16 +225,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathDivNode node) {
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        }else{
-            this.Visit(node.LeftOperand);
-        }
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else{
-            this.Visit(node.RightOperand);
-        }
+        LoadNumber(node);
 
         emit("fdiv");
 
@@ -302,16 +234,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathMultNode node) {
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        }else{
-            this.Visit(node.LeftOperand);
-        }
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else{
-            this.Visit(node.RightOperand);
-        }
+        LoadNumber(node);
 
         emit("fmul");
         return null;
@@ -349,4 +272,39 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(SubtractionNode node) {
         return null;
     }//Not important for now
+
+    private void LoadNumber(BinaryOperator node) {
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        } else if (node.LeftOperand instanceof IdNode){
+            emit("fload " +  getReference("Number/" + ((IdNode)node.LeftOperand).value));
+        }
+        else{
+            this.Visit(node.LeftOperand);
+        }
+
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else if (node.LeftOperand instanceof IdNode){
+            emit("fload " +  getReference("Number/" + ((IdNode)node.RightOperand).value));
+        }
+        else{
+            this.Visit(node.RightOperand);
+        }
+    }
+
+    private void BoolLoadNumber(BinaryOperator node){
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else{
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else{
+            this.Visit(node.RightOperand);
+            emit("i2f");
+        }
+    }
 }
