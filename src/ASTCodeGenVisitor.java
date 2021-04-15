@@ -28,10 +28,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         return VarTable.get(target);
     }
 
-    @Override
-    public String Visit(AddNode node) {
-        return null;
-    }//Not Important right now
 
     @Override
     public String Visit(AssignNode node) {
@@ -44,8 +40,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 } else if (VarTable.containsKey("String/" + ((IdNode) node.Value).value)){
                     emit("astore " + "aload" + getReference("String/" + ((IdNode) node.Value).value) + " " + getReference("String/" + node.Target.value)); //TODO This is probably illegal
                 }
-            } else if (node.attributes.Children.get(0) instanceof StringNode){
-                emit("astore " + ((StringNode) node.attributes.Children.get(0)).value + " " + getReference("String/" + node.Target.value));
+            } else if (node.Value instanceof StringNode){
+                emit("astore " + ((StringNode) node.Value).value + " " + getReference("String/" + node.Target.value));
             }
         }
         /* This would allow for initialization in assignment
@@ -239,10 +235,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         return null;
     }
 
-    @Override
-    public String Visit(DivisionNode node) {
-        return null;
-    }
 
     @Override
     public String Visit(IdNode node) {
@@ -342,11 +334,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(MethodDCLNode node) {
         return null;
     }
-
-    @Override
-    public String Visit(MultiplicationNode node) {
-        return null;
-    }//Not important for now
 
     @Override
     public String Visit(NumberNode node) {
