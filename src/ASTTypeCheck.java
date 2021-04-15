@@ -14,6 +14,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
                 return temp.Type;
             }
             else{
+                System.out.println(this.Visit(node.Value));
                 System.out.println(node.Target.value + " does not match " + temp.Type);
             }
         }else {
@@ -35,52 +36,27 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolEqualNode node) {
-        String temp = this.Visit(node.LeftOperand);
-        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
-            {
-                return temp;
-            }
-        return "error";
+        return null;
     }
 
     @Override
     public String Visit(BoolGreaterEqualNode node) {
-        String temp = this.Visit(node.LeftOperand);
-        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
-            {
-                return temp;
-            }
-        return "error";
+        return null;
     }
 
     @Override
     public String Visit(BoolGreaterNode node) {
-        String temp = this.Visit(node.LeftOperand);
-        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
-            {
-                return temp;
-            }
-        return "error";
+        return null;
     }
 
     @Override
     public String Visit(BoolLessEqualNode node) {
-        String temp = this.Visit(node.LeftOperand);
-        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
-            {
-                return temp;
-            }
-        return "error";
+        return null;
     }
 
     @Override
     public String Visit(BoolLessNode node) {
-        String temp = this.Visit(node.LeftOperand);
-        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
-            {
-                return temp;
-            }
-        return "error";
+        return null;
     }
 
     @Override
@@ -95,7 +71,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolParenthesisNode node) {
-        return this.Visit(node.Operand);
+        return null;
     }
 
     @Override
@@ -114,7 +90,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         System.out.println("Math is here");
         String temp = this.Visit(node.LeftOperand);
         if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
-            if(temp.equals("float")){
+            if(temp.equals("number")){
                 return temp;
             }
         return "error";
@@ -125,7 +101,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         System.out.println("Math is here");
         String temp = this.Visit(node.LeftOperand);
         if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
-            if(temp.equals("float")){
+            if(temp.equals("number")){
                 return temp;
             }
         return "error";
@@ -143,7 +119,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         System.out.println("Math is here");
         String temp = this.Visit(node.LeftOperand);
         if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
-            if(temp.equals("float")){
+            if(temp.equals("number")){
                 return temp;
             }
         return "error";
@@ -193,12 +169,12 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(NumberNode node){
-        return "float";
+        return "number";
     }//Returns a the string float to check against other strings
 
     @Override
     public String Visit(StringNode node) {
-        return "String";
+        return "string";
     }
 
     @Override
