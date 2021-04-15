@@ -90,7 +90,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(BoolEqualNode node) { //TODO make comment to explain what outputs to expect
+    public String Visit(BoolEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
 
@@ -100,7 +100,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(BoolGreaterEqualNode node) { //TODO make comment to explain what outputs to expect
+    public String Visit(BoolGreaterEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
 
@@ -110,7 +110,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(BoolGreaterNode node) { //TODO make comment to explain what outputs to expect
+    public String Visit(BoolGreaterNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
 
@@ -120,7 +120,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(BoolLessEqualNode node) { //TODO make comment to explain what outputs to expect
+    public String Visit(BoolLessEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
         BoolLoadNumber(node);
 
         emit("fcmpl");
@@ -128,7 +128,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(BoolLessNode node) { //TODO make comment to explain what outputs to expect
+    public String Visit(BoolLessNode node) { //If greater than returns 1 if equal return 0 if less than return -1
         BoolLoadNumber(node);
 
         emit("fcmpl");
