@@ -1,7 +1,5 @@
 import java.io.PrintStream;
-import java.io.IOException;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+
 
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
@@ -21,10 +19,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         ps.println(tab + s);
     }
 
-    @Override
-    public String Visit(AddNode node) {
-        return null;
-    }//Not Important right now
 
     @Override
     public String Visit(AssignNode node) {
@@ -208,11 +202,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(DivisionNode node) {
-        return null;
-    }
-
-    @Override
     public String Visit(IdNode node) {
         return null;
     }
@@ -306,10 +295,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         return null;
     }
 
-    @Override
-    public String Visit(MultiplicationNode node) {
-        return null;
-    }//Not important for now
 
     @Override
     public String Visit(NumberNode node) {

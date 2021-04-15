@@ -1,5 +1,4 @@
 public abstract class ASTVisitor<T> {
-    public abstract T Visit(AddNode node);
     public abstract T Visit(AssignNode node);
     public abstract T Visit(BoolAndNode node);
     public abstract T Visit(BoolContainNode node);
@@ -14,7 +13,6 @@ public abstract class ASTVisitor<T> {
     public abstract T Visit(ClassDCLNode node);
     public abstract T Visit(ClassNode node);
     public abstract T Visit(CtrlStrucNode node);
-    public abstract T Visit(DivisionNode node);
     public abstract T Visit(IdNode node);
     public abstract T Visit(IfNode node);
     public abstract T Visit(InitializationNode node);
@@ -24,7 +22,6 @@ public abstract class ASTVisitor<T> {
     public abstract T Visit(MathParenthesisNode node);
     public abstract T Visit(MethodCallNode node);
     public abstract T Visit(MethodDCLNode node);
-    public abstract T Visit(MultiplicationNode node);
     public abstract T Visit(NumberNode node);
     public abstract T Visit(StringNode node);
     public abstract T Visit(SubtractionNode node);
@@ -32,9 +29,8 @@ public abstract class ASTVisitor<T> {
 
     public T Visit(AbstractNodeBase node){//Remember to expand this when a new node is made.
 
-        if(node instanceof AddNode){return Visit((AddNode) node);}
        //Remember to downcast, otherwise an overflow will happen.
-        else if(node instanceof AssignNode){return Visit((AssignNode) node);}
+        if(node instanceof AssignNode){return Visit((AssignNode) node);}
         else if(node instanceof BoolAndNode){return Visit((BoolAndNode) node);}
         else if(node instanceof BoolContainNode){return Visit((BoolContainNode) node);}
         else if(node instanceof BoolEqualNode){return Visit((BoolEqualNode) node);}
@@ -48,7 +44,6 @@ public abstract class ASTVisitor<T> {
         else if(node instanceof ClassDCLNode){return Visit((ClassDCLNode) node);}
         else if(node instanceof ClassNode){return Visit((ClassNode) node);}
         else if(node instanceof CtrlStrucNode){return Visit((CtrlStrucNode) node);}
-        else if(node instanceof DivisionNode){return Visit((DivisionNode) node);}
         else if(node instanceof IdNode){return Visit((IdNode) node);}
         else if(node instanceof IfNode){return Visit((IfNode) node);}
         else if(node instanceof InitializationNode){return Visit((InitializationNode) node);}
@@ -58,7 +53,6 @@ public abstract class ASTVisitor<T> {
         else if(node instanceof MathParenthesisNode){return Visit((MathParenthesisNode) node);}
         else if(node instanceof MethodCallNode){return Visit((MethodCallNode) node);}
         else if(node instanceof MethodDCLNode){return Visit((MethodDCLNode) node);}
-        else if(node instanceof MultiplicationNode){ return Visit((MultiplicationNode) node);}
         else if(node instanceof NumberNode){ return Visit((NumberNode) node);}
         else if(node instanceof StringNode){ return Visit((StringNode)node);}
         else if(node instanceof SubtractionNode){return Visit((SubtractionNode) node);}
