@@ -14,7 +14,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
                 return temp.Type;
             }
             else{
-                System.out.println(node.Target.value + " does not match " + node.Value);
+                System.out.println(node.Target.value + " does not match " + temp.Type);
             }
         }else {
             System.out.println(node.Target.value + " Has not been initialized");
@@ -35,27 +35,52 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolEqualNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            {
+                return temp;
+            }
+        return "error";
     }
 
     @Override
     public String Visit(BoolGreaterEqualNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            {
+                return temp;
+            }
+        return "error";
     }
 
     @Override
     public String Visit(BoolGreaterNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            {
+                return temp;
+            }
+        return "error";
     }
 
     @Override
     public String Visit(BoolLessEqualNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            {
+                return temp;
+            }
+        return "error";
     }
 
     @Override
     public String Visit(BoolLessNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            {
+                return temp;
+            }
+        return "error";
     }
 
     @Override
@@ -70,7 +95,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolParenthesisNode node) {
-        return null;
+        return this.Visit(node.Operand);
     }
 
     @Override
