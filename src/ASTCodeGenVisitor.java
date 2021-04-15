@@ -2,12 +2,15 @@ import java.io.PrintStream;
 import java.io.IOException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Hashtable;
 
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     private PrintStream ps;
     /*public PrintWriter exit = new PrintWriter("out.txt");*/
     int level = 0;
+    private Hashtable<String, Integer> VarTable = new Hashtable<>();
+    Incrementer incrementer = new Incrementer();
     private void emit(String s) {
         PrintStream ps = System.out;
         out(ps, s);
@@ -21,6 +24,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         ps.println(tab + s);
     }
 
+    private int getReference(String target) {
+        return VarTable.get(target);
+    }
+
     @Override
     public String Visit(AddNode node) {
         return null;
@@ -28,6 +35,31 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(AssignNode node) {
+        if (VarTable.containsKey("Number/" + node.Target.value) || VarTable.containsKey("String/" + node.Target.value)){
+            if (node.Value instanceof NumberNode){
+                emit("fstore " + ((NumberNode) node.Value).value + "" + getReference("Number/" + node.Target.value));
+            } else if (node.Value instanceof IdNode) {
+                if (VarTable.containsKey("Number/" + ((IdNode) node.Value).value)){
+                    emit("fstore " + "fload" + getReference("Number/" + ((IdNode) node.Value).value) + " " + getReference("Number/" + node.Target.value)); //TODO This is probably illegal
+                } else if (VarTable.containsKey("String/" + ((IdNode) node.Value).value)){
+                    emit("astore " + "aload" + getReference("String/" + ((IdNode) node.Value).value) + " " + getReference("String/" + node.Target.value)); //TODO This is probably illegal
+                }
+            } else if (node.attributes.Children.get(0) instanceof StringNode){
+                emit("astore " + ((StringNode) node.attributes.Children.get(0)).value + " " + getReference("String/" + node.Target.value));
+            }
+        }
+        /* This would allow for initialization in assignment
+        else {
+            //Everything under here is essentially an Initialization
+            int nextID = incrementer.GetNextID();
+            if (node.Value instanceof NumberNode){
+                VarTable.put("Number/" + node.Target.value, nextID);
+                emit("fstore " + ((NumberNode) node.Value).value + nextID);
+            } else if (node.Value instanceof StringNode){
+                VarTable.put("String/" + node.Target.value, nextID);
+                emit("astore " + ((StringNode) node.Value).value + nextID);
+            }
+        }*/
         return null;
     }
 
@@ -230,7 +262,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(InitializationNode node) {
-
+        int nextID = incrementer.GetNextID();
+        if (node.Type.value.equals("number")){
+            VarTable.put("Number/" + node.Identifier.value, nextID);
+        } else if (node.Type.value.equals("string")){
+            VarTable.put("String/" + node.Identifier.value, nextID);
+        }
         return null;
     }
 
