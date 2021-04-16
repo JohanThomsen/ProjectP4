@@ -33,7 +33,14 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(AssignNode node) {
         if (VarTable.containsKey("Number/" + node.Target.value) || VarTable.containsKey("String/" + node.Target.value)){
             if (node.Value instanceof NumberNode){
-                emit("fstore " + ((NumberNode) node.Value).value + " " + getReference("Number/" + node.Target.value));
+                emit("ldc " + ((NumberNode) node.Value).value);
+                emit("fstore " + getReference("Number/" + node.Target.value));
+            } else if (node.Value instanceof StringNode){
+                emit("ldc " + ((StringNode) node.Value).value);
+                emit("astore " + getReference("String/" + node.Target.value));
+            } else if (node.Value instanceof BinaryOperator) {
+                this.Visit(node.Value);
+                emit("fstore " + getReference("Number/" + node.Target.value));
             } else if (node.Value instanceof IdNode) {
                 if (VarTable.containsKey("Number/" + ((IdNode) node.Value).value)){
                     emit("fload " +  getReference("Number/" + ((IdNode) node.Value).value));
@@ -42,11 +49,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     emit("aload " +  getReference("String/" + ((IdNode) node.Value).value));
                     emit("astore " + getReference("String/" + node.Target.value));
                 }
-            } else if (node.Value instanceof StringNode){
-                emit("astore " + ((StringNode) node.Value).value + " " + getReference("String/" + node.Target.value));
-            } else if (node.Value instanceof BinaryOperator) {
-                this.Visit(node.Value);
-                emit("fstore " + getReference("Number/" + node.Target.value));
             }
         }
         /* This would allow for initialization in assignment
@@ -67,18 +69,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     @Override
     public String Visit(BoolAndNode node) {
 
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        }else{
-            this.Visit(node.LeftOperand);
-            emit("i2f");
-        }
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else{
-            this.Visit(node.RightOperand);
-            emit("i2f");
-        }
+        BoolLoadNumber(node);
 
         emit("fcmpg");
         return null;
@@ -146,18 +137,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolOrNode node) {
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        }else{
-            this.Visit(node.LeftOperand);
-            emit("i2f");
-        }
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else{
-            this.Visit(node.RightOperand);
-            emit("i2f");
-        }
+        BoolLoadNumber(node);
 
         return null;
     }
