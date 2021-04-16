@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Hashtable;
 
@@ -5,11 +6,19 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     private PrintStream ps;
 
+    {
+        try {
+            ps = new PrintStream("out.j");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     int level = 0;
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
     Incrementer incrementer = new Incrementer();
     public void emit(String s) {//TODO Change this to print to a .j file.
-        PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
+        //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
         out(ps, s);
     }
     public void out(String s) {
@@ -303,5 +312,21 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             this.Visit(node.RightOperand);
             emit("i2f");
         }
+    }
+
+    public void genHeader(){
+        emit(".class public examples/out");
+        emit(".super java/lang/Object");
+        emit(".method public <init>()V");
+        emit("aload_0");
+        emit("invokenonvirtual java/lang/Object/<init>()V");
+        emit("return");
+        emit(".end method");
+        emit(".method public static main([Ljava/lang/String;)V");
+    }
+
+    public void genEnd(){
+        emit("return");
+        emit(".end method");
     }
 }

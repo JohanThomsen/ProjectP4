@@ -15,7 +15,7 @@ public class Main {
 	        MyVisitor visitor = new MyVisitor();
 	        SymbolTable Table = new SymbolTable();
 	        TableBuilder Builder = new TableBuilder();
-	        String source = "gentest";
+	        String source = "mathtest";
 	        CharStream stream = fromFileName(source);
 	        gLexer lexer = new gLexer(stream);
 	        CommonTokenStream token = new CommonTokenStream(lexer);
@@ -28,24 +28,26 @@ public class Main {
 
 
             ASTCodeGenVisitor gen = new ASTCodeGenVisitor();
-            gen.emit(".class public examples/Count\n" +
-                    ".super java/lang/Object\n" +
-                    "\n" +
-                    ".method public <init>()V\n" +
-                    "   aload_0\n" +
-                    "   invokenonvirtual java/lang/Object/<init>()V\n" +
-                    "   return\n" +
-                    ".end method");
-            gen.emit(".method public static main([Ljava/lang/String;)V");
+
+            gen.genHeader();
+            gen.emit(".limit locals 10\n" +
+                    ".limit stack 10");
             if(node.Children.size() > 0){
                 for(int i = 0; i < node.Children.size(); i++){
                     gen.Visit(node.Children.get(i));
                 }
             }else{gen.Visit(node);}
-            gen.emit("return");
-            gen.emit(".end method");
+
+            gen.emit("getstatic java/lang/System/out Ljava/io/PrintStream;\n" +
+                    "astore_1");
+            gen.emit("invokestatic java/lang/String/valueOf(F)Ljava/lang/String;\n" +
+                    "astore_3\n" +
+                    "aload_1\n" +
+                    "aload_3\n" +
+                    "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
 
 
+            gen.genEnd();
         }
 	    catch(IOException e){
             e.printStackTrace();
