@@ -65,10 +65,29 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolAndNode node) {
+        //First check the left operand, if false, jump till end
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else {
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+        emit("ifeq falselabel");
+        //Then check if the second operand is true
+        if(node.RightOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.RightOperand).value);
+        }else {
+            this.Visit(node.RightOperand);
+            emit("i2f");
+        }
+        emit("ifeq falselabel");//If right operand is false, jump til end
 
-        BoolLoadNumber(node);
+        emit("iconst_1");
+        emit("goto endlabel");
 
-        emit("fcmpg");
+        emit("falselabel:");
+        emit("iconst_0");
+        emit("endlabel:");
         return null;
     }
 
@@ -139,7 +158,29 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolOrNode node) {
-        BoolLoadNumber(node);
+        //First check the left operand, if true, jump till end and push true
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else {
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+        emit("ifne truelabel");
+        //Then check if the second operand is true
+        if(node.RightOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.RightOperand).value);
+        }else {
+            this.Visit(node.RightOperand);
+            emit("i2f");
+        }
+        emit("ifne truelabel");//If right operand is true, jump til end and push true
+
+        emit("iconst_0"); //If both are false, push false and end
+        emit("goto endlabel");
+
+        emit("truelabel:"); //If even one is true, push true
+        emit("iconst_1");
+        emit("endlabel:");
 
         return null;
     }
@@ -175,6 +216,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(IfNode node) {
+
         this.Visit(node.Predicate);
         emit("ifeq BranchEnd");
         for (AbstractNodeBase a:  node.Statements) {
