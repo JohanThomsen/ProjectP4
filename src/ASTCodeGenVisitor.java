@@ -127,7 +127,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(BoolNotNode node) {
 
         emit("ldc " + ((NumberNode)node.Operand).value);
-        emit("fneg");
+        emit("ifeq Truelabel");
+        emit("iconst_0");
+        emit("goto stoplabel");
+        emit("Truelabel:");
+        emit("iconst_1");
+        emit("stoplabel:");
 
         return null;
     }
