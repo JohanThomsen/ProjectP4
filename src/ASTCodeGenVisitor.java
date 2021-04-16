@@ -100,9 +100,13 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(BoolEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
-
-        emit("fcmpg");
-
+        emit("fcmpl");
+        emit("ifeq truelabel");
+        emit("iconst_0");
+        emit("goto endlabel");
+        emit("truelabel:");
+        emit("iconst_1");
+        emit("endlabel:");
         return null;
     }
 
@@ -110,9 +114,13 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(BoolGreaterEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
-
-        emit("fcmpg");
-
+        emit("fcmpl");
+        emit("ifge truelabel");
+        emit("iconst_0");
+        emit("goto endlabel");
+        emit("truelabel:");
+        emit("iconst_1");
+        emit("endlabel:");
         return null;
     }
 
@@ -120,25 +128,41 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(BoolGreaterNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
-
-        emit("fcmpg");
-
+        emit("fcmpl");
+        emit("ifgt truelabel");
+        emit("iconst_0");
+        emit("goto endlabel");
+        emit("truelabel:");
+        emit("iconst_1");
+        emit("endlabel:");
         return null;
     }
 
     @Override
     public String Visit(BoolLessEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
-        BoolLoadNumber(node);
 
+        BoolLoadNumber(node);
         emit("fcmpl");
+        emit("ifle truelabel");
+        emit("iconst_0");
+        emit("goto endlabel");
+        emit("truelabel:");
+        emit("iconst_1");
+        emit("endlabel:");
         return null;
     }
 
     @Override
     public String Visit(BoolLessNode node) { //If greater than returns 1 if equal return 0 if less than return -1
-        BoolLoadNumber(node);
 
+        BoolLoadNumber(node);
         emit("fcmpl");
+        emit("iflt truelabel");
+        emit("iconst_0");
+        emit("goto endlabel");
+        emit("truelabel:");
+        emit("iconst_1");
+        emit("endlabel:");
         return null;
     }
 
