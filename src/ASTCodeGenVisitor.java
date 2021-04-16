@@ -1,18 +1,15 @@
 import java.io.PrintStream;
-import java.io.IOException;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.Hashtable;
 
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     private PrintStream ps;
-    /*public PrintWriter exit = new PrintWriter("out.txt");*/
+
     int level = 0;
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
     Incrementer incrementer = new Incrementer();
-    private void emit(String s) {
-        PrintStream ps = System.out;
+    public void emit(String s) {//TODO Change this to print to a .j file.
+        PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
         out(ps, s);
     }
     public void out(String s) {
@@ -43,7 +40,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 emit("fstore " + getReference("Number/" + node.Target.value));
             } else if (node.Value instanceof IdNode) {
                 if (VarTable.containsKey("Number/" + ((IdNode) node.Value).value)){
-                    emit("fload " +  getReference("Number/" + ((IdNode) node.Value).value));
+                    emit("fload " +  getReference("Number/" + ((IdNode) node.Value).value));//TODO use ldc to put value onto the stack to be stored
                     emit("fstore " + getReference("Number/" + node.Target.value));
                 } else if (VarTable.containsKey("String/" + ((IdNode) node.Value).value)){
                     emit("aload " +  getReference("String/" + ((IdNode) node.Value).value));
@@ -86,7 +83,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         BoolLoadNumber(node);
 
         emit("fcmpg");
-        //exit.append("ldc");
+
         return null;
     }
 

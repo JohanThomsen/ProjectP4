@@ -28,13 +28,22 @@ public class Main {
 
 
             ASTCodeGenVisitor gen = new ASTCodeGenVisitor();
+            gen.emit(".class public examples/Count\n" +
+                    ".super java/lang/Object\n" +
+                    "\n" +
+                    ".method public <init>()V\n" +
+                    "   aload_0\n" +
+                    "   invokenonvirtual java/lang/Object/<init>()V\n" +
+                    "   return\n" +
+                    ".end method");
+            gen.emit(".method public static main([Ljava/lang/String;)V");
             if(node.Children.size() > 0){
                 for(int i = 0; i < node.Children.size(); i++){
                     gen.Visit(node.Children.get(i));
                 }
             }else{gen.Visit(node);}
-
-
+            gen.emit("return");
+            gen.emit(".end method");
 
 
         }
