@@ -25,7 +25,13 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolAndNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand)) && temp.equals("bool")){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
@@ -35,48 +41,89 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolEqualNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand))){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolGreaterEqualNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand))){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolGreaterNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand))){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolLessEqualNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand))){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolLessNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand))){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolNotNode node) {
-        return null;
+
+        return this.Visit(node.Operand);//TODO make sure this is ok
     }
 
     @Override
     public String Visit(BoolOrNode node) {
-        return null;
+
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand)) && temp.equals("bool")){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolParenthesisNode node) {
-        return null;
+        return this.Visit(node.Operand);
     }
 
     @Override
     public String Visit(ClassDCLNode node) {
-
-        return null;
+        Symbol temp = Table.retrieveSymbol(node.ID.value);
+        if(temp == null){
+            return "fine";
+        }
+        return "duplicate";
     }
 
     @Override

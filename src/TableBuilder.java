@@ -27,8 +27,13 @@ public class TableBuilder {
                 }
 
             } else if (AST.Children.get(i) instanceof ClassDCLNode) {
+                if(check.Visit(AST.Children.get(i)).equals("fine")){
+                    Target.enterSymbol(((ClassDCLNode) AST.Children.get(i)).ID.value, "class");
+                    check.Table = Target;
+                }else{
+                    System.out.println("Class " + ((ClassDCLNode) AST.Children.get(i)).ID.value + " has already been declared");
+                }
 
-                Target.enterSymbol(((ClassDCLNode) AST.Children.get(i)).ID.value, "class");
 
             } else {
                 check.Table = Target;
