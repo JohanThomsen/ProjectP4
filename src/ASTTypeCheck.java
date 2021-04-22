@@ -5,26 +5,33 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         this.Table = tablet;
     }
 
-    @Override
-    public String Visit(AddNode node) {
-        return null;
-    }
 
     @Override
     public String Visit(AssignNode node) {
         Symbol temp = Table.retrieveSymbol(node.Target.value);
-        if(temp != null){
-                System.out.println(temp.Name + " Is a legal assignment");
-                return temp.Name;
+        if(temp != null){//Checks if the target exists in the symbol table, if it does not the it has nowhere to assign to and is illegal.
+            if(temp.Type.equals(this.Visit(node.Value))){
+                return temp.Type;
+            }
+            else{
+                System.out.println(this.Visit(node.Value));
+                System.out.println(node.Target.value + " does not match " + temp.Type);
+            }
         }else {
             System.out.println(node.Target.value + " Has not been initialized");
         }
-        return null;
+        return "error";
     }
 
     @Override
     public String Visit(BoolAndNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand)) && temp.equals("bool")){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
@@ -34,48 +41,89 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolEqualNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand))){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolGreaterEqualNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand))){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolGreaterNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand))){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolLessEqualNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand))){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolLessNode node) {
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand))){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolNotNode node) {
-        return null;
+
+        return this.Visit(node.Operand);//TODO make sure this is ok
     }
 
     @Override
     public String Visit(BoolOrNode node) {
-        return null;
+
+        String temp = this.Visit(node.LeftOperand);
+
+        if(temp.equals(this.Visit(node.RightOperand)) && temp.equals("bool")){
+            return "bool";
+        }
+
+        return "error";
     }
 
     @Override
     public String Visit(BoolParenthesisNode node) {
-        return null;
+        return this.Visit(node.Operand);
     }
 
     @Override
     public String Visit(ClassDCLNode node) {
-
-        return null;
+        Symbol temp = Table.retrieveSymbol(node.ID.value);
+        if(temp == null){
+            return "fine";
+        }
+        return "duplicate";
     }
 
     @Override
@@ -85,23 +133,42 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathDivNode node) {
-        return null;
+        System.out.println("Math is here");
+        String temp = this.Visit(node.LeftOperand);
+        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            if(temp.equals("number")){
+                return temp;
+            }
+        return "error";
     }
 
     @Override
     public String Visit(MathMultNode node) {
-        return null;
+        System.out.println("Math is here");
+        String temp = this.Visit(node.LeftOperand);
+        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            if(temp.equals("number")){
+                return temp;
+            }
+        return "error";
     }
 
     @Override
     public String Visit(MathParenthesisNode node) {
-        return null;
+        System.out.println("Math is here");
+
+        return this.Visit(node.Operand);
     }
 
     @Override
     public String Visit(MathAddNode node) {
         System.out.println("Math is here");
-        return null;
+        String temp = this.Visit(node.LeftOperand);
+        if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
+            if(temp.equals("number")){
+                return temp;
+            }
+        return "error";
     }
 
     @Override
@@ -118,14 +185,12 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         return null;
     }
 
-    @Override
-    public String Visit(MultiplicationNode node) {
-        return null;
-    }
 
     @Override
     public String Visit(IdNode node) {
-        return null;
+        Symbol temp = Table.retrieveSymbol(node.value);
+
+        return temp.Type;//Returns the type to checks in expressions
     }
 
     @Override
@@ -140,9 +205,11 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(InitializationNode node) {
+        if(Table.retrieveSymbol(node.Type.value) != null){//Checks the symboltable, if the id has been declared
+            return "exists";
+        }
 
-
-        return null;
+        return "hej";
     }
 
     @Override
@@ -150,19 +217,15 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         return null;
     }
 
-    @Override
-    public String Visit(DivisionNode node) {
-        return null;
-    }
 
     @Override
     public String Visit(NumberNode node){
-        return null;
-    }
+        return "number";
+    }//Returns a the string float to check against other strings
 
     @Override
     public String Visit(StringNode node) {
-        return null;
+        return "string";
     }
 
     @Override

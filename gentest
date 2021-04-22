@@ -1,1 +1,10 @@
-(3+2)*2.
+There is a number called NumOne.
+NumOne is 5.
+There is a number called NumTwo.
+NumTwo is 12.
+There is a number called NumTwoOne.
+NumTwoOne is NumTwo.
+There is a string called Hello.
+Hello is "Hello".
+There is a number called NumThree.
+NumThree is NumOne * NumTwo.
