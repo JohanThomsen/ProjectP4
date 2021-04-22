@@ -1,43 +1,48 @@
 grammar g;
 
-program: expressions '.' EOF;
+program: statements EOF;
 
-expressions: expression '.' expressions
-| expression;
+statements: statement statements
+| statement
+;
+
+statement: expression
+| classdcl 'then continue'
+| methoddcl 'then continue'
+| assign '.'
+| init '.'
+;
 
 expression: Id
-| assign
-| classdcl
-//| methoddcl
-//| methodcall
-| ctrlstruc
-| init
-| math
-| bool;
+| methodcall '.'
+| math '.'
+| bool
+| ctrlstruc 'then continue'
+;
 
-ctrlstruc: 'if' expression ':' expressions ';' #ctrlif;
-//| while
-//| for
+ctrlstruc: 'if' expression 'then do' statements  #ctrlif
+| 'as long as' expression 'is true, do' statements #ctrlwhile
+| 'repeat' Id 'from' math 'to' math statements #ctrlfor
 //| switch
+;
 
-classdcl: 'There can exist a'('n'?) Id ':' expressions;
+classdcl: 'There can exist a'('n'?) Id 'for which:' statements ;
 
-//methoddcl:  'can' Id ':' expressions
-//| Id 'can' Id 'with' expressions ':' expressions;
+methoddcl:  Id 'does' statements
+| Id 'with' Id Id ('and' Id Id)* 'does' statements ;
 
 assign: Id ('has'|'is') ('an'|'a')? (Id | Number | math) //Make so its needs at least one of these, to avoid "Id expression" assignments
 | Id ('has'|'is') ('an'|'a')? attributes;
 
-init: 'There is a'('n'?) Id
+init:  'There is a'('n'?) Id
 | 'There is a'('n'?) Id 'called' Id
 | Id 'has' 'a'('n'?) Id 'called' Id
 ;
-//| 'upon action' methodcall;
 
 math: '(' math ')'          #mathParenthesis
-| math mult='*' math        #mathMult
-| math div='/' math         #mathDiv
-| math add=('+' | '-') math #mathAdd
+| math '*' math        #mathMult
+| math '/' math         #mathDiv
+| math ('+' | '-') math         #mathAdd
 | Id                        #MathId
 | Number                    #MathNumber
 ;
@@ -54,23 +59,20 @@ bool: '(' bool ')'                   #boolParanthesis
 | 'not' bool                         #boolNot
 | Id                                 #BoolId
 | Number                             #BoolNumber
+| math                               #boolMath
 ;
-
 
 attributes: String
 | String 'and' attributes;
 
-//methodcall: 'Do' Id
-//| 'Do' Id 'with' expressions; //TODO Fix to just call
+methodcall: 'do' Id
+| 'do' Id 'with' Id(',' Id)*;
 
-Id: [a-zA-Z]+;
 
-//Type: ([a-zA-Z]+);
-
-//Indent: '    ';
+Id: [a-z_A-Z]+;
 
 String: '"' [ a-zA-Z0-9]* '"';
 
 Number: [0-9]+ ('.' [0-9]+)?;
 
-WS: (' '| '\t' | '\n' | '\r\n' )+ -> channel(HIDDEN);
+WS: [ \t\r\n]+ -> channel(HIDDEN);

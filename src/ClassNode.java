@@ -1,4 +1,6 @@
+import java.util.ArrayList;
+
 public class ClassNode extends AbstractNodeBase {
     IdNode Id;
-    AbstractNodeBase Expression;
+    ArrayList<AbstractNodeBase> Statements;
 }

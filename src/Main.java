@@ -15,7 +15,7 @@ public class Main {
 	        MyVisitor visitor = new MyVisitor();
 	        SymbolTable Table = new SymbolTable();
 	        TableBuilder Builder = new TableBuilder();
-	        String source = "gentest";
+	        String source = "test.txt";
 	        CharStream stream = fromFileName(source);
 	        gLexer lexer = new gLexer(stream);
 	        CommonTokenStream token = new CommonTokenStream(lexer);

@@ -1,10 +1,15 @@
-public class MethodCallNode extends AbstractNodeBase{
-    // TODO: 22-03-2021 Fill this with stuff
-    IdNode Left;
-    IdNode Right;
+import java.util.ArrayList;
 
-    public MethodCallNode(IdNode left, IdNode right){
-        this.Left = left;
-        this.Right = right;
+public class MethodCallNode extends AbstractNodeBase{
+    IdNode Identifier;
+    ArrayList<IdNode> Parameters;
+
+    public MethodCallNode(IdNode Identifier){
+        this.Identifier = Identifier;
+    }
+
+    public MethodCallNode(IdNode Identifier, ArrayList<IdNode> Parameters){
+        this.Identifier = Identifier;
+        this.Parameters = Parameters;
     }
 }

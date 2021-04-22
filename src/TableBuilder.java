@@ -4,9 +4,9 @@ public class TableBuilder {
         ASTTypeCheck check = new ASTTypeCheck(Target);
         for (int i = 0; i < AST.Children.size(); i++) {
 
-            if (AST.Children.get(i) instanceof MethodDCLNode) {
+            if (AST.Children.get(i) instanceof MethodDeclerationNode) {
 
-                Target.enterSymbol(((MethodDCLNode) AST.Children.get(i)).ID.value, "method");
+                Target.enterSymbol(((MethodDeclerationNode) AST.Children.get(i)).Identifier.value, "method");
                 check.Table = Target;
 
             } else if (AST.Children.get(i) instanceof InitializationNode) {
@@ -19,7 +19,7 @@ public class TableBuilder {
 
             } else if (AST.Children.get(i) instanceof ClassDCLNode) {
 
-                Target.enterSymbol(((ClassDCLNode) AST.Children.get(i)).ID.value, "class");
+                Target.enterSymbol(((ClassDCLNode) AST.Children.get(i)).Identifier.value, "class");
                 check.Table = Target;
 
             } else {

@@ -1,4 +1,6 @@
+import java.util.ArrayList;
+
 public class ClassDCLNode extends AbstractNodeBase {
-    IdNode ID;
-    AbstractNodeBase Fields;
+    IdNode Identifier;
+    ArrayList<AbstractNodeBase> Statements;
 }

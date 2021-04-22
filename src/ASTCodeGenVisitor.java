@@ -1,6 +1,4 @@
 import java.io.PrintStream;
-import java.io.IOException;
-import java.io.FileWriter;
 
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
@@ -108,6 +106,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(IfNode node) {
         return null;
     }
+    public String Visit(WhileNode node) {
+        return null;
+    }
 
     @Override
     public String Visit(InitializationNode node) {
@@ -182,7 +183,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(MethodDCLNode node) {
+    public String Visit(MethodDeclerationNode node) {
         return null;
     }
 

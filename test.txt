@@ -1,17 +1,33 @@
+There can exist a Number for which:
+    Number is 0.
+then continue
 
-There is a number called Malthe.
+There is a Number called Malthe.
     Malthe is 2.
+
 There is a VisualStudioCodeAddonMaker called Thor.
     Thor is "Great".
     Thor + Malthe.
     Thor has a Malthe.
-if not (Thor contains Malthe and Thor contains Great):
+
+if not (Thor contains Malthe and Thor contains Great) then do
     Thor is Malthe.
     Thor is Me.
-    Thor is Same;.
-There can exist a King:
+    Thor is Same.
+then continue
+
+There can exist a King for which:
     King has a Kong.
     King is "Big dumb".
     King has a Number called Brain.
-(1 + 2) / (3 - 4 * 5).
+    Shoot with Gun gun does
+        Player is dead.
+    then continue
+then continue
 
+as long as not King contains Brain is true, do
+    do Shoot with golden_deagle.
+    King is dead.
+then continue
+
+(1 + 2) / (3 - 4 * 5).

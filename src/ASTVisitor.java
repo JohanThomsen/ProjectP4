@@ -23,11 +23,12 @@ public abstract class ASTVisitor<T> {
     public abstract T Visit(MathMultNode node);
     public abstract T Visit(MathParenthesisNode node);
     public abstract T Visit(MethodCallNode node);
-    public abstract T Visit(MethodDCLNode node);
+    public abstract T Visit(MethodDeclerationNode node);
     public abstract T Visit(MultiplicationNode node);
     public abstract T Visit(NumberNode node);
     public abstract T Visit(StringNode node);
     public abstract T Visit(SubtractionNode node);
+    public abstract T Visit(WhileNode node);
     /*public abstract T Visit(node);For Copying, so that it is easier to expand.*/
 
     public T Visit(AbstractNodeBase node){//Remember to expand this when a new node is made.
@@ -56,11 +57,12 @@ public abstract class ASTVisitor<T> {
         else if(node instanceof MathMultNode){return Visit((MathMultNode) node);}
         else if(node instanceof MathParenthesisNode){return Visit((MathParenthesisNode) node);}
         else if(node instanceof MethodCallNode){return Visit((MethodCallNode) node);}
-        else if(node instanceof MethodDCLNode){return Visit((MethodDCLNode) node);}
+        else if(node instanceof MethodDeclerationNode){return Visit((MethodDeclerationNode) node);}
         else if(node instanceof MultiplicationNode){return Visit((MultiplicationNode) node);}
         else if(node instanceof NumberNode){return Visit((NumberNode) node);}
         else if(node instanceof StringNode){return Visit((StringNode)node);}
         else if(node instanceof SubtractionNode){return Visit((SubtractionNode) node);}
+        else if(node instanceof WhileNode){return Visit((WhileNode) node);}
         /*else if(node instanceof ){return Visit(()node);} For copying*/
         else if(node != null){
             return Visit(node.Children.get(0));

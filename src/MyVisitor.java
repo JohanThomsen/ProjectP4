@@ -1,5 +1,6 @@
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
@@ -18,16 +19,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
         node = AbstractRemoval(node);
 
-        indentation--;
-        return node;
-    }
-
-    @Override public AbstractNodeBase visitExpressions(gParser.ExpressionsContext ctx) {
-        printTabs(indentation);
-        System.out.println("Expressions");
-        indentation++;
-
-        AbstractNodeBase node = visitChildren(ctx);
         indentation--;
         return node;
     }
@@ -63,9 +54,9 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         printTabs(indentation);
         System.out.println("Classdcl");
         indentation++;
-        ClassNode Class = new ClassNode();
-        Class.Id = new IdNode(ctx.Id().toString());
-        Class.Expression =  AbstractRemoval(visitChildren(ctx.expressions()));
+        ClassDCLNode Class = new ClassDCLNode();
+        Class.Identifier = new IdNode(ctx.Id().toString());
+        Class.Statements =  AbstractRemoval(visitChildren(ctx.statements())).Children;
         indentation--;
         return Class;
     }
@@ -75,11 +66,16 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         System.out.println("Init");
         indentation++;
         InitializationNode node = new InitializationNode();
-        if(ctx.Id(0) != null){
-            node.Type = new IdNode(ctx.Id(0).toString());
+        if(ctx.Id(2) != null){
+            node.Identifier = new IdNode(ctx.Id(0).toString());
+            node.Type = new IdNode(ctx.Id(1).toString());
+        } else {
+            if(ctx.Id(0) != null){
+                node.Type = new IdNode(ctx.Id(0).toString());
 
-            if(ctx.Id(1) != null){
-                node.Identifier = new IdNode(ctx.Id(1).toString());
+                if(ctx.Id(1) != null){
+                    node.Identifier = new IdNode(ctx.Id(1).toString());
+                }
             }
         }
 
@@ -93,7 +89,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         System.out.println("Assign");
         indentation++;
         AssignNode node = new AssignNode();
-        node.Target = new IdNode(ctx.Id().toString());
+        node.Target = new IdNode(ctx.Id(0).toString());
         if(ctx.math() != null || ctx.Id(1) != null || ctx.Number() != null){
             node.Value = visitChildren(ctx).Children.get(1);
         }else{
@@ -201,6 +197,67 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     @Override
     public AbstractNodeBase visitBoolNot(gParser.BoolNotContext ctx) {
         return new BoolNotNode(visitChildren(ctx).Children.get(0));
+    }
+
+    @Override
+    public AbstractNodeBase visitStatements(gParser.StatementsContext ctx) {
+        AbstractNodeBase node = visitChildren(ctx);
+        return node;
+    }
+
+    @Override
+    public AbstractNodeBase visitStatement(gParser.StatementContext ctx) {
+        AbstractNodeBase node = visitChildren(ctx);
+        return node;
+    }
+
+    @Override
+    public AbstractNodeBase visitCtrlwhile(gParser.CtrlwhileContext ctx) {
+        WhileNode node = new WhileNode(reduce(visitChildren(ctx.expression())), visitChildren(ctx.statements()).Children);
+        return node;
+    }
+
+    @Override
+    public AbstractNodeBase visitCtrlfor(gParser.CtrlforContext ctx) {
+        return super.visitCtrlfor(ctx);
+    }
+
+    @Override
+    public AbstractNodeBase visitMethoddcl(gParser.MethoddclContext ctx) {
+        MethodDeclerationNode node;
+        switch (ctx.Id().size()) {
+            case 1:
+                node = new MethodDeclerationNode(new IdNode(ctx.Id(0).toString()), visitChildren(ctx.statements()).Children);
+                break;
+            default:
+                int paramCount = ctx.Id().size()-1;
+                ArrayList<IdNode> parameters = new ArrayList<>();
+                for (int i = 2; i <= paramCount; i = i+2){
+                    parameters.add(new IdNode(ctx.Id(i).toString()));
+                }
+                node = new MethodDeclerationNode(new IdNode(ctx.Id(0).toString()), parameters, visitChildren(ctx.statements()).Children);
+                break;
+        }
+        return node;
+    }
+
+    @Override
+    public AbstractNodeBase visitMethodcall(gParser.MethodcallContext ctx) {
+        MethodCallNode node;
+        switch (ctx.Id().size()) {
+            case 1:
+                node = new MethodCallNode(new IdNode(ctx.Id(0).toString()));
+                break;
+            default:
+                int paramCount = ctx.Id().size()-1;
+                ArrayList<IdNode> parameters = new ArrayList<>();
+                for (int i = 1; i <= paramCount; i++){
+                    parameters.add(new IdNode(ctx.Id(i).toString()));
+                }
+                node = new MethodCallNode(new IdNode(ctx.Id(0).toString()), parameters);
+                break;
+        }
+        return node;
     }
 
     @Override

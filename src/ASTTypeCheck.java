@@ -106,7 +106,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(MethodCallNode node) {
-        Symbol temp = Table.retrieveSymbol(node.Left.value);
+        Symbol temp = Table.retrieveSymbol(node.Identifier.value);
         if(temp != null && temp.Type.equals("method")){
             System.out.println(temp.Name + " Is a legal methodcall");
         }
@@ -114,7 +114,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(MethodDCLNode node) {
+    public String Visit(MethodDeclerationNode node) {
         return null;
     }
 
@@ -130,6 +130,11 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(IfNode node) {
+        return null;
+    }
+
+    @Override
+    public String Visit(WhileNode node) {
         return null;
     }
 
