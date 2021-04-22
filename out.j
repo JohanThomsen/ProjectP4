@@ -8,16 +8,23 @@ return
 .method public static main([Ljava/lang/String;)V
 .limit locals 10
 .limit stack 10
-ldc 4.0
-ldc 1.0
-ldc 2.0
-fadd
+ldc 5.0
+fstore 0
+ldc 12.0
+fstore 1
+fload 1
+fstore 2
+ldc "Hello"
+astore 3
+fload 0
+fload 1
 fmul
+fstore 4
 getstatic java/lang/System/out Ljava/io/PrintStream;
-astore 9
+astore_1
 invokestatic java/lang/String/valueOf(F)Ljava/lang/String;
 astore_3
-aload 9
+aload_1
 aload_3
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 return

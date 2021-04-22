@@ -22,7 +22,6 @@ public abstract class ASTVisitor<T> {
     public abstract T Visit(MathParenthesisNode node);
     public abstract T Visit(MethodCallNode node);
     public abstract T Visit(MethodDeclerationNode node);
-    public abstract T Visit(MultiplicationNode node);
     public abstract T Visit(NumberNode node);
     public abstract T Visit(StringNode node);
     public abstract T Visit(SubtractionNode node);
@@ -55,7 +54,6 @@ public abstract class ASTVisitor<T> {
         else if(node instanceof MathParenthesisNode){return Visit((MathParenthesisNode) node);}
         else if(node instanceof MethodCallNode){return Visit((MethodCallNode) node);}
         else if(node instanceof MethodDeclerationNode){return Visit((MethodDeclerationNode) node);}
-        else if(node instanceof MultiplicationNode){return Visit((MultiplicationNode) node);}
         else if(node instanceof NumberNode){return Visit((NumberNode) node);}
         else if(node instanceof StringNode){return Visit((StringNode)node);}
         else if(node instanceof SubtractionNode){return Visit((SubtractionNode) node);}

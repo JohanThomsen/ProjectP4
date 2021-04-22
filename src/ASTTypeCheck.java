@@ -119,7 +119,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(ClassDCLNode node) {
-        Symbol temp = Table.retrieveSymbol(node.ID.value);
+        Symbol temp = Table.retrieveSymbol(node.Identifier.value);
         if(temp == null){
             return "fine";
         }
