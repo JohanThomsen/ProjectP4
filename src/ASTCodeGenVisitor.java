@@ -259,6 +259,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("BranchEnd:");
         return null;
     }
+
+    @Override
     public String Visit(WhileNode node) {
         emit("LoopStart:");
         this.Visit(node.Predicate);
@@ -269,6 +271,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("Loopstart");
         emit("BranchEnd:");
 
+        return null;
+    }
+
+    @Override
+    public String Visit(ForNode node) {
         return null;
     }
 

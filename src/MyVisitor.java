@@ -219,7 +219,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override
     public AbstractNodeBase visitCtrlfor(gParser.CtrlforContext ctx) {
-        return super.visitCtrlfor(ctx);
+        return new ForNode(visitChildren(ctx.math(0)), visitChildren(ctx.math(1)), visitChildren(ctx.statements()).Children);
     }
 
     @Override
