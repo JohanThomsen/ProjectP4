@@ -217,6 +217,15 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(ForNode node) {
+        Table.openScope();
+        this.Visit(node.Id);
+        if (!(node.From instanceof NumberNode && node.To instanceof NumberNode)){
+            return "Range parameters must be numbers";
+        }
+        for (AbstractNodeBase n:  node.Statements) {
+            this.Visit(n);
+        }
+        Table.closeScope();
         return null;
     }
 

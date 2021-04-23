@@ -50,7 +50,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 emit("fstore " + getReference("Number/" + node.Target.value));
             } else if (node.Value instanceof IdNode) {
                 if (VarTable.containsKey("Number/" + ((IdNode) node.Value).value)){
-                    emit("fload " +  getReference("Number/" + ((IdNode) node.Value).value));//TODO use ldc to put value onto the stack to be stored
+                    emit("fload " +  getReference("Number/" + ((IdNode) node.Value).value));
                     emit("fstore " + getReference("Number/" + node.Target.value));
                 } else if (VarTable.containsKey("String/" + ((IdNode) node.Value).value)){
                     emit("aload " +  getReference("String/" + ((IdNode) node.Value).value));
@@ -268,7 +268,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
         }
-        emit("Loopstart");
+        emit("goto Loopstart");
         emit("BranchEnd:");
 
         return null;
@@ -276,6 +276,26 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(ForNode node) {
+        //Init
+        this.Visit(new InitializationNode(node.Id, new IdNode("number")));
+        //Assign
+        this.Visit(new AssignNode(node.Id, node.From));
+        emit("LoopStart:");
+        //check Predicate
+        this.Visit(node.Predicate);
+        emit("ifeq BranchEnd");
+        for (AbstractNodeBase a:  node.Statements) {
+            this.Visit(a);
+        }
+        //Increment
+        emit("fconst_1");
+        emit("fload " +  getReference("Number/" + (node.Id.value)));
+        emit("fadd");
+        emit("fstore " + getReference("Number/" + (node.Id.value)));
+        //Loop back
+        emit("goto Loopstart");
+        //Or end
+        emit("BranchEnd:");
         return null;
     }
 
