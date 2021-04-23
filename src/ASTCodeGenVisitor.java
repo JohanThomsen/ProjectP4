@@ -18,6 +18,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
     Incrementer incrementer = new Incrementer();
     public void emit(String s) {//TODO Change this to print to a .j file.
+        System.out.println(s);
         //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
         out(ps, s);
     }
@@ -261,6 +262,15 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(WhileNode node) {
+        emit("LoopStart:");
+        this.Visit(node.Predicate);
+        emit("ifeq BranchEnd");
+        for (AbstractNodeBase a:  node.Statements) {
+            this.Visit(a);
+        }
+        emit("Loopstart");
+        emit("BranchEnd:");
+
         return null;
     }
 
