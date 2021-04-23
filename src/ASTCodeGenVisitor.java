@@ -258,7 +258,14 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("BranchEnd:");
         return null;
     }
+
+    @Override
     public String Visit(WhileNode node) {
+        return null;
+    }
+
+    @Override
+    public String Visit(ForNode node) {
         return null;
     }
 

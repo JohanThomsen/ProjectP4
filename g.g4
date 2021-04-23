@@ -7,8 +7,8 @@ statements: statement statements
 ;
 
 statement: expression
-| classdcl 'then continue'
-| methoddcl 'then continue'
+| classdcl ('then'|'Then') 'continue'
+| methoddcl ('then'|'Then') 'continue'
 | assign '.'
 | init '.'
 ;
@@ -17,16 +17,16 @@ expression: Id
 | methodcall '.'
 | math '.'
 | bool
-| ctrlstruc 'then continue'
+| ctrlstruc ('then'|'Then') 'continue'
 ;
 
-ctrlstruc: 'if' expression 'then do' statements  #ctrlif
-| 'as long as' expression 'is true, do' statements #ctrlwhile
-| 'repeat' Id 'from' math 'to' math statements #ctrlfor
+ctrlstruc: ('if'|'If') expression 'then do' statements  #ctrlif
+| ('as'|'As') 'long as' expression 'is true, do' statements #ctrlwhile
+| ('repeat'|'Repeat') Id 'from' math 'to' math statements #ctrlfor
 //| switch
 ;
 
-classdcl: 'There can exist a'('n'?) Id 'for which:' statements ;
+classdcl: ('there'|'There') 'can exist a'('n'?) Id 'for which:' statements ;
 
 methoddcl:  Id 'does' statements
 | Id 'with' Id Id ('and' Id Id)* 'does' statements ;
@@ -39,9 +39,9 @@ init: 'There is a'('n'?) Id 'called' Id
 ;
 
 math: '(' math ')'          #mathParenthesis
-| math '*' math        #mathMult
-| math '/' math         #mathDiv
-| math ('+' | '-') math         #mathAdd
+| math '*' math             #mathMult
+| math '/' math             #mathDiv
+| math ('+' | '-') math     #mathAdd
 | Id                        #MathId
 | Number                    #MathNumber
 ;
@@ -64,9 +64,8 @@ bool: '(' bool ')'                   #boolParanthesis
 attributes: String
 | String 'and' attributes;
 
-methodcall: 'do' Id
-| 'do' Id 'with' Id(',' Id)*;
-
+methodcall: ('do'|'Do') Id
+| ('do'|'Do') Id 'with' Id(',' Id)*;
 
 Id: [a-z_A-Z]+;
 
