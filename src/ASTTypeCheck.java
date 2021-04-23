@@ -195,11 +195,23 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(IfNode node) {
+        this.Visit(node.Predicate);
+        Table.openScope();
+        for (AbstractNodeBase n:  node.Statements) {
+            this.Visit(n);
+        }
+        Table.closeScope();
         return null;
     }
 
     @Override
     public String Visit(WhileNode node) {
+        this.Visit(node.Predicate);
+        Table.openScope();
+        for (AbstractNodeBase n:  node.Statements) {
+            this.Visit(n);
+        }
+        Table.closeScope();
         return null;
     }
 
