@@ -29,7 +29,7 @@ ctrlstruc: ('if'|'If') expression 'then do' statements  #ctrlif
 classdcl: ('there'|'There') 'can exist a'('n'?) Id 'for which:' statements ;
 
 methoddcl:  Id 'does' statements
-| Id 'with' Id Id ('and' Id Id)* 'does' statements ;
+| Id 'with' Id Id ('and' (Id Id)+)? 'does' statements ;
 
 assign: Id ('has'|'is') ('an'|'a')? (Id | Number | String | math ) //Make so its needs at least one of these, to avoid "Id expression" assignments
 | Id ('has'|'is') ('an'|'a')? attributes;
