@@ -20,6 +20,44 @@ fload 0
 fload 1
 fmul
 fstore 4
+LoopStart:
+i2f
+i2f
+fcmpl
+iflt truelabel
+iconst_0
+goto endlabel
+truelabel:
+iconst_1
+endlabel:
+ifeq BranchEnd
+fload 0
+ldc 1.0
+fadd
+fstore 0
+ldc 8.0
+fstore 5
+i2f
+i2f
+fcmpl
+ifgt truelabel
+iconst_0
+goto endlabel
+truelabel:
+iconst_1
+endlabel:
+ifeq BranchEnd
+ldc 5.0
+ldc 4.0
+fadd
+fstore 6
+ldc 5.0
+ldc 4.0
+fadd
+fstore 7
+BranchEnd:
+goto Loopstart
+BranchEnd:
 getstatic java/lang/System/out Ljava/io/PrintStream;
 astore_1
 invokestatic java/lang/String/valueOf(F)Ljava/lang/String;

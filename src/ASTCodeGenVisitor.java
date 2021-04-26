@@ -18,7 +18,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
     Incrementer incrementer = new Incrementer();
     public void emit(String s) {//TODO Change this to print to a .j file.
-        System.out.println(s);
+        //System.out.println(s);
         //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
         out(ps, s);
     }
@@ -45,9 +45,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             } else if (node.Value instanceof StringNode){
                 emit("ldc " + ((StringNode) node.Value).value);
                 emit("astore " + getReference("String/" + node.Target.value));
-            } else if (node.Value instanceof BinaryOperator) {
-                this.Visit(node.Value);
-                emit("fstore " + getReference("Number/" + node.Target.value));
             } else if (node.Value instanceof IdNode) {
                 if (VarTable.containsKey("Number/" + ((IdNode) node.Value).value)){
                     emit("fload " +  getReference("Number/" + ((IdNode) node.Value).value));
@@ -56,6 +53,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     emit("aload " +  getReference("String/" + ((IdNode) node.Value).value));
                     emit("astore " + getReference("String/" + node.Target.value));
                 }
+            } else {
+                this.Visit(node.Value);
+                emit("fstore " + getReference("Number/" + node.Target.value));
             }
         }
         /* This would allow for initialization in assignment
@@ -277,9 +277,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     @Override
     public String Visit(ForNode node) {
         //Init
-        this.Visit(new InitializationNode(node.Id, new IdNode("number")));
+        this.Visit(node.init);
         //Assign
-        this.Visit(new AssignNode(node.Id, node.From));
+        this.Visit(node.assign);
         emit("LoopStart:");
         //check Predicate
         this.Visit(node.Predicate);

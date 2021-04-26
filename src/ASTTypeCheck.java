@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.function.UnaryOperator;
+
 public class ASTTypeCheck extends ASTVisitor<String>{
     public SymbolTable Table;
 
@@ -17,21 +20,15 @@ public class ASTTypeCheck extends ASTVisitor<String>{
                 System.out.println(this.Visit(node.Value));
                 System.out.println(node.Target.value + " does not match " + temp.Type);
             }
-        }else {
-            System.out.println(node.Target.value + " Has not been initialized");
+        } else {
+            System.out.println(node.Target.value + " Has not been initialized"); //Todo Make this an exception or something else
         }
         return "error";
     }
 
     @Override
     public String Visit(BoolAndNode node) {
-        String temp = this.Visit(node.LeftOperand);
-
-        if(temp.equals(this.Visit(node.RightOperand)) && temp.equals("bool")){
-            return "bool";
-        }
-
-        return "error";
+        return BoolCheck(node);
     }
 
     @Override
@@ -41,57 +38,27 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolEqualNode node) {
-        String temp = this.Visit(node.LeftOperand);
-
-        if(temp.equals(this.Visit(node.RightOperand))){
-            return "bool";
-        }
-
-        return "error";
+        return BoolCheck(node);
     }
 
     @Override
     public String Visit(BoolGreaterEqualNode node) {
-        String temp = this.Visit(node.LeftOperand);
-
-        if(temp.equals(this.Visit(node.RightOperand))){
-            return "bool";
-        }
-
-        return "error";
+        return BoolCheck(node);
     }
 
     @Override
     public String Visit(BoolGreaterNode node) {
-        String temp = this.Visit(node.LeftOperand);
-
-        if(temp.equals(this.Visit(node.RightOperand))){
-            return "bool";
-        }
-
-        return "error";
+        return BoolCheck(node);
     }
 
     @Override
     public String Visit(BoolLessEqualNode node) {
-        String temp = this.Visit(node.LeftOperand);
-
-        if(temp.equals(this.Visit(node.RightOperand))){
-            return "bool";
-        }
-
-        return "error";
+        return BoolCheck(node);
     }
 
     @Override
     public String Visit(BoolLessNode node) {
-        String temp = this.Visit(node.LeftOperand);
-
-        if(temp.equals(this.Visit(node.RightOperand))){
-            return "bool";
-        }
-
-        return "error";
+        return BoolCheck(node);
     }
 
     @Override
@@ -103,12 +70,18 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     @Override
     public String Visit(BoolOrNode node) {
 
-        String temp = this.Visit(node.LeftOperand);
+        return BoolCheck(node);
+    }
 
-        if(temp.equals(this.Visit(node.RightOperand)) && temp.equals("bool")){
+    private String BoolCheck(BinaryOperator node) {
+        String temp = this.Visit(node.LeftOperand);
+        String tempRight = this.Visit(node.RightOperand);
+
+        if(temp.equals(tempRight)){
             return "bool";
         }
 
+        System.out.println("Bool Type Error: Left bool type: " + temp + ". Right bool type: " + tempRight);
         return "error";
     }
 
@@ -133,7 +106,6 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathDivNode node) {
-        System.out.println("Math is here");
         String temp = this.Visit(node.LeftOperand);
         if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
             if(temp.equals("number")){
@@ -144,7 +116,6 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathMultNode node) {
-        System.out.println("Math is here");
         String temp = this.Visit(node.LeftOperand);
         if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
             if(temp.equals("number")){
@@ -155,14 +126,12 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(MathParenthesisNode node) {
-        System.out.println("Math is here");
 
         return this.Visit(node.Operand);
     }
 
     @Override
     public String Visit(MathAddNode node) {
-        System.out.println("Math is here");
         String temp = this.Visit(node.LeftOperand);
         if(temp.equals(this.Visit(node.RightOperand)))//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
             if(temp.equals("number")){
@@ -196,37 +165,35 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     @Override
     public String Visit(IfNode node) {
         this.Visit(node.Predicate);
-        Table.openScope();
-        for (AbstractNodeBase n:  node.Statements) {
-            this.Visit(n);
-        }
-        Table.closeScope();
-        return null;
+        CheckStatements(node.Statements);
+        return "success";
     }
 
     @Override
     public String Visit(WhileNode node) {
         this.Visit(node.Predicate);
-        Table.openScope();
-        for (AbstractNodeBase n:  node.Statements) {
-            this.Visit(n);
-        }
-        Table.closeScope();
-        return null;
+        CheckStatements(node.Statements);
+        return "success";
     }
 
     @Override
     public String Visit(ForNode node) {
-        Table.openScope();
+        this.Visit(node.assign);
         this.Visit(node.Id);
-        if (!(node.From instanceof NumberNode && node.To instanceof NumberNode)){
+        if (!(node.From.Children.get(0) instanceof NumberNode && node.To.Children.get(0) instanceof NumberNode)){
+            System.out.println("Here");
             return "Range parameters must be numbers";
         }
-        for (AbstractNodeBase n:  node.Statements) {
-            this.Visit(n);
+        CheckStatements(node.Statements);
+        return "success";
+    }
+
+    private void CheckStatements(ArrayList<AbstractNodeBase> statements) {
+        for (AbstractNodeBase n : statements) {
+            if (!(n instanceof IScopable)) {
+                this.Visit(n);
+            }
         }
-        Table.closeScope();
-        return null;
     }
 
     @Override
@@ -235,7 +202,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
             return "exists";
         }
 
-        return "hej";
+        return "success";
     }
 
     @Override

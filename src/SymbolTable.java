@@ -36,7 +36,7 @@ public class SymbolTable {
                 add(prevSym);
             }
         }
-            Depth--;
+        Depth--;
     }
 
     public Symbol retrieveSymbol(String name){

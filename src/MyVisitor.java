@@ -213,13 +213,22 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override
     public AbstractNodeBase visitCtrlwhile(gParser.CtrlwhileContext ctx) {
-        WhileNode node = new WhileNode(reduce(visitChildren(ctx.expression())), visitChildren(ctx.statements()).Children);
+        printTabs(indentation);
+        System.out.println("While Loop");
+        indentation++;
+        WhileNode node = new WhileNode(reduce(visitChildren(ctx.expression())), AbstractRemoval(visitChildren(ctx.statements())).Children);
+        indentation--;
         return node;
     }
 
     @Override
     public AbstractNodeBase visitCtrlfor(gParser.CtrlforContext ctx) {
-        return new ForNode((new IdNode(ctx.Id().toString())), visitChildren(ctx.math(0)), visitChildren(ctx.math(1)), visitChildren(ctx.statements()).Children);
+        printTabs(indentation);
+        System.out.println("For Loop");
+        indentation++;
+        ForNode node = new ForNode((new IdNode(ctx.Id().toString())), visitChildren(ctx.math(0)), visitChildren(ctx.math(1)), AbstractRemoval(visitChildren(ctx.statements())).Children);
+        indentation--;
+        return node;
     }
 
     @Override

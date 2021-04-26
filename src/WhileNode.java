@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class WhileNode extends AbstractNodeBase {
+public class WhileNode extends AbstractNodeBase implements IScopable {
     AbstractNodeBase Predicate;
     ArrayList<AbstractNodeBase> Statements;
 

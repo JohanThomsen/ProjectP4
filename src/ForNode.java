@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 
-public class ForNode extends AbstractNodeBase {
+public class ForNode extends AbstractNodeBase implements IScopable {
+    InitializationNode init;
+    AssignNode assign;
     IdNode Id;
     AbstractNodeBase From;
     AbstractNodeBase To;
@@ -9,6 +11,8 @@ public class ForNode extends AbstractNodeBase {
 
 
     public ForNode(IdNode id, AbstractNodeBase from, AbstractNodeBase to, ArrayList<AbstractNodeBase> statements) {
+        init = new InitializationNode(new IdNode("number"), id);
+        assign = new AssignNode(id, from);
         Id = id;
         From = from;
         To = to;
