@@ -64,7 +64,7 @@ public class TableBuilder {
             }
 
             if ((check.Visit(CurrentNode) == null)) {
-                System.out.println("Error"); //Todo Make this an exception or something else
+                System.out.println("Error in If or While node"); //Todo Make this an exception or something else, also right now it will never be reached
             }
 
             check.Table.printCurrentScope();
