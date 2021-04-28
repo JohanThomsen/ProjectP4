@@ -1,4 +1,6 @@
 import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Hashtable;
 
@@ -7,19 +9,19 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     private PrintStream ps;
 
     {
-        try {
+        /*try {
             ps = new PrintStream("out.j");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
     }
-
+    private int index = 7;
     int level = 0;
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
     Incrementer incrementer = new Incrementer();
     public void emit(String s) {//TODO Change this to print to a .j file.
         //System.out.println(s);
-        //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
+        PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
         out(ps, s);
     }
     public void out(String s) {
@@ -228,7 +230,17 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(ClassDCLNode node) {
+    public String Visit(ClassDCLNode node){//TODO make it so that this node creates a file.
+        File newFile = new File(node.Identifier +".j");
+        try {
+            ps = new PrintStream(node.Identifier + ".j");
+            emit(".class public com/company/" + node.Identifier);
+            emit(".super java/lang/Object");
+            genInit();
+            ps = new PrintStream("out.j");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -306,6 +318,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             VarTable.put("Number/" + node.Identifier.value, nextID);
         } else if (node.Type.value.equals("string")){
             VarTable.put("String/" + node.Identifier.value, nextID);
+        } else if (node.Type.value.equals("Class")){
+            emit("new #" + index);
+            emit("dup");
+            index = index + 2;
+            emit("invokespecial #" + index);
         }
         return null;
     }
@@ -315,7 +332,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         LoadNumber(node);
 
         emit("fadd");
-        //exit.append("fadd");
+
 
         return null;
     }//TODO find difference between Add and Subtract.
@@ -405,8 +422,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }
     }
 
-    public void genHeader(){
-        emit(".class public examples/out");
+    public void genMain(){
+        emit(".class public com/company/Main");
         emit(".super java/lang/Object");
         emit(".method public <init>()V");
         emit("aload_0");
@@ -416,7 +433,17 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit(".method public static main([Ljava/lang/String;)V");
     }
 
+    public void genInit(){
+        emit(".method public <init>()V");
+        emit("aload_0");
+        emit("invokenonvirtual java/lang/Object/<init>()V");
+        emit("return");
+        emit(".end method");
+    }
+
     public void genEnd(){
+        emit(".limit locals 50");
+        emit(".limit stack 10");
         emit("return");
         emit(".end method");
     }
