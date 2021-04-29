@@ -190,7 +190,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     public String Visit(ForNode node) {
         this.Visit(node.assign);
         this.Visit(node.Id);
-        if (!(node.From.Children.get(0) instanceof NumberNode && node.To.Children.get(0) instanceof NumberNode)){
+        if (!(node.From instanceof NumberNode && node.To instanceof NumberNode)){
             Errors.add("Range parameters must be numbers");
             return "error";
         }

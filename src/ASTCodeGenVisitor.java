@@ -20,7 +20,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
     Incrementer incrementer = new Incrementer();
     public void emit(String s) {//TODO Change this to print to a .j file.
-        //System.out.println(s);
+        System.out.println(s);
         //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
         out(ps, s);
     }

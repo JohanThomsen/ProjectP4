@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class TableBuilder {
 
-    public SymbolTable TableBuild(SymbolTable Target, AbstractNodeBase AST, ArrayList errors) {
+    public SymbolTable TableBuild(SymbolTable Target, AbstractNodeBase AST, ArrayList<String> errors) {
         ASTTypeCheck check = new ASTTypeCheck(Target, errors);
 
         ArrayList<String> PrimTypes = new ArrayList<>();
