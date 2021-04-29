@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 /*import java.io.PrintStream;*/
 import static org.antlr.v4.runtime.CharStreams.fromFileName;
 
@@ -15,7 +16,7 @@ public class Main {
 	        MyVisitor visitor = new MyVisitor();
 	        SymbolTable Table = new SymbolTable();
 	        TableBuilder Builder = new TableBuilder();
-	        String source = "gentest";
+	        String source = "test.txt";
 	        CharStream stream = fromFileName(source);
 	        gLexer lexer = new gLexer(stream);
 	        CommonTokenStream token = new CommonTokenStream(lexer);
@@ -24,7 +25,7 @@ public class Main {
 
             AbstractNodeBase node = visitor.visit(tree);
 
-            Table = Builder.TableBuild(Table, node);
+            Table = Builder.TableBuild(Table, node, new ArrayList());
 
 
             ASTCodeGenVisitor gen = new ASTCodeGenVisitor();

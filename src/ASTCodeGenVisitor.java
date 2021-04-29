@@ -9,11 +9,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     private PrintStream ps;
 
     {
-        /*try {
+        try {
             ps = new PrintStream("out.j");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }*/
+        }
     }
     private int index = 7;
     int level = 0;
@@ -21,7 +21,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     Incrementer incrementer = new Incrementer();
     public void emit(String s) {//TODO Change this to print to a .j file.
         //System.out.println(s);
-        PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
+        //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
         out(ps, s);
     }
     public void out(String s) {
@@ -237,6 +237,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             emit(".class public com/company/" + node.Identifier);
             emit(".super java/lang/Object");
             genInit();
+            for(int i = 0; i < node.Statements.size(); i++){
+                this.Visit(node.Statements.get(i));
+            }
             ps = new PrintStream("out.j");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -280,7 +283,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
         }
-        emit("goto Loopstart");
+        emit("goto LoopStart");
         emit("BranchEnd:");
 
         return null;
@@ -305,7 +308,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("fadd");
         emit("fstore " + getReference("Number/" + (node.Id.value)));
         //Loop back
-        emit("goto Loopstart");
+        emit("goto LoopStart");
         //Or end
         emit("BranchEnd:");
         return null;

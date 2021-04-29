@@ -1,4 +1,4 @@
-.class public examples/out
+.class public com/company/Main
 .super java/lang/Object
 .method public <init>()V
 aload_0
@@ -8,23 +8,24 @@ return
 .method public static main([Ljava/lang/String;)V
 .limit locals 10
 .limit stack 10
-ldc 5.0
+ldc 0.0
 fstore 0
-ldc 12.0
 fstore 1
-fload 1
-fstore 2
-ldc "Hello"
-astore 3
-fload 0
-fload 1
-fmul
-fstore 4
 LoopStart:
 i2f
 i2f
 fcmpl
-iflt truelabel
+ifle truelabel
+iconst_0
+goto endlabel
+truelabel:
+iconst_1
+endlabel:
+ifeq BranchEnd
+i2f
+ldc 4.0
+fcmpl
+ifeq truelabel
 iconst_0
 goto endlabel
 truelabel:
@@ -32,31 +33,15 @@ iconst_1
 endlabel:
 ifeq BranchEnd
 fload 0
-ldc 1.0
+fload 1
 fadd
 fstore 0
-ldc 8.0
-fstore 5
-i2f
-i2f
-fcmpl
-ifgt truelabel
-iconst_0
-goto endlabel
-truelabel:
-iconst_1
-endlabel:
-ifeq BranchEnd
-ldc 5.0
-ldc 4.0
-fadd
-fstore 6
-ldc 5.0
-ldc 4.0
-fadd
-fstore 7
 BranchEnd:
-goto Loopstart
+fconst_1
+fload 1
+fadd
+fstore 1
+goto LoopStart
 BranchEnd:
 getstatic java/lang/System/out Ljava/io/PrintStream;
 astore_1
@@ -65,5 +50,7 @@ astore_3
 aload_1
 aload_3
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+.limit locals 50
+.limit stack 10
 return
 .end method
