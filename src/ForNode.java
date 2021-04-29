@@ -16,14 +16,14 @@ public class ForNode extends AbstractNodeBase implements IScopable {
         Id = id;
         From = from.Children.get(0);
         To = to.Children.get(0);
-        Predicate = new BoolLessEqualNode(getPredicateValues(From, To));
+        Predicate = new BoolLessEqualNode(getPredicateValues(Id, To));
         Statements = statements;
     }
 
 
-    private ArrayList<AbstractNodeBase> getPredicateValues(AbstractNodeBase from, AbstractNodeBase to) {
+    private ArrayList<AbstractNodeBase> getPredicateValues(AbstractNodeBase Id, AbstractNodeBase to) {
         ArrayList<AbstractNodeBase> PredicateValues = new ArrayList<AbstractNodeBase>();
-        PredicateValues.add(from);
+        PredicateValues.add(Id);
         PredicateValues.add(to);
         return PredicateValues;
     }

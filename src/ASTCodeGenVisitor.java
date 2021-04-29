@@ -396,7 +396,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
         if(node.RightOperand instanceof  NumberNode){
             emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else if (node.LeftOperand instanceof IdNode){
+        }else if (node.RightOperand instanceof IdNode){
             emit("fload " +  getReference("Number/" + ((IdNode)node.RightOperand).value));
         }
         else{
@@ -407,16 +407,21 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     private void BoolLoadNumber(BinaryOperator node){
         if(node.LeftOperand instanceof NumberNode) {
             emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        }else if(node.LeftOperand instanceof IdNode){
+            emit("fload " + getReference("Number/" +((IdNode) node.LeftOperand).value));
         }else{
             this.Visit(node.LeftOperand);
             emit("i2f");
         }
         if(node.RightOperand instanceof  NumberNode){
             emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else if(node.RightOperand instanceof IdNode){
+            emit("fload " + getReference("Number/" +((IdNode) node.RightOperand).value));
         }else{
             this.Visit(node.RightOperand);
             emit("i2f");
         }
+
     }
 
     public void genMain(){
@@ -443,5 +448,16 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit(".limit stack 10");
         emit("return");
         emit(".end method");
+    }
+
+    public void genPrintStream(){//Remember to hardcode the value needed
+        emit("fload" + 2);
+        emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        emit("astore" + incrementer.GetNextID());
+        emit("invokestatic java/lang/String/valueOf(F)Ljava/lang/String;");
+        emit("astore" + incrementer.GetNextID());
+        emit("aload" + 10);
+        emit("aload" + 11);
+        emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
     }
 }
