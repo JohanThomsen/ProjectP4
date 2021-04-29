@@ -19,6 +19,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     int level = 0;
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
     Incrementer incrementer = new Incrementer();
+    Incrementer loopIncrementer = new Incrementer();
+    Incrementer blockIncrementer = new Incrementer();
+    Incrementer boolIncrementer = new Incrementer();
     public void emit(String s) {//TODO Change this to print to a .j file.
         System.out.println(s);
         //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
@@ -77,6 +80,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolAndNode node) {
+        int boolID = boolIncrementer.GetNextID();
         //First check the left operand, if false, jump till end
         if(node.LeftOperand instanceof NumberNode) {
             emit("ldc " +  ((NumberNode)node.LeftOperand).value);
@@ -84,7 +88,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             this.Visit(node.LeftOperand);
             emit("i2f");
         }
-        emit("ifeq falselabel");
+        emit("ifeq falselabel" + boolID);
         //Then check if the second operand is true
         if(node.RightOperand instanceof NumberNode) {
             emit("ldc " +  ((NumberNode)node.RightOperand).value);
@@ -92,14 +96,14 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             this.Visit(node.RightOperand);
             emit("i2f");
         }
-        emit("ifeq falselabel");//If right operand is false, jump til end
+        emit("ifeq falselabel" + boolID);//If right operand is false, jump til end
 
         emit("iconst_1");
-        emit("goto endlabel");
+        emit("goto endlabel" + boolID);
 
-        emit("falselabel:");
+        emit("falselabel" + boolID + ":");
         emit("iconst_0");
-        emit("endlabel:");
+        emit("endlabel" + boolID + ":");
         return null;
     }
 
@@ -112,13 +116,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(BoolEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
-        emit("fcmpl");
-        emit("ifeq truelabel");
-        emit("iconst_0");
-        emit("goto endlabel");
-        emit("truelabel:");
-        emit("iconst_1");
-        emit("endlabel:");
+        BoolNodeEmit("ifeq truelabel");
         return null;
     }
 
@@ -126,13 +124,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(BoolGreaterEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
-        emit("fcmpl");
-        emit("ifge truelabel");
-        emit("iconst_0");
-        emit("goto endlabel");
-        emit("truelabel:");
-        emit("iconst_1");
-        emit("endlabel:");
+        BoolNodeEmit("ifge truelabel");
         return null;
     }
 
@@ -140,13 +132,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(BoolGreaterNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
-        emit("fcmpl");
-        emit("ifgt truelabel");
-        emit("iconst_0");
-        emit("goto endlabel");
-        emit("truelabel:");
-        emit("iconst_1");
-        emit("endlabel:");
+        BoolNodeEmit("ifgt truelabel");
         return null;
     }
 
@@ -154,13 +140,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(BoolLessEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
-        emit("fcmpl");
-        emit("ifle truelabel");
-        emit("iconst_0");
-        emit("goto endlabel");
-        emit("truelabel:");
-        emit("iconst_1");
-        emit("endlabel:");
+        BoolNodeEmit("ifle truelabel");
         return null;
     }
 
@@ -168,32 +148,42 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(BoolLessNode node) { //If greater than returns 1 if equal return 0 if less than return -1
 
         BoolLoadNumber(node);
-        emit("fcmpl");
-        emit("iflt truelabel");
-        emit("iconst_0");
-        emit("goto endlabel");
-        emit("truelabel:");
-        emit("iconst_1");
-        emit("endlabel:");
+        BoolNodeEmit("iflt truelabel");
         return null;
+    }
+
+
+
+    private void BoolNodeEmit(String comparer) {
+        int boolID = boolIncrementer.GetNextID();
+
+        emit("fcmpl");
+        emit(comparer + boolID);
+        emit("iconst_0");
+        emit("goto endlabel" + boolID);
+        emit("truelabel" + boolID + ":");
+        emit("iconst_1");
+        emit("endlabel" + boolID + ":");
     }
 
     @Override
     public String Visit(BoolNotNode node) {
+        int boolID = boolIncrementer.GetNextID();
 
         emit("ldc " + ((NumberNode)node.Operand).value);
-        emit("ifeq Truelabel");
+        emit("ifeq Truelabel" + boolID);
         emit("iconst_0");
-        emit("goto stoplabel");
-        emit("Truelabel:");
+        emit("goto stoplabel" + boolID);
+        emit("Truelabel" + boolID + ":");
         emit("iconst_1");
-        emit("stoplabel:");
+        emit("stoplabel" + boolID + ":");
 
         return null;
     }
 
     @Override
     public String Visit(BoolOrNode node) {
+        int boolID = boolIncrementer.GetNextID();
         //First check the left operand, if true, jump till end and push true
         if(node.LeftOperand instanceof NumberNode) {
             emit("ldc " +  ((NumberNode)node.LeftOperand).value);
@@ -201,7 +191,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             this.Visit(node.LeftOperand);
             emit("i2f");
         }
-        emit("ifne truelabel");
+        emit("ifne truelabel" + boolID);
         //Then check if the second operand is true
         if(node.RightOperand instanceof NumberNode) {
             emit("ldc " +  ((NumberNode)node.RightOperand).value);
@@ -209,14 +199,14 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             this.Visit(node.RightOperand);
             emit("i2f");
         }
-        emit("ifne truelabel");//If right operand is true, jump til end and push true
+        emit("ifne truelabel" + boolID);//If right operand is true, jump til end and push true
 
         emit("iconst_0"); //If both are false, push false and end
-        emit("goto endlabel");
+        emit("goto endlabel" + boolID);
 
-        emit("truelabel:"); //If even one is true, push true
+        emit("truelabel" + boolID + ":"); //If even one is true, push true
         emit("iconst_1");
-        emit("endlabel:");
+        emit("endlabel" + boolID + ":");
 
         return null;
     }
@@ -265,40 +255,44 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(IfNode node) {
-
+        int blockID = blockIncrementer.GetNextID();
         this.Visit(node.Predicate);
-        emit("ifeq BranchEnd");
+        emit("ifeq BranchEnd" + blockID);
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
         }
-        emit("BranchEnd:");
+        emit("BranchEnd" + blockID + ":");
         return null;
     }
 
     @Override
     public String Visit(WhileNode node) {
-        emit("LoopStart:");
+        int loopID = loopIncrementer.GetNextID();
+        int blockID = blockIncrementer.GetNextID();
+        emit("LoopStart" + loopID + ":");
         this.Visit(node.Predicate);
-        emit("ifeq BranchEnd");
+        emit("ifeq BranchEnd" + blockID);
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
         }
-        emit("goto LoopStart");
-        emit("BranchEnd:");
+        emit("goto LoopStart" + loopID);
+        emit("BranchEnd" + blockID + ":");
 
         return null;
     }
 
     @Override
     public String Visit(ForNode node) {
+        int loopID = loopIncrementer.GetNextID();
+        int blockID = blockIncrementer.GetNextID();
         //Init
         this.Visit(node.init);
         //Assign
         this.Visit(node.assign);
-        emit("LoopStart:");
+        emit("LoopStart" + loopID + ":");
         //check Predicate
         this.Visit(node.Predicate);
-        emit("ifeq BranchEnd");
+        emit("ifeq BranchEnd" + blockID);
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
         }
@@ -308,9 +302,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("fadd");
         emit("fstore " + getReference("Number/" + (node.Id.value)));
         //Loop back
-        emit("goto LoopStart");
+        emit("goto LoopStart" + loopID);
         //Or end
-        emit("BranchEnd:");
+        emit("BranchEnd" + blockID + ":");
         return null;
     }
 
