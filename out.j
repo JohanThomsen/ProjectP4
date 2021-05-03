@@ -1,4 +1,4 @@
-.class public NoJad/out
+.class public com/company/Main
 .super java/lang/Object
 .method public <init>()V
 aload_0
@@ -40,18 +40,8 @@ fconst_1
 fload 1
 fadd
 fstore 1
-
-fload 1
-getstatic java/lang/System/out Ljava/io/PrintStream;
-astore 10
-invokestatic java/lang/String/valueOf(F)Ljava/lang/String;
-astore 11
-aload 10
-aload 11
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 goto LoopStart0
 BranchEnd0:
-
 .limit locals 50
 .limit stack 10
 return
