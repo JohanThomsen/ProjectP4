@@ -316,10 +316,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         } else if (node.Type.value.equals("string")){
             VarTable.put("String/" + node.Identifier.value, nextID);
         } else if (node.Type.value.equals("Class")){
-            emit("new #" + index);
+            emit("new com/company/"+node.Identifier.value);
             emit("dup");
-            index = index + 2;
-            emit("invokespecial #" + index);
+            emit("invokespecial com/company/"+node.Identifier.value+".<init>()V");
+            emit("aload "+incrementer.GetNextID());
         }
         return null;
     }
@@ -361,6 +361,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(MethodCallNode node) {
+        emit("aload ");
+        emit("invokevirtual com/company/" + node.Identifier);
         return null;
     }
 
@@ -459,5 +461,13 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("aload " + 10);
         emit("aload " + 11);
         emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
+    }
+
+    public void genInputScanner(){
+        emit("new class java/util/Scanner");
+        emit("dup");
+        emit("getstatic java/lang/System.in Ljava/io/InputStream;");
+        emit("invokespecial java/util/Scanner.<init>(Ljava/io/InputStream;)V");
+        emit("astore "+incrementer.GetNextID());
     }
 }
