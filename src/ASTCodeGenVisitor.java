@@ -453,11 +453,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public void genPrintStream(){//Remember to hardcode the value needed
         emit("fload" + 2);
         emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
-        emit("astore" + incrementer.GetNextID());
+        emit("astore" + 10);
         emit("invokestatic java/lang/String/valueOf(F)Ljava/lang/String;");
-        emit("astore" + incrementer.GetNextID());
-        emit("aload" + 10);
-        emit("aload" + 11);
+        emit("astore" + 11);
+        emit("aload " + 10);
+        emit("aload " + 11);
         emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
     }
 }
