@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Hashtable;
+import java.util.regex.*;
 
 public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
@@ -15,7 +16,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             e.printStackTrace();
         }
     }
-    private int index = 7;
+
     int level = 0;
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
     Incrementer incrementer = new Incrementer();
@@ -316,10 +317,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         } else if (node.Type.value.equals("string")){
             VarTable.put("String/" + node.Identifier.value, nextID);
         } else if (node.Type.value.equals("Class")){
+            int ThisId = incrementer.GetNextID();
             emit("new com/company/"+node.Identifier.value);
             emit("dup");
             emit("invokespecial com/company/"+node.Identifier.value+".<init>()V");
-            emit("aload "+incrementer.GetNextID());
+            emit("aload "+ ThisId);
+            VarTable.put(node.Identifier.value, ThisId);
         }
         return null;
     }
@@ -361,8 +364,18 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(MethodCallNode node) {
-        emit("aload ");
-        emit("invokevirtual com/company/" + node.Identifier);
+        String params = "";
+        emit("aload "+VarTable.get(node.Identifier.value));
+        for(int i = 0; i < node.Parameters.size(); i++){
+
+            if(Pattern.matches("[0-9]+", node.Parameters.get(i).value)){
+                params.concat("F");
+            }else if(Pattern.matches("[a-zA-Z0-9]+", node.Parameters.get(i).value)){
+                params.concat("Ljava/lang/String;");
+            }
+
+        }
+        emit("invokestatic " + node.Identifier.value+"("+params+")V");//TODO Add support for method call from classes
         return null;
     }
 
@@ -474,10 +487,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void genInputScanner(){
+        int Id = incrementer.GetNextID();
         emit("new class java/util/Scanner");
         emit("dup");
         emit("getstatic java/lang/System.in Ljava/io/InputStream;");
         emit("invokespecial java/util/Scanner.<init>(Ljava/io/InputStream;)V");
-        emit("astore "+incrementer.GetNextID());
+        emit("astore "+ Id);
+        VarTable.put("Scanner", Id);
     }
 }
