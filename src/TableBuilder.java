@@ -25,8 +25,8 @@ public class TableBuilder {
         if (CurrentNode instanceof MethodDeclerationNode) {
             if (check.Visit(CurrentNode).equals("Success")) {
                 if (((MethodDeclerationNode) CurrentNode).Parameters != null) {
-                    Target.enterSymbol(((MethodDeclerationNode) CurrentNode).Identifier.value + "(" +
-                            getMethodTypes(((MethodDeclerationNode) CurrentNode).Types) + ")" , "method");
+                    Target.enterSymbol(((MethodDeclerationNode) CurrentNode).Identifier.value, "method" + "(" +
+                            getMethodTypes(((MethodDeclerationNode) CurrentNode).Types) + ")");
                     check.Table.openScope();
                     insertParameters(((MethodDeclerationNode) CurrentNode).Types, ((MethodDeclerationNode) CurrentNode).Parameters, Target);
                 } else {
@@ -80,12 +80,12 @@ public class TableBuilder {
     }
 
     private String getMethodTypes(ArrayList<IdNode> types) {
-        String TypesString = "";
+        StringBuilder TypesString = new StringBuilder();
         for (IdNode type : types) {
-            TypesString += type.value + ",";
+            TypesString.append(type.value).append(",");
         }
-
-        return TypesString;
+        return TypesString.toString();
+        //return TypesString.deleteCharAt(TypesString.lastIndexOf(",")).toString();
     }
 }
 

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 public class ASTTypeCheck extends ASTVisitor<String>{
     public SymbolTable Table;
@@ -115,14 +116,14 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     @Override
     public String Visit(MathDivNode node) {
         String temp = MathCheck(node);
-        if (temp != null) return temp;
+        if (!temp.equals("Failure")) return temp;
         return "error";
     }
 
     @Override
     public String Visit(MathMultNode node) {
         String temp = MathCheck(node);
-        if (temp != null) return temp;
+        if (!temp.equals("Failure")) return temp;
         return "error";
     }
 
@@ -155,12 +156,28 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     @Override
     public String Visit(MethodCallNode node) {
         Symbol temp = Table.retrieveSymbol(node.Identifier.value);
-        if(temp != null && temp.Type.equals("method")){
-            System.out.println(temp.Name + " Is a legal methodcall");
-        } else if (temp != null){
-            Errors.add(temp.Name + "Is not a legal method call");
+        String tempType;
+        String[] ParaTypes = temp.Type.replaceFirst("method", "").replace("(", "").replace(")", "").split(",");//("^(\\w+,)");
+        if (node.Parameters != null) {
+            for (int i = 0; i < node.Parameters.size(); i++) {
+                tempType = this.Visit(node.Parameters.get(i));
+                if (!tempType.equals(ParaTypes[i])) {
+                    Errors.add("Parameter types of method: " + node.Identifier.value + " do not match passed values");
+                    return "Failure";
+                }
+            }
+            for (IdNode para : node.Parameters) {
+                tempType = this.Visit(para);
+            }
+        } else {
+            if (temp.Type.startsWith("method")) {
+                return "Success";
+            } else {
+                Errors.add(temp.Name + " Is attempted to be called as a method, which it is not");
+                return "Failure";
+            }
         }
-        return null;
+        return "Success";
     }
 
     @Override
@@ -186,7 +203,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
         Symbol temp = Table.retrieveSymbol(node.value);
         if (temp == null) {
-            Errors.add("Variable: " + node.value + "Has not been declared");
+            Errors.add("Variable: " + node.value + " has not been declared");
             return "Failure";
         } else {
             return temp.Type;//Returns the type to checks in expressions
