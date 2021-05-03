@@ -135,7 +135,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     @Override
     public String Visit(MathAddNode node) {
         String temp = MathCheck(node);
-        if (temp != null) return temp;
+        if (!temp.equals("Failure")) return temp;
         return "error";
     }
 
@@ -145,10 +145,12 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         if(temp.equals(tempRight)) {//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
             if (temp.equals("number")) {
                 return temp;
+            } else if (temp.equals("Failure")){
+                return "Failure";
             }
         }
         Errors.add("Math error: both operands have to be numbers. Left Operand type: " + temp + " Right operand type: " + tempRight);
-        return null;
+        return "Failure";
     }
     @Override
     public String Visit(MethodCallNode node) {
@@ -163,15 +165,32 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(MethodDeclerationNode node) {
-        return null;
+
+        if (node.Types != null) {
+            boolean Success = true;
+            for (IdNode type : node.Types) {
+                if (Table.retrieveSymbol(type.value) == null) {
+                    Success = false;
+                    Errors.add("Invalid type name:" + type.value + " used in method declaration of method " + node.Identifier.value);
+                }
+            }
+            return Success == true ? "Success" : "Failed";
+        } else {
+            return "Success";
+        }
     }
 
 
     @Override
     public String Visit(IdNode node) {
-        Symbol temp = Table.retrieveSymbol(node.value);
 
-        return temp.Type;//Returns the type to checks in expressions
+        Symbol temp = Table.retrieveSymbol(node.value);
+        if (temp == null) {
+            Errors.add("Variable: " + node.value + "Has not been declared");
+            return "Failure";
+        } else {
+            return temp.Type;//Returns the type to checks in expressions
+        }
     }
 
     @Override
@@ -199,7 +218,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(InitializationNode node) {
-        if(Table.retrieveSymbol(node.Type.value) != null){//Checks the symboltable, if the id has been declared
+        if(Table.retrieveSymbol(node.Type.value) != null){//Checks the symboltable, if the type has been declared
             return "exists";
         }
         Errors.add(node.Type.value + " type has not been declared yet");

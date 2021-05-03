@@ -241,12 +241,20 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
                 node = new MethodDeclerationNode(new IdNode(ctx.Id(0).toString()), visitChildren(ctx.statements()).Children);
                 break;
             default:
+               // String tempType = "";
                 int paramCount = ctx.Id().size()-1;
                 ArrayList<IdNode> parameters = new ArrayList<>();
-                for (int i = 2; i <= paramCount; i = i+2){
-                    parameters.add(new IdNode(ctx.Id(i).toString()));
+                ArrayList<IdNode> types = new ArrayList<>();
+                for (int i = 1; i <= paramCount; i = i+1){
+                    if (!(i % 2 == 0)) {
+                        types.add(new IdNode(ctx.Id(i).toString()));
+                        //tempType = ctx.Id(i).toString().equals("number") ? "Number/" : "String/";
+                    } else {
+                        //parameters.add(new IdNode(tempType + ctx.Id(i).toString()));
+                        parameters.add(new IdNode(ctx.Id(i).toString()));
+                    }
                 }
-                node = new MethodDeclerationNode(new IdNode(ctx.Id(0).toString()), parameters, visitChildren(ctx.statements()).Children);
+                node = new MethodDeclerationNode(new IdNode(ctx.Id(0).toString()), parameters, types, visitChildren(ctx.statements()).Children);
                 break;
         }
         return node;

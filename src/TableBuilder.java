@@ -1,3 +1,4 @@
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 public class TableBuilder {
@@ -9,52 +10,54 @@ public class TableBuilder {
         PrimTypes.add("string");
         PrimTypes.add("number");
 
-        PrimTypes.forEach((primType) -> {
-            Target.enterSymbol(primType, primType);
-        });
-        AST.Children.forEach((node) -> {
-            BuildTableRec(Target, node, check, errors);
-        });
+        PrimTypes.forEach((primType) -> Target.enterSymbol(primType, primType));
+        CheckChildren(Target, errors, check, AST.Children);
 
         return Target;
+    }
+
+    private void CheckChildren(SymbolTable Target, ArrayList<String> errors, ASTTypeCheck check, ArrayList<AbstractNodeBase> children) {
+        children.forEach((node) -> BuildTableRec(Target, node, check, errors));
     }
 
     private void BuildTableRec(SymbolTable Target, AbstractNodeBase CurrentNode, ASTTypeCheck check, ArrayList<String> errors) {
 
         if (CurrentNode instanceof MethodDeclerationNode) {
-            Target.enterSymbol(((MethodDeclerationNode) CurrentNode).Identifier.value, "method");
-            check.Table = Target;
-
+            if (check.Visit(CurrentNode).equals("Success")) {
+                if (((MethodDeclerationNode) CurrentNode).Parameters != null) {
+                    Target.enterSymbol(((MethodDeclerationNode) CurrentNode).Identifier.value + "(" +
+                            getMethodTypes(((MethodDeclerationNode) CurrentNode).Types) + ")" , "method");
+                    check.Table.openScope();
+                    insertParameters(((MethodDeclerationNode) CurrentNode).Types, ((MethodDeclerationNode) CurrentNode).Parameters, Target);
+                } else {
+                    Target.enterSymbol(((MethodDeclerationNode) CurrentNode).Identifier.value, "method");
+                    check.Table.openScope();
+                }
+                CheckChildren(Target, errors, check, ((MethodDeclerationNode) CurrentNode).Statements);
+                Target.printCurrentScope();
+                check.Table.closeScope();
+            }
         } else if (CurrentNode instanceof InitializationNode) {
             if (check.Visit(CurrentNode) != null) {
                 Target.enterSymbol(((InitializationNode) CurrentNode).Identifier.value, ((InitializationNode) CurrentNode).Type.value);
             }
         } else if (CurrentNode instanceof ForNode) {
             check.Table.openScope();
-
             Target.enterSymbol(((ForNode) CurrentNode).Id.value, "number");
-
             check.Visit(CurrentNode);
 
-            ((ForNode) CurrentNode).Statements.forEach((statement) -> {
-                BuildTableRec(Target, statement, check, errors);
-            });
+            CheckChildren(Target, errors, check, ((ForNode) CurrentNode).Statements);
 
             check.Table.closeScope();
         } else if (CurrentNode instanceof IfNode || CurrentNode instanceof WhileNode) {
 
             check.Table.openScope();
-
             check.Visit(CurrentNode);
 
             if (CurrentNode instanceof IfNode) {
-                ((IfNode) CurrentNode).Statements.forEach((statement) -> {
-                    BuildTableRec(Target, statement, check, errors);
-                });
+                CheckChildren(Target, errors, check, ((IfNode) CurrentNode).Statements);
             } else {
-                ((WhileNode) CurrentNode).Statements.forEach((statement) -> {
-                    BuildTableRec(Target, statement, check, errors);
-                });
+                CheckChildren(Target, errors, check, ((WhileNode) CurrentNode).Statements);
             }
 
             check.Table.closeScope();
@@ -68,6 +71,21 @@ public class TableBuilder {
             check.Table = Target;
             check.Visit(CurrentNode);
         }
+    }
+
+    private void insertParameters(ArrayList<IdNode> types, ArrayList<IdNode> parameters, SymbolTable Target) {
+        for (int i=0; i<types.size(); i++) {
+            Target.enterSymbol(parameters.get(i).value, types.get(i).value);
+        }
+    }
+
+    private String getMethodTypes(ArrayList<IdNode> types) {
+        String TypesString = "";
+        for (IdNode type : types) {
+            TypesString += type.value + ",";
+        }
+
+        return TypesString;
     }
 }
 
