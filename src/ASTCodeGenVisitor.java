@@ -368,6 +368,16 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(MethodDeclerationNode node) {
+        int nextID = incrementer.GetNextID();
+        if (node.Parameters != null){
+            for (int i=0; i<node.Parameters.size(); i++) {
+                if (node.Types.get(i).value.equals("number")) {
+                    VarTable.put("Number/" + node.Parameters.get(i).value, nextID);
+                } else {
+                    VarTable.put("String/" + node.Parameters.get(i).value, nextID);
+                }
+            }
+        }
         return null;
     }
 
