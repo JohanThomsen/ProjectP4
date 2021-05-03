@@ -166,9 +166,6 @@ public class ASTTypeCheck extends ASTVisitor<String>{
                     return "Failure";
                 }
             }
-            for (IdNode para : node.Parameters) {
-                tempType = this.Visit(para);
-            }
         } else {
             if (temp.Type.startsWith("method")) {
                 return "Success";
