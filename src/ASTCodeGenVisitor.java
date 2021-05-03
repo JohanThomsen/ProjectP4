@@ -495,4 +495,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("astore "+ Id);
         VarTable.put("Scanner", Id);
     }
+
+    public void scanCall(){
+        int scanId = VarTable.get("Scanner");
+        emit("aload "+scanId);
+        emit("invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;");
+
+    }
 }
