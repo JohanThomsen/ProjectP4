@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 
 public class MethodCallNode extends AbstractNodeBase{
-    IdNode Identifier;
-    ArrayList<IdNode> Parameters;
+    public IdNode Identifier;
+    public ArrayList<IdNode> Parameters;
 
     public MethodCallNode(IdNode Identifier){
         this.Identifier = Identifier;
