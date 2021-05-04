@@ -475,14 +475,30 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit(".end method");
     }
 
-    public void genPrintStream(){//Remember to hardcode the value needed
-        emit("fload" + 2);
-        emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
-        emit("astore" + 10);
-        emit("invokestatic java/lang/String/valueOf(F)Ljava/lang/String;");
-        emit("astore" + 11);
-        emit("aload " + 10);
-        emit("aload " + 11);
+    public void printStuff(float f){//Remember to hardcode the value needed
+        if(!VarTable.containsKey("OutStream")){
+            genPrintStream();
+        }
+
+        emit("aload " + VarTable.get("OutStream"));
+        emit("ldc "+ f);
+        emit("invokevirtual java/io/PrintStream/println(F)V");
+    }
+
+    public void genPrintStream(){
+            int out = incrementer.GetNextID();
+            VarTable.put("OutStream", out);
+            emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
+            emit("astore" + out);
+
+    }
+
+    public void printStuff(String s){
+        if(!VarTable.containsKey("OutStream")){
+            genPrintStream();
+        }
+        emit("aload " + VarTable.get("OutStream"));
+        emit("ldc \""+ s +"\"");
         emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
     }
 
