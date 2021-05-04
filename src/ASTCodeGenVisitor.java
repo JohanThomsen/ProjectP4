@@ -475,7 +475,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit(".end method");
     }
 
-    public void printStuff(float f){//Remember to hardcode the value needed
+    public void printStuff(float f){
         if(!VarTable.containsKey("OutStream")){
             genPrintStream();
         }
@@ -513,9 +513,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void scanCall(){
-        int scanId = VarTable.get("Scanner");
-        emit("aload "+scanId);
+        if(!VarTable.containsKey("Scanner")){
+            genInputScanner();
+        }
+        emit("aload "+ VarTable.get("Scanner"));
         emit("invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;");
-
     }
 }
