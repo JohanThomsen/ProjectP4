@@ -384,10 +384,14 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         int nextID = incrementer.GetNextID();
         if (node.Parameters != null){
             for (int i=0; i<node.Parameters.size(); i++) {
-                if (node.Types.get(i).value.equals("number")) {
-                    VarTable.put("Number/" + node.Parameters.get(i).value, nextID);
+                String typeValue = node.Types.get(i).value;
+                String paramValue = node.Parameters.get(i).value;
+                if (typeValue.equals("number")) {
+                    VarTable.put("Number/" + paramValue, nextID);
+                } else if (typeValue.equals("string")) {
+                    VarTable.put("String/" + paramValue, nextID);
                 } else {
-                    VarTable.put("String/" + node.Parameters.get(i).value, nextID);
+                    VarTable.put(typeValue + "/" + paramValue, nextID);
                 }
             }
         }
