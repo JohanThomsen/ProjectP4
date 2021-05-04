@@ -450,7 +450,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void genMain(){
-        emit(".class public com/company/Main");
+        emit(".class public Out");
         emit(".super java/lang/Object");
         emit(".method public <init>()V");
         emit("aload_0");
@@ -489,7 +489,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             int out = incrementer.GetNextID();
             VarTable.put("OutStream", out);
             emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
-            emit("astore" + out);
+            emit("astore " + out);
 
     }
 

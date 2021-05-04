@@ -2,11 +2,19 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-/*import java.io.PrintStream;*/
+
+import jasmin.*;
+
 import static org.antlr.v4.runtime.CharStreams.fromFileName;
+
+/*import java.io.PrintStream;*/
 
 public class Main {
 
@@ -14,14 +22,14 @@ public class Main {
 
         ArrayList<String> Errors = new ArrayList<>();
 
-	    try{
-	        MyVisitor visitor = new MyVisitor();
-	        SymbolTable Table = new SymbolTable();
-	        TableBuilder Builder = new TableBuilder();
-	        String source = "test.txt";
-	        CharStream stream = fromFileName(source);
-	        gLexer lexer = new gLexer(stream);
-	        CommonTokenStream token = new CommonTokenStream(lexer);
+        try {
+            MyVisitor visitor = new MyVisitor();
+            SymbolTable Table = new SymbolTable();
+            TableBuilder Builder = new TableBuilder();
+            String source = args[0];
+            CharStream stream = fromFileName(source);
+            gLexer lexer = new gLexer(stream);
+            CommonTokenStream token = new CommonTokenStream(lexer);
             gParser parser = new gParser(token);
             ParseTree tree = parser.program();
 
@@ -29,17 +37,30 @@ public class Main {
 
             Table = Builder.TableBuild(Table, node, Errors);
 
-            if (Errors.isEmpty()){
+            if (Errors.isEmpty()) {
                 CodeGen(node);
+
+                new jasmin.Main().assemble("out.j");
+
+                ProcessBuilder processBuilder;
+                if (args.length == 2) {
+                    processBuilder = new ProcessBuilder("jar", "-cfe", args[1] + ".jar", "Out", "Out.class");
+                } else {
+                    processBuilder = new ProcessBuilder("jar", "-cfe", "out.jar", "Out", "Out.class");
+                }
+                processBuilder.redirectErrorStream(true);
+                processBuilder.inheritIO();
+                var process = processBuilder.start();
+                process.waitFor();
+
+                new File("Out.class").deleteOnExit();
             } else {
                 Errors.forEach(System.out::println);
             }
 
-        }
-	    catch(IOException e){
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     private static void CodeGen(AbstractNodeBase node) {
@@ -47,14 +68,13 @@ public class Main {
 
         gen.genMain();
 
-        if(node.Children.size() > 0){
-            for(int i = 0; i < node.Children.size(); i++){
+        if (node.Children.size() > 0) {
+            for (int i = 0; i < node.Children.size(); i++) {
                 gen.Visit(node.Children.get(i));
             }
-        }else{gen.Visit(node);}
-
-
-
+        } else {
+            gen.Visit(node);
+        }
 
         gen.genEnd();
     }
