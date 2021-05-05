@@ -263,15 +263,22 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     @Override
     public AbstractNodeBase visitMethodcall(gParser.MethodcallContext ctx) {
         MethodCallNode node;
-        switch (ctx.Id().size()) {
-            case 1:
+        int nonNullChildNodes = ctx.Id().size() + ctx.String().size() + ctx.math().size();
+        switch (nonNullChildNodes) {
+            case 1: //If there are no parameters
                 node = new MethodCallNode(new IdNode(ctx.Id(0).toString()));
                 break;
-            default:
-                int paramCount = ctx.Id().size()-1;
-                ArrayList<IdNode> parameters = new ArrayList<>();
+            default: //In case of parameters
+                int paramCount = nonNullChildNodes-1;
+                ArrayList<AbstractNodeBase> parameters = new ArrayList<>();
                 for (int i = 1; i <= paramCount; i++){
-                    parameters.add(new IdNode(ctx.Id(i).toString()));
+                    if (ctx.Id(i) != null) { //This isnt great
+                        parameters.add(new IdNode(ctx.Id(i).toString()));
+                    } else if (ctx.String(i-1) != null) {
+                        parameters.add(new StringNode(ctx.String(i-1).toString()));
+                    } else if (ctx.math(i-1) != null) {
+                        parameters.add(visitChildren(ctx.math(i)));
+                    }
                 }
                 node = new MethodCallNode(new IdNode(ctx.Id(0).toString()), parameters);
                 break;
@@ -283,7 +290,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     public AbstractNodeBase visitTerminal(TerminalNode node) {
         switch (node.getSymbol().getType()) {
             case gParser.String:
-                return new StringNode(node.toString());
+                return new StringNode(node.toString().replace("\"", ""));
             case gParser.Id:
                 return new IdNode(node.toString());
             case gParser.Number:

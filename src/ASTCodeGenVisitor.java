@@ -364,8 +364,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(MethodCallNode node) {
-        if (node.Identifier.value == "print") {
-
+        if (node.Identifier.value.equals("print")) {
+            String concatenadedParameters = "";
+            for (AbstractNodeBase currentParam:node.Parameters) {
+                concatenadedParameters += currentParam.toString();
+            }
+            printStuff(concatenadedParameters);
         } else if (node.Identifier.value == "read") {
 
         } else {
@@ -374,10 +378,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             String params = "";
             emit("aload " + VarTable.get(node.Identifier.value));
             for (int i = 0; i < node.Parameters.size(); i++) {
-
-                if (Pattern.matches("[0-9]+", node.Parameters.get(i).value)) {
+                IdNode currentNode = (IdNode) node.Parameters.get(i);
+                if (Pattern.matches("[0-9]+", currentNode.value)) {
                     params.concat("F");
-                } else if (Pattern.matches("[a-zA-Z0-9]+", node.Parameters.get(i).value)) {
+                } else if (Pattern.matches("[a-zA-Z0-9]+", currentNode.value)) {
                     params.concat("Ljava/lang/String;");
                 }
 

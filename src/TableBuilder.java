@@ -96,7 +96,6 @@ public class TableBuilder {
         check.Table.openScope();
         Target.enterSymbol("s", "string");
         //BuiltIn functions do not have child statements, so no reason to do CheckChildren
-        Target.printCurrentScope();
         check.Table.closeScope();
     }
 }
