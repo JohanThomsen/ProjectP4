@@ -19,13 +19,14 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         if(temp != null){//Checks if the target exists in the symbol table, if it does not the it has nowhere to assign to and is illegal.
             if(temp.Type.equals(valueType)){
                 return temp.Type;
-            }
-            else{
-                if (!(valueType.equals("error"))) {
-                    Errors.add("Assignment error: " + node.Target.value + " and " + valueType + " do not match");
-                } else {
-                    Errors.add("Assignment failed due to error elsewhere"); //TODO Do we want this ?
-                }
+            } else if (valueType.equals("ctrlStruc") && temp.Type.equals("number")) {
+                return "ctrlStruc";
+            } else if (valueType.equals("bool") && temp.Type.equals("number")) {
+                return "bool";
+            } else if (!(valueType.equals("error"))) {
+                Errors.add("Assignment error: " + node.Target.value + " and " + valueType + " do not match");
+            } else {
+                Errors.add("Assignment failed due to error elsewhere"); //TODO Do we want this ?
             }
         } else {
             Errors.add(node.Target.value + " Has not been initialized");
@@ -220,13 +221,13 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     @Override
     public String Visit(IfNode node) {
         this.Visit(node.Predicate);
-        return "success";
+        return "ctrlStruc";
     }
 
     @Override
     public String Visit(WhileNode node) {
         this.Visit(node.Predicate);
-        return "success";
+        return "ctrlStruc";
     }
 
     @Override
@@ -237,7 +238,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
             Errors.add("Range parameters must be numbers");
             return "error";
         }
-        return "success";
+        return "ctrlStruc";
     }
 
     @Override

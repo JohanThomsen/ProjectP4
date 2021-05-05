@@ -501,7 +501,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void genEnd(){
-        emit(".limit locals 50");
+        emit(".limit locals "+VarTable.size());
         emit(".limit stack 10");
         emit("return");
         emit(".end method");
