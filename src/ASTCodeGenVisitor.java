@@ -365,11 +365,27 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     @Override
     public String Visit(MethodCallNode node) {
         if (node.Identifier.value.equals("print")) {
-            String concatenadedParameters = "";
+            String concatenatedParameters = "";
+
             for (AbstractNodeBase currentParam:node.Parameters) {
-                concatenadedParameters += currentParam.toString();
+                if (currentParam instanceof StringNode){
+                    concatenatedParameters += currentParam.toString();
+                    printStuff(concatenatedParameters);
+                } else if (currentParam instanceof IdNode){
+                    VarTable.get(((IdNode) currentParam).value);
+                    if (VarTable.containsKey("Number/" +  ((IdNode) currentParam).value)){
+                        printStuff(getReference("Number/" + ((IdNode) currentParam).value), "F");
+                    } else if (VarTable.containsKey("String/" + ((IdNode) currentParam).value)){
+                        printStuff(getReference("String/" + ((IdNode) currentParam).value), "Ljava/lang/String;");
+                    };
+                } else if (currentParam.Children.size() > 1){
+                    printNumberFromStack(currentParam); //this could probably be done above
+                } else if (currentParam instanceof BinaryOperator){
+                    printNumberFromStack(currentParam);
+                }
+
             }
-            printStuff(concatenadedParameters);
+
         } else if (node.Identifier.value == "read") {
 
         } else {
@@ -516,6 +532,38 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("aload " + VarTable.get("OutStream"));
         emit("ldc \""+ s +"\"");
         emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
+    }
+
+    public void printNumberFromStack(AbstractNodeBase node){
+        if(!VarTable.containsKey("OutStream")){
+            genPrintStream();
+        }
+        emit("aload " + VarTable.get("OutStream"));
+        this.Visit(node);
+        emit("invokevirtual java/io/PrintStream/println(F)V");
+    }
+
+    public void printStringFromStack(AbstractNodeBase node){
+        if(!VarTable.containsKey("OutStream")){
+            genPrintStream();
+        }
+        emit("aload " + VarTable.get("OutStream"));
+        this.Visit(node);
+        emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
+    }
+
+    public void printStuff(int reference, String type){
+        if(!VarTable.containsKey("OutStream")){
+            genPrintStream();
+        }
+        emit("aload " + VarTable.get("OutStream"));
+        if (type.equals("F")){
+            emit("fload " + reference);
+        } else {
+            emit("aload " + reference);
+        }
+
+        emit("invokevirtual java/io/PrintStream/println(" + type + ")V");
     }
 
     public void genInputScanner(){

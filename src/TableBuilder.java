@@ -102,6 +102,7 @@ public class TableBuilder {
 
 
 
+
         /*for (int i = 0; i < AST.Children.size(); i++) {
 
             if (AST.Children.get(i) instanceof MethodDeclerationNode) {

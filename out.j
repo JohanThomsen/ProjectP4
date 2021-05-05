@@ -9,8 +9,13 @@ return
 getstatic java/lang/System/out Ljava/io/PrintStream;
 astore 0
 aload 0
-ldc "Hello World"
+ldc "Hej Johan"
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 0
+ldc 5.0
+ldc 5.0
+fadd
+invokevirtual java/io/PrintStream/println(F)V
 .limit locals 50
 .limit stack 10
 return

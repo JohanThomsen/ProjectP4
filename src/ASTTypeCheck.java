@@ -159,11 +159,21 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         String tempType;
         String[] ParaTypes = temp.Type.replaceFirst("method", "").replace("(", "").replace(")", "").split(",");//("^(\\w+,)");
         if (node.Parameters != null) {
-            for (int i = 0; i < node.Parameters.size(); i++) {
-                tempType = this.Visit(node.Parameters.get(i));
-                if (!tempType.equals(ParaTypes[i])) {
-                    Errors.add("Parameter types of method: " + node.Identifier.value + " do not match passed values");
-                    return "Failure";
+            if (node.Identifier.value.equals("print")){
+                for (int i = 0; i < node.Parameters.size(); i++) {
+                    tempType = this.Visit(node.Parameters.get(i));
+                    if (!(tempType.equals("string")) && (!(tempType.equals("number")))) {
+                        Errors.add("Parameter types of method: " + node.Identifier.value + " do not match passed values");
+                        return "Failure";
+                    }
+                }
+            } else {
+                for (int i = 0; i < node.Parameters.size(); i++) {
+                    tempType = this.Visit(node.Parameters.get(i));
+                    if (!tempType.equals(ParaTypes[i])) {
+                        Errors.add("Parameter types of method: " + node.Identifier.value + " do not match passed values");
+                        return "Failure";
+                    }
                 }
             }
         } else {

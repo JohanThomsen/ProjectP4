@@ -277,7 +277,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
                     } else if (ctx.String(i-1) != null) {
                         parameters.add(new StringNode(ctx.String(i-1).toString()));
                     } else if (ctx.math(i-1) != null) {
-                        parameters.add(visitChildren(ctx.math(i)));
+                        parameters.add(this.visit(ctx.math(i-1)));
                     }
                 }
                 node = new MethodCallNode(new IdNode(ctx.Id(0).toString()), parameters);
