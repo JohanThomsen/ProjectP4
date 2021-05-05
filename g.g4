@@ -65,7 +65,7 @@ attributes: String
 | String 'and' attributes;
 
 methodcall: ('do'|'Do') Id
-| ('do'|'Do') Id 'with' Id(',' Id)*;
+| ('do'|'Do') Id 'with' (Id(',' Id)* | String(',' String)* | math(',' math)*);
 
 Id: [a-z_A-Z]+;
 

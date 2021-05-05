@@ -10,6 +10,9 @@ public class TableBuilder {
         PrimTypes.add("string");
         PrimTypes.add("number");
 
+        addBuiltinFunctionWithStringParam("print", Target, check);
+        addBuiltinFunctionWithStringParam("read", Target, check);
+
         PrimTypes.forEach((primType) -> Target.enterSymbol(primType, primType));
         CheckChildren(Target, errors, check, AST.Children);
 
@@ -87,7 +90,18 @@ public class TableBuilder {
         return TypesString.toString();
         //return TypesString.deleteCharAt(TypesString.lastIndexOf(",")).toString();
     }
+
+    private void addBuiltinFunctionWithStringParam(String name, SymbolTable Target, ASTTypeCheck check) {
+        Target.enterSymbol(name, "method" +"(" + "string" + ")");
+        check.Table.openScope();
+        Target.enterSymbol("s", "string");
+        //BuiltIn functions do not have child statements, so no reason to do CheckChildren
+        Target.printCurrentScope();
+        check.Table.closeScope();
+    }
 }
+
+
 
         /*for (int i = 0; i < AST.Children.size(); i++) {
 
