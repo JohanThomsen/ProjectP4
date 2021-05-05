@@ -1,1 +1,26 @@
-There can exist a House for which: 1
+There is a number called NumOne.
+NumOne is 5.
+There is a number called NumTwo.
+NumTwo is 12.
+
+There is a number called x.
+
+x is if NumTwo is greater than NumOne then do
+    There is a number called NumIf.
+    NumIf is 5 + 4.
+Then continue.
+
+x is As long as NumOne is less than NumTwo is true, do
+    NumOne is NumOne + 1.
+    There is a number called NumWhile.
+    NumWhile is 8.
+Then continue.
+
+There is a number called i.
+x is Repeat i from 1+2 to 5*1
+    There is a number called Num.
+    Num is x.
+Then continue.
+plusTwo does
+    NumOne + NumTwo.
+then continue
