@@ -28,3 +28,6 @@ out/
 
 # IntelliJ
 .idea/
+
+./gentest
+*.j

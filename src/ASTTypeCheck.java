@@ -21,6 +21,8 @@ public class ASTTypeCheck extends ASTVisitor<String>{
                 return temp.Type;
             } else if (valueType.equals("ctrlStruc") && temp.Type.equals("number")) {
                 return "ctrlStruc";
+            }else if (valueType.equals("bool") && temp.Type.equals("number")) {
+                return "bool";
             } else if (!(valueType.equals("error"))) {
                 Errors.add("Assignment error: " + node.Target.value + " and " + valueType + " do not match");
             } else {
@@ -187,7 +189,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
                     Errors.add("Invalid type name:" + type.value + " used in method declaration of method " + node.Identifier.value);
                 }
             }
-            return Success == true ? "Success" : "Failed";
+            return Success ? "Success" : "Failed";
         } else {
             return "Success";
         }

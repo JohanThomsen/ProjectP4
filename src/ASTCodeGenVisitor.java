@@ -59,6 +59,23 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     emit("aload " +  getReference("String/" + ((IdNode) node.Value).value));
                     emit("astore " + getReference("String/" + node.Target.value));
                 }
+            } else if (node.Value instanceof WhileNode){
+                //Basically a visit(while) but with an increment inside it.
+                int loopID = loopIncrementer.GetNextID();
+                int blockID = blockIncrementer.GetNextID();
+                emit("LoopStart" + loopID + ":");
+                this.Visit(((WhileNode) node.Value).Predicate);
+                emit("ifeq BranchEnd" + blockID);
+                for (AbstractNodeBase a:  ((WhileNode) node.Value).Statements) {
+                    this.Visit(a);
+                }
+                // increment
+                emit("fconst_1");
+                emit("fload " +  getReference("Number/" + (node.Target.value)));
+                emit("fadd");
+                emit("fstore " + getReference("Number/" + (node.Target.value)));
+                emit("goto LoopStart" + loopID);
+                emit("BranchEnd" + blockID + ":");
             } else {
                 this.Visit(node.Value);
                 emit("fstore " + getReference("Number/" + node.Target.value));

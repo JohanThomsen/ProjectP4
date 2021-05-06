@@ -91,7 +91,15 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         indentation++;
         AssignNode node = new AssignNode();
         node.Target = new IdNode(ctx.Id(0).toString());
-        if(ctx.expression() != null || ctx.Id(1) != null || ctx.Number() != null || ctx.String() != null){
+        if (ctx.expression() != null ){
+            if (visitChildren(ctx).Children.get(1) instanceof IfNode){
+                node.Value = ((IfNode) visitChildren(ctx).Children.get(1)).Predicate;
+            }
+            else {
+                node.Value = visitChildren(ctx).Children.get(1);
+            }
+        }
+        else if(ctx.Id(1) != null || ctx.Number() != null || ctx.String() != null){
             node.Value = visitChildren(ctx).Children.get(1);
         }else{
             node.attributes = AbstractRemoval(visitChildren(ctx.attributes()));
