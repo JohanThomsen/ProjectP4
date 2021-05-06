@@ -120,8 +120,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
-
-        BoolLoadNumber(node);
+        if(node.LeftOperand instanceof StringNode){
+            stringEquals(((StringNode) node.LeftOperand).value);
+        } else{
+            BoolLoadNumber(node);
+        }
         BoolNodeEmit("ifeq truelabel");
         return null;
     }
@@ -584,5 +587,13 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }
         emit("aload "+ VarTable.get("Scanner"));
         emit("invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;");
+        emit("astore 0");
+    }
+
+    private void stringEquals(String compareTo){
+        emit("ldc \""+compareTo+"\"");
+        emit("aload 0");
+        emit("invokevirtual java/lang/String.compareTo:(Ljava/lang/String;)I");
+        emit("i2f");
     }
 }
