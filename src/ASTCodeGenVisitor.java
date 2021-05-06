@@ -19,7 +19,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     int level = 0;
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
-    Incrementer incrementer = new Incrementer();
+    Incrementer incrementer = new Incrementer(4);
     Incrementer loopIncrementer = new Incrementer();
     Incrementer blockIncrementer = new Incrementer();
     Incrementer boolIncrementer = new Incrementer();

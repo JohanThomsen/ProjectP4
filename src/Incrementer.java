@@ -5,4 +5,10 @@ public class Incrementer {
         ID++;
         return ID;
     }
+    public Incrementer(int startValue){
+        ID = startValue;
+    }
+    public Incrementer(){
+
+    }
 }
