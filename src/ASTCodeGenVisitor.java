@@ -589,7 +589,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     private void stringEquals(String compareTo){
-        emit(compareTo);
+        emit("ldc \""compareTo+"\"");
         emit("aload 0");
         emit("invokevirtual java/lang/String.compareTo:(Ljava/lang/String;)I");
         emit("i2f");
