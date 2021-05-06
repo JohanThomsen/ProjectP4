@@ -1,4 +1,4 @@
-// Generated from D:/Projects/ProjectP4\g.g4 by ANTLR 4.9.1
+// Generated from D:/Repos/ProjectP4\g.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -185,6 +185,13 @@ public class gBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements gVis
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitBoolEquals(gParser.BoolEqualsContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitStringEquals(gParser.StringEqualsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

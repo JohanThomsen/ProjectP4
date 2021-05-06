@@ -1,4 +1,4 @@
-// Generated from D:/Projects/ProjectP4\g.g4 by ANTLR 4.9.1
+// Generated from D:/Repos/ProjectP4\g.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -290,6 +290,18 @@ public interface gListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBoolEquals(gParser.BoolEqualsContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stringEquals}
+	 * labeled alternative in {@link gParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringEquals(gParser.StringEqualsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stringEquals}
+	 * labeled alternative in {@link gParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringEquals(gParser.StringEqualsContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code BoolId}
 	 * labeled alternative in {@link gParser#bool}.

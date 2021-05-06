@@ -1,4 +1,4 @@
-// Generated from D:/Projects/ProjectP4\g.g4 by ANTLR 4.9.1
+// Generated from D:/Repos/ProjectP4\g.g4 by ANTLR 4.9.1
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -310,6 +310,18 @@ public class gBaseListener implements gListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBoolEquals(gParser.BoolEqualsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringEquals(gParser.StringEqualsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringEquals(gParser.StringEqualsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -120,11 +120,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
-        if(node.LeftOperand instanceof StringNode){
-            stringEquals(((StringNode) node.LeftOperand).value);
-        } else{
-            BoolLoadNumber(node);
-        }
+        BoolLoadNumber(node);
         BoolNodeEmit("ifeq truelabel");
         return null;
     }
@@ -177,15 +173,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolNotNode node) {
-        int boolID = boolIncrementer.GetNextID();
-
-        emit("ldc " + ((NumberNode)node.Operand).value);
-        emit("ifeq Truelabel" + boolID);
-        emit("iconst_0");
-        emit("goto stoplabel" + boolID);
-        emit("Truelabel" + boolID + ":");
-        emit("iconst_1");
-        emit("stoplabel" + boolID + ":");
+        this.Visit(node.Operand);
+        emit("i2f");
+        emit("ldc 0.0");
+        BoolNodeEmit("ifeq truelabel");
 
         return null;
     }
@@ -314,6 +305,13 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("goto LoopStart" + loopID);
         //Or end
         emit("BranchEnd" + blockID + ":");
+        return null;
+    }
+
+    @Override
+    public String Visit(StringEqualsNode node) {
+        stringEquals(node);
+        BoolNodeEmit("ifeq truelabel");
         return null;
     }
 
@@ -573,7 +571,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     public void genInputScanner(){
         int Id = incrementer.GetNextID();
-        emit("new class java/util/Scanner");
+        emit("new java/util/Scanner");
         emit("dup");
         emit("getstatic java/lang/System.in Ljava/io/InputStream;");
         emit("invokespecial java/util/Scanner.<init>(Ljava/io/InputStream;)V");
@@ -587,13 +585,28 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }
         emit("aload "+ VarTable.get("Scanner"));
         emit("invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;");
-        emit("astore 0");
     }
 
-    private void stringEquals(String compareTo){
-        emit("ldc \""+compareTo+"\"");
-        emit("aload 0");
-        emit("invokevirtual java/lang/String.compareTo:(Ljava/lang/String;)I");
+    private void stringEquals(StringEqualsNode node){
+        if (node.LeftOperand instanceof StringNode) {
+            if (node.RightOperand instanceof StringNode){
+                emit("ldc \""+((StringNode) node.LeftOperand).value+"\"");
+                emit("ldc \""+((StringNode) node.RightOperand).value+"\"");
+            } else {
+                emit("ldc \""+((StringNode) node.LeftOperand).value+"\"");
+                emit("aload " +  getReference("String/" + ((IdNode)node.RightOperand).value));
+            }
+        } else {
+            if (node.RightOperand instanceof StringNode){
+                emit("aload " +  getReference("String/" + ((IdNode)node.LeftOperand).value));
+                emit("ldc \""+((StringNode) node.RightOperand).value+"\"");
+            } else {
+                emit("aload " +  getReference("String/" + ((IdNode)node.LeftOperand).value));
+                emit("aload " +  getReference("String/" + ((IdNode)node.RightOperand).value));
+            }
+        }
+        emit("invokevirtual java/lang/String.compareTo(Ljava/lang/String;)I");
         emit("i2f");
+        emit("fconst_0");
     }
 }

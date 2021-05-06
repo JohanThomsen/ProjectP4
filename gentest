@@ -1,26 +1,7 @@
-There is a number called NumOne.
-NumOne is 5.
-There is a number called NumTwo.
-NumTwo is 12.
-There is a number called NumTwoOne.
-NumTwoOne is NumTwo.
-There is a string called Hello.
-Hello is "Hello".
-
-NumTwoOne is Hello + NumOne.
-
-NotMe is 12.
-
-As long as NumOne is less than NumTwo is true, do
-    NumOne is NumOne + 1.
-    There is a number called NumWhile.
-    NumWhile is 8.
-    if NumTwo is greater than NumOne then do
-        There is a number called NumIf.
-        NumIf is 5 + 4.
-        There is a number called NumIfTwo.
-        NumIfTwo is 5 + 4.
-    Then continue
-Then continue
-
-
+Do print with "go NORTH to learn more".
+There is a string called input.
+input is Do read.
+as long as not input is equal to "NORTH" is true, do
+    input is Do read.
+then continue
+do print with "Good job going North".

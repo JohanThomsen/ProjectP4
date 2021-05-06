@@ -245,6 +245,19 @@ public class ASTTypeCheck extends ASTVisitor<String>{
     }
 
     @Override
+    public String Visit(StringEqualsNode node) {
+        String temp = this.Visit(node.LeftOperand);
+        String tempRight = this.Visit(node.RightOperand);
+
+        if(temp.equals(tempRight)){
+            return "bool";
+        }
+
+        Errors.add("Bool Type Error: Left bool type: " + temp + ". Right bool type: " + tempRight);
+        return "error";
+    }
+
+    @Override
     public String Visit(InitializationNode node) {
         if(Table.retrieveSymbol(node.Type.value) != null){//Checks the symboltable, if the type has been declared
             return "exists";

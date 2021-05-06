@@ -161,6 +161,11 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     }
 
     @Override
+    public AbstractNodeBase visitStringEquals(gParser.StringEqualsContext ctx) {
+        return new StringEqualsNode(visitChildren(ctx).Children);
+    }
+
+    @Override
     public AbstractNodeBase visitBoolLess(gParser.BoolLessContext ctx) {
         return new BoolLessNode(visitChildren(ctx).Children);
     }

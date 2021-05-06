@@ -1,4 +1,4 @@
-// Generated from D:/Projects/ProjectP4\g.g4 by ANTLR 4.9.1
+// Generated from D:/Repos/ProjectP4\g.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -176,6 +176,13 @@ public interface gVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBoolEquals(gParser.BoolEqualsContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stringEquals}
+	 * labeled alternative in {@link gParser#bool}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringEquals(gParser.StringEqualsContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code BoolId}
 	 * labeled alternative in {@link gParser#bool}.

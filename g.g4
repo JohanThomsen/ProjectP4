@@ -14,7 +14,7 @@ statement: expression
 ;
 
 expression: Id
-| methodcall '.'
+| methodcall '.'?
 | math '.'
 | bool
 | ctrlstruc ('then'|'Then') 'continue'
@@ -46,20 +46,20 @@ math: '(' math ')'          #mathParenthesis
 | Number                    #MathNumber
 ;
 
-bool: '(' bool ')'                   #boolParanthesis
-| bool 'is equal to' bool            #boolEquals
-| Id 'is equal to' String        #stringEquals
-| bool 'is less than' bool           #boolLess
-| bool 'is greater than' bool        #boolGreater
-| bool 'is less or equal to' bool    #boolLE
-| bool 'is greater or equal to' bool #boolGE
-| bool 'contains' bool               #boolContains
-| bool 'and' bool                    #boolAnd
-| bool 'or' bool                     #boolOr
-| 'not' bool                         #boolNot
-| Id                                 #BoolId
-| Number                             #BoolNumber
-| math                               #boolMath
+bool: '(' bool ')'                      #boolParanthesis
+| bool 'is equal to' bool               #boolEquals
+| (Id|String) 'is equal to' (Id|String) #stringEquals
+| bool 'is less than' bool              #boolLess
+| bool 'is greater than' bool           #boolGreater
+| bool 'is less or equal to' bool       #boolLE
+| bool 'is greater or equal to' bool    #boolGE
+| bool 'contains' bool                  #boolContains
+| bool 'and' bool                       #boolAnd
+| bool 'or' bool                        #boolOr
+| 'not' bool                            #boolNot
+| Id                                    #BoolId
+| Number                                #BoolNumber
+| math                                  #boolMath
 ;
 
 attributes: String
@@ -68,10 +68,13 @@ attributes: String
 methodcall: ('do'|'Do') Id
 | ('do'|'Do') Id 'with' (Id(',' Id)* | String(',' String)* | math(',' math)*);
 
+
 Id: [a-z_A-Z]+;
 
 String: '"' [ a-zA-Z0-9]* '"';
 
 Number: [0-9]+ ('.' [0-9]+)?;
+
+LineComment: '//' ~[\r\n]* -> channel(HIDDEN);
 
 WS: [ \t\r\n]+ -> channel(HIDDEN);
