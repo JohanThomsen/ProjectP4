@@ -48,6 +48,7 @@ math: '(' math ')'          #mathParenthesis
 
 bool: '(' bool ')'                   #boolParanthesis
 | bool 'is equal to' bool            #boolEquals
+| Id 'is equal to' String        #stringEquals
 | bool 'is less than' bool           #boolLess
 | bool 'is greater than' bool        #boolGreater
 | bool 'is less or equal to' bool    #boolLE

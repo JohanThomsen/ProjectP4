@@ -805,8 +805,8 @@ public class gParser extends Parser {
 		}
 		public TerminalNode Number() { return getToken(gParser.Number, 0); }
 		public TerminalNode String() { return getToken(gParser.String, 0); }
-		public MathContext math() {
-			return getRuleContext(MathContext.class,0);
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
 		}
 		public AttributesContext attributes() {
 			return getRuleContext(AttributesContext.class,0);
@@ -895,7 +895,7 @@ public class gParser extends Parser {
 				case 4:
 					{
 					setState(124);
-					math(0);
+					expression();
 					}
 					break;
 				}
@@ -2098,7 +2098,7 @@ public class gParser extends Parser {
 		"mn\3\2\2\2nl\3\2\2\2no\3\2\2\2oq\3\2\2\2pi\3\2\2\2pq\3\2\2\2qr\3\2\2\2"+
 		"rs\7\27\2\2su\5\4\3\2tb\3\2\2\2te\3\2\2\2u\17\3\2\2\2vw\7\61\2\2wy\t\7"+
 		"\2\2xz\t\b\2\2yx\3\2\2\2yz\3\2\2\2z\177\3\2\2\2{\u0080\7\61\2\2|\u0080"+
-		"\7\63\2\2}\u0080\7\62\2\2~\u0080\5\24\13\2\177{\3\2\2\2\177|\3\2\2\2\177"+
+		"\7\63\2\2}\u0080\7\62\2\2~\u0080\5\b\5\2\177{\3\2\2\2\177|\3\2\2\2\177"+
 		"}\3\2\2\2\177~\3\2\2\2\u0080\u0088\3\2\2\2\u0081\u0082\7\61\2\2\u0082"+
 		"\u0084\t\7\2\2\u0083\u0085\t\b\2\2\u0084\u0083\3\2\2\2\u0084\u0085\3\2"+
 		"\2\2\u0085\u0086\3\2\2\2\u0086\u0088\5\30\r\2\u0087v\3\2\2\2\u0087\u0081"+

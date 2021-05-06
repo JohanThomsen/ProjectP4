@@ -59,6 +59,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     emit("aload " +  getReference("String/" + ((IdNode) node.Value).value));
                     emit("astore " + getReference("String/" + node.Target.value));
                 }
+            } else if (node.Value instanceof MethodCallNode) {
+                if (((MethodCallNode) node.Value).Identifier.value.equals("read")){ //TODO do not do this, give methods return types instead
+                    this.Visit((MethodCallNode) node.Value);
+                    emit("astore " + getReference("String/" + node.Target.value));
+                }
             } else {
                 this.Visit(node.Value);
                 emit("fstore " + getReference("Number/" + node.Target.value));
@@ -377,19 +382,16 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                         printStuff(getReference("Number/" + ((IdNode) currentParam).value), "F");
                     } else if (VarTable.containsKey("String/" + ((IdNode) currentParam).value)){
                         printStuff(getReference("String/" + ((IdNode) currentParam).value), "Ljava/lang/String;");
-                    };
+                    }
                 } else if (currentParam.Children.size() > 1){
-                    printNumberFromStack(currentParam); //this could probably be done above
+                    printNumberFromStack(currentParam);
                 } else if (currentParam instanceof BinaryOperator){
                     printNumberFromStack(currentParam);
                 }
-
             }
-
-        } else if (node.Identifier.value == "read") {
-
+        } else if (node.Identifier.value.equals("read")) {
+            scanCall();
         } else {
-
 
             String params = "";
             emit("aload " + VarTable.get(node.Identifier.value));

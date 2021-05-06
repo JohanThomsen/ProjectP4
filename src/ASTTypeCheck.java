@@ -179,6 +179,9 @@ public class ASTTypeCheck extends ASTVisitor<String>{
             }
         } else {
             if (temp.Type.startsWith("method")) {
+                if (temp.Name.equals("read")){ //TODO please dont do this
+                    return "string";
+                }
                 return "Success";
             } else {
                 Errors.add(temp.Name + " Is attempted to be called as a method, which it is not");
