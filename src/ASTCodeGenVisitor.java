@@ -398,10 +398,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         } else if (node.Parameters != null){
 
             StringBuilder params = new StringBuilder();
-            emit("aload " + VarTable.get(node.Identifier.value));
             for (int i = 0; i < node.Parameters.size(); i++) {
                 IdNode currentNode = (IdNode) node.Parameters.get(i);
-
                 if (VarTable.containsKey("Number/" + (currentNode.value))){
                     emit("fload " +  getReference("Number/" + (currentNode.value)));
                     params.append("F");
