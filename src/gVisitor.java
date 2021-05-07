@@ -184,6 +184,13 @@ public interface gVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBoolEquals(gParser.BoolEqualsContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code stringEquals}
+	 * labeled alternative in {@link gParser#bool}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringEquals(gParser.StringEqualsContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code BoolId}
 	 * labeled alternative in {@link }.
 	 * @param ctx the parse tree

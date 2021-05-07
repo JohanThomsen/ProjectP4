@@ -19,7 +19,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     int level = 0;
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
-    Incrementer incrementer = new Incrementer();
+    Incrementer incrementer = new Incrementer(4);
     Incrementer loopIncrementer = new Incrementer();
     Incrementer blockIncrementer = new Incrementer();
     Incrementer boolIncrementer = new Incrementer();
@@ -57,6 +57,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     emit("fstore " + getReference("Number/" + node.Target.value));
                 } else if (VarTable.containsKey("String/" + ((IdNode) node.Value).value)){
                     emit("aload " +  getReference("String/" + ((IdNode) node.Value).value));
+                    emit("astore " + getReference("String/" + node.Target.value));
+                }
+            } else if (node.Value instanceof MethodCallNode) {
+                if (((MethodCallNode) node.Value).Identifier.value.equals("read")){ //TODO do not do this, give methods return types instead
+                    this.Visit((MethodCallNode) node.Value);
                     emit("astore " + getReference("String/" + node.Target.value));
                 }
             } else if (node.Value instanceof WhileNode){
@@ -132,7 +137,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolEqualNode node) { //If greater than returns 1 if equal return 0 if less than return -1
-
         BoolLoadNumber(node);
         BoolNodeEmit("ifeq truelabel");
         return null;
@@ -186,15 +190,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(BoolNotNode node) {
-        int boolID = boolIncrementer.GetNextID();
-
-        emit("ldc " + ((NumberNode)node.Operand).value);
-        emit("ifeq Truelabel" + boolID);
-        emit("iconst_0");
-        emit("goto stoplabel" + boolID);
-        emit("Truelabel" + boolID + ":");
-        emit("iconst_1");
-        emit("stoplabel" + boolID + ":");
+        this.Visit(node.Operand);
+        emit("i2f");
+        emit("ldc 0.0");
+        BoolNodeEmit("ifeq truelabel");
 
         return null;
     }
@@ -327,6 +326,13 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
+    public String Visit(StringEqualsNode node) {
+        stringEquals(node);
+        BoolNodeEmit("ifeq truelabel");
+        return null;
+    }
+
+    @Override
     public String Visit(InitializationNode node) {
         int nextID = incrementer.GetNextID();
         if (node.Type.value.equals("number")){
@@ -381,18 +387,43 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(MethodCallNode node) {
-        String params = "";
-        emit("aload "+VarTable.get(node.Identifier.value));
-        for(int i = 0; i < node.Parameters.size(); i++){
+        if (node.Identifier.value.equals("print")) {
+            String concatenatedParameters = "";
 
-            if(Pattern.matches("[0-9]+", node.Parameters.get(i).value)){
-                params.concat("F");
-            }else if(Pattern.matches("[a-zA-Z0-9]+", node.Parameters.get(i).value)){
-                params.concat("Ljava/lang/String;");
+            for (AbstractNodeBase currentParam:node.Parameters) {
+                if (currentParam instanceof StringNode){
+                    concatenatedParameters += currentParam.toString();
+                    printStuff(concatenatedParameters);
+                } else if (currentParam instanceof IdNode){
+                    VarTable.get(((IdNode) currentParam).value);
+                    if (VarTable.containsKey("Number/" +  ((IdNode) currentParam).value)){
+                        printStuff(getReference("Number/" + ((IdNode) currentParam).value), "F");
+                    } else if (VarTable.containsKey("String/" + ((IdNode) currentParam).value)){
+                        printStuff(getReference("String/" + ((IdNode) currentParam).value), "Ljava/lang/String;");
+                    }
+                } else if (currentParam.Children.size() > 1){
+                    printNumberFromStack(currentParam);
+                } else if (currentParam instanceof BinaryOperator){
+                    printNumberFromStack(currentParam);
+                }
             }
+        } else if (node.Identifier.value.equals("read")) {
+            scanCall();
+        } else {
 
+            String params = "";
+            emit("aload " + VarTable.get(node.Identifier.value));
+            for (int i = 0; i < node.Parameters.size(); i++) {
+                IdNode currentNode = (IdNode) node.Parameters.get(i);
+                if (Pattern.matches("[0-9]+", currentNode.value)) {
+                    params.concat("F");
+                } else if (Pattern.matches("[a-zA-Z0-9]+", currentNode.value)) {
+                    params.concat("Ljava/lang/String;");
+                }
+
+            }
+            emit("invokestatic " + node.Identifier.value + "(" + params + ")V");//TODO Add support for method call from classes
         }
-        emit("invokestatic " + node.Identifier.value+"("+params+")V");//TODO Add support for method call from classes
         return null;
     }
 
@@ -490,7 +521,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void genEnd(){
-        emit(".limit locals 50");
+        emit(".limit locals "+VarTable.size());
         emit(".limit stack 10");
         emit("return");
         emit(".end method");
@@ -523,9 +554,41 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
     }
 
+    public void printNumberFromStack(AbstractNodeBase node){
+        if(!VarTable.containsKey("OutStream")){
+            genPrintStream();
+        }
+        emit("aload " + VarTable.get("OutStream"));
+        this.Visit(node);
+        emit("invokevirtual java/io/PrintStream/println(F)V");
+    }
+
+    public void printStringFromStack(AbstractNodeBase node){
+        if(!VarTable.containsKey("OutStream")){
+            genPrintStream();
+        }
+        emit("aload " + VarTable.get("OutStream"));
+        this.Visit(node);
+        emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
+    }
+
+    public void printStuff(int reference, String type){
+        if(!VarTable.containsKey("OutStream")){
+            genPrintStream();
+        }
+        emit("aload " + VarTable.get("OutStream"));
+        if (type.equals("F")){
+            emit("fload " + reference);
+        } else {
+            emit("aload " + reference);
+        }
+
+        emit("invokevirtual java/io/PrintStream/println(" + type + ")V");
+    }
+
     public void genInputScanner(){
         int Id = incrementer.GetNextID();
-        emit("new class java/util/Scanner");
+        emit("new java/util/Scanner");
         emit("dup");
         emit("getstatic java/lang/System.in Ljava/io/InputStream;");
         emit("invokespecial java/util/Scanner.<init>(Ljava/io/InputStream;)V");
@@ -539,5 +602,28 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }
         emit("aload "+ VarTable.get("Scanner"));
         emit("invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;");
+    }
+
+    private void stringEquals(StringEqualsNode node){
+        if (node.LeftOperand instanceof StringNode) {
+            if (node.RightOperand instanceof StringNode){
+                emit("ldc \""+((StringNode) node.LeftOperand).value+"\"");
+                emit("ldc \""+((StringNode) node.RightOperand).value+"\"");
+            } else {
+                emit("ldc \""+((StringNode) node.LeftOperand).value+"\"");
+                emit("aload " +  getReference("String/" + ((IdNode)node.RightOperand).value));
+            }
+        } else {
+            if (node.RightOperand instanceof StringNode){
+                emit("aload " +  getReference("String/" + ((IdNode)node.LeftOperand).value));
+                emit("ldc \""+((StringNode) node.RightOperand).value+"\"");
+            } else {
+                emit("aload " +  getReference("String/" + ((IdNode)node.LeftOperand).value));
+                emit("aload " +  getReference("String/" + ((IdNode)node.RightOperand).value));
+            }
+        }
+        emit("invokevirtual java/lang/String.compareTo(Ljava/lang/String;)I");
+        emit("i2f");
+        emit("fconst_0");
     }
 }

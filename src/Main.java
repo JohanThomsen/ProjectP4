@@ -53,7 +53,7 @@ public class Main {
                 var process = processBuilder.start();
                 process.waitFor();
 
-                new File("Out.class").deleteOnExit();
+                //new File("Out.class").deleteOnExit();
             } else {
                 Errors.forEach(System.out::println);
             }

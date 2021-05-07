@@ -6,69 +6,51 @@ invokenonvirtual java/lang/Object/<init>()V
 return
 .end method
 .method public static main([Ljava/lang/String;)V
-ldc 5.0
-fstore 0
-ldc 12.0
-fstore 1
-fload 1
-fload 0
+getstatic java/lang/System/out Ljava/io/PrintStream;
+astore 0
+aload 0
+ldc "go NORTH to learn more"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+new java/util/Scanner
+dup
+getstatic java/lang/System.in Ljava/io/InputStream;
+invokespecial java/util/Scanner.<init>(Ljava/io/InputStream;)V
+astore 2
+aload 2
+invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;
+astore 1
+LoopStart0:
+aload 1
+ldc "NORTH"
+invokevirtual java/lang/String.compareTo(Ljava/lang/String;)I
+i2f
+fconst_0
 fcmpl
-ifgt truelabel0
+ifeq truelabel0
 iconst_0
 goto endlabel0
 truelabel0:
 iconst_1
 endlabel0:
-ifeq BranchEnd0
-ldc 5.0
-ldc 4.0
-fadd
-fstore 3
-BranchEnd0:
-fstore 2
-LoopStart0:
-fload 0
-fload 1
+i2f
+ldc 0.0
 fcmpl
-iflt truelabel1
+ifeq truelabel1
 iconst_0
 goto endlabel1
 truelabel1:
 iconst_1
 endlabel1:
-ifeq BranchEnd1
-fload 0
-ldc 1.0
-fadd
-fstore 0
-ldc 8.0
-fstore 4
+ifeq BranchEnd0
+aload 2
+invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;
+astore 1
 goto LoopStart0
-BranchEnd1:
-fstore 2
-ldc 1.0
-fstore 6
-LoopStart1:
-fload 6
-ldc 5.0
-fcmpl
-ifle truelabel2
-iconst_0
-goto endlabel2
-truelabel2:
-iconst_1
-endlabel2:
-ifeq BranchEnd2
-fload 2
-fstore 7
-fconst_1
-fload 6
-fadd
-fstore 6
-goto LoopStart1
-BranchEnd2:
-fstore 2
-.limit locals 50
+BranchEnd0:
+aload 0
+ldc "Good job going North"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+.limit locals 3
 .limit stack 10
 return
 .end method

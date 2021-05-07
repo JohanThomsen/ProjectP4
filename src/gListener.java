@@ -303,6 +303,18 @@ public interface gListener extends ParseTreeListener {
 	 */
 	void exitBoolEquals(gParser.BoolEqualsContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code stringEquals}
+	 * labeled alternative in {@link gParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringEquals(gParser.StringEqualsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stringEquals}
+	 * labeled alternative in {@link gParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringEquals(gParser.StringEqualsContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code BoolId}
 	 * labeled alternative in {@link }.
 	 * @param ctx the parse tree
