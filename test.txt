@@ -1,3 +1,3 @@
-There is a string called input.
-input is Do read..
-Do print with input.
+
+Do print with 5.
+

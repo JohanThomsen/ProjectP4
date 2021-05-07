@@ -388,6 +388,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     printNumberFromStack(currentParam);
                 } else if (currentParam instanceof BinaryOperator){
                     printNumberFromStack(currentParam);
+                } else if (currentParam.Children.get(0) instanceof NumberNode) { //Its saved as a math node, so its hidden in children. Could make a fix in MyVisitor to add NumberNodes directly to avoid this.
+                    printStuff(((NumberNode) currentParam.Children.get(0)).value);
                 }
             }
         } else if (node.Identifier.value.equals("read")) {
