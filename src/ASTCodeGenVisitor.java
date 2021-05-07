@@ -394,7 +394,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             }
         } else if (node.Identifier.value.equals("read")) {
             scanCall();
-        } else {
+        } else if (node.Parameters != null){
 
             String params = "";
             emit("aload " + VarTable.get(node.Identifier.value));
@@ -405,15 +405,16 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 } else if (Pattern.matches("[a-zA-Z0-9]+", currentNode.value)) {
                     params.concat("Ljava/lang/String;");
                 }
-
             }
             emit("invokestatic " + node.Identifier.value + "(" + params + ")V");//TODO Add support for method call from classes
+        } else { //TODO make sure this works
+            emit("invokestatic " + node.Identifier.value);
         }
         return null;
     }
 
     @Override
-    public String Visit(MethodDeclerationNode node) {
+    public String Visit(MethodDeclerationNode node) { //TODO actually emit the statements of a method somewhere plox
         int nextID = incrementer.GetNextID();
         if (node.Parameters != null){
             for (int i=0; i<node.Parameters.size(); i++) {
@@ -427,6 +428,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     VarTable.put(typeValue + "/" + paramValue, nextID);
                 }
             }
+        } else { //TODO create declaration for parameterless methods
+
         }
         return null;
     }
