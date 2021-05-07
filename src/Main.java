@@ -77,6 +77,7 @@ public class Main {
         }
 
         gen.genEnd();
+        gen.EmitMethods();
     }
 
 

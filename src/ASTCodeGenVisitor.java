@@ -1,7 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.regex.*;
 
@@ -23,6 +23,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     Incrementer loopIncrementer = new Incrementer();
     Incrementer blockIncrementer = new Incrementer();
     Incrementer boolIncrementer = new Incrementer();
+    public ArrayList<MethodDeclerationNode> methods = new ArrayList<>();
     public void emit(String s) {//TODO Change this to print to a .j file.
         System.out.println(s);
         //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
@@ -414,23 +415,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
-    public String Visit(MethodDeclerationNode node) { //TODO actually emit the statements of a method somewhere plox
-        int nextID = incrementer.GetNextID();
-        if (node.Parameters != null){
-            for (int i=0; i<node.Parameters.size(); i++) {
-                String typeValue = node.Types.get(i).value;
-                String paramValue = node.Parameters.get(i).value;
-                if (typeValue.equals("number")) {
-                    VarTable.put("Number/" + paramValue, nextID);
-                } else if (typeValue.equals("string")) {
-                    VarTable.put("String/" + paramValue, nextID);
-                } else {
-                    VarTable.put(typeValue + "/" + paramValue, nextID);
-                }
-            }
-        } else { //TODO create declaration for parameterless methods
-
-        }
+    public String Visit(MethodDeclerationNode node) {
+        methods.add(node);
         return null;
     }
 
@@ -448,6 +434,44 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(SubtractionNode node) {
         return null;
     }//Not important for now
+
+    public void EmitMethods() {
+        for (MethodDeclerationNode node: methods)
+        {
+            StringBuilder paraTypes = new StringBuilder();
+            int nextID;
+            if (node.Parameters != null){
+                paraTypes.append("(");
+                for (int i=0; i<node.Parameters.size(); i++) {
+                    nextID = incrementer.GetNextID();
+                    String typeValue = node.Types.get(i).value;
+                    String paramValue = node.Parameters.get(i).value;
+                    if (typeValue.equals("number")) {
+                        paraTypes.append("F");
+                        VarTable.put("Number/" + paramValue, nextID);
+                    } else if (typeValue.equals("string")) {
+                        paraTypes.append("Ljava/lang/String;");
+                        VarTable.put("String/" + paramValue, nextID);
+                    } else {
+                        VarTable.put(typeValue + "/" + paramValue, nextID);
+                    }
+                }
+                paraTypes.append(")");
+                emit(".method public " + node.Identifier.value + paraTypes + "V");
+                for (AbstractNodeBase a:  node.Statements) {
+                    this.Visit(a);
+                }
+            } else { //TODO create declaration for parameterless methods
+                emit(".method public " + node.Identifier.value + "V");
+                for (AbstractNodeBase a:  node.Statements) {
+                    this.Visit(a);
+                }
+            }
+
+            emit("return");
+            emit(".end method");
+        }
+    }
 
     private void LoadNumber(BinaryOperator node) {
         if(node.LeftOperand instanceof NumberNode) {
