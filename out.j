@@ -11,7 +11,9 @@ fstore 5
 ldc 12.0
 fstore 6
 aload null
-invokestatic plus()V
+fload 5
+fload 6
+invokestatic plus(FF)V
 .limit locals 2
 .limit stack 10
 return

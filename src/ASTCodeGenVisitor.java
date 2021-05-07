@@ -397,19 +397,22 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             scanCall();
         } else if (node.Parameters != null){
 
-            String params = "";
+            StringBuilder params = new StringBuilder();
             emit("aload " + VarTable.get(node.Identifier.value));
             for (int i = 0; i < node.Parameters.size(); i++) {
                 IdNode currentNode = (IdNode) node.Parameters.get(i);
-                if (Pattern.matches("[0-9]+", currentNode.value)) {
-                    params.concat("F");
-                } else if (Pattern.matches("[a-zA-Z0-9]+", currentNode.value)) {
-                    params.concat("Ljava/lang/String;");
+
+                if (VarTable.containsKey("Number/" + (currentNode.value))){
+                    emit("fload " +  getReference("Number/" + (currentNode.value)));
+                    params.append("F");
+                } else if (VarTable.containsKey("String/" + (currentNode.value))){
+                    emit("aload " +  getReference("String/" + (currentNode.value)));
+                    params.append("Ljava/lang/String;");
                 }
             }
             emit("invokestatic " + node.Identifier.value + "(" + params + ")V");//TODO Add support for method call from classes
         } else { //TODO make sure this works
-            emit("invokestatic " + node.Identifier.value);
+            emit("invokestatic " + node.Identifier.value + "()V");
         }
         return null;
     }
