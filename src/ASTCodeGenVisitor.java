@@ -214,6 +214,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("truelabel" + boolID + ":");
         emit("iconst_1");
         emit("endlabel" + boolID + ":");
+        emit("i2f");
     }
 
     @Override
@@ -428,6 +429,30 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         return null;
     }//Done for now
 
+    private void LoadNumber(BinaryOperator node) {
+        if(node.LeftOperand instanceof NumberNode) {
+            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
+        } else if (node.LeftOperand instanceof IdNode){
+            emit("fload " +  getReference("Number/" + ((IdNode)node.LeftOperand).value));
+        } else if (node.LeftOperand instanceof IMath) {
+            this.Visit(node.LeftOperand);
+        } else{
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+
+        if(node.RightOperand instanceof  NumberNode){
+            emit("ldc " + ((NumberNode)node.RightOperand).value);
+        }else if (node.RightOperand instanceof IdNode){
+            emit("fload " +  getReference("Number/" + ((IdNode)node.RightOperand).value));
+        }else if (node.LeftOperand instanceof IMath) {
+            this.Visit(node.LeftOperand);
+        } else {
+            this.Visit(node.LeftOperand);
+            emit("i2f");
+        }
+    }
+
     @Override
     public String Visit(MethodCallNode node) {
         int nextID;
@@ -447,8 +472,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     }
                 } else if (currentParam.Children.size() > 1){
                     printNumberFromStack(currentParam);
+                } else if (currentParam instanceof IMath){
+                    printNumberFromStack(currentParam);
                 } else if (currentParam instanceof BinaryOperator){
                     printNumberFromStack(currentParam);
+                    emit("i2f");
                 } else if (currentParam.Children.get(0) instanceof NumberNode) { //Its saved as a math node, so its hidden in children. Could make a fix in MyVisitor to add NumberNodes directly to avoid this.
                     printStuff(((NumberNode) currentParam.Children.get(0)).value);
                 }
@@ -566,26 +594,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             }
 
             genEnd();
-        }
-    }
-
-    private void LoadNumber(BinaryOperator node) {
-        if(node.LeftOperand instanceof NumberNode) {
-            emit("ldc " +  ((NumberNode)node.LeftOperand).value);
-        } else if (node.LeftOperand instanceof IdNode){
-            emit("fload " +  getReference("Number/" + ((IdNode)node.LeftOperand).value));
-        }
-        else{
-            this.Visit(node.LeftOperand);
-        }
-
-        if(node.RightOperand instanceof  NumberNode){
-            emit("ldc " + ((NumberNode)node.RightOperand).value);
-        }else if (node.RightOperand instanceof IdNode){
-            emit("fload " +  getReference("Number/" + ((IdNode)node.RightOperand).value));
-        }
-        else{
-            this.Visit(node.RightOperand);
         }
     }
 
