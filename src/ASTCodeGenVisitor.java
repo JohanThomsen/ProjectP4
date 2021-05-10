@@ -2,8 +2,8 @@ import jas.Var;
 
 import java.io.FileNotFoundException;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.regex.*;
 
@@ -26,6 +26,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     Incrementer loopIncrementer = new Incrementer();
     Incrementer blockIncrementer = new Incrementer();
     Incrementer boolIncrementer = new Incrementer();
+    public ArrayList<MethodDeclerationNode> methods = new ArrayList<>();
     public void emit(String s) {//TODO Change this to print to a .j file.
         System.out.println(s);
         //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
@@ -429,44 +430,35 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     printNumberFromStack(currentParam);
                 } else if (currentParam instanceof BinaryOperator){
                     printNumberFromStack(currentParam);
+                } else if (currentParam.Children.get(0) instanceof NumberNode) { //Its saved as a math node, so its hidden in children. Could make a fix in MyVisitor to add NumberNodes directly to avoid this.
+                    printStuff(((NumberNode) currentParam.Children.get(0)).value);
                 }
             }
         } else if (node.Identifier.value.equals("read")) {
             scanCall();
-        } else {
+        } else if (node.Parameters != null){
 
-            String params = "";
-            emit("aload " + VarTable.get(node.Identifier.value));
+            StringBuilder params = new StringBuilder();
             for (int i = 0; i < node.Parameters.size(); i++) {
                 IdNode currentNode = (IdNode) node.Parameters.get(i);
-                if (Pattern.matches("[0-9]+", currentNode.value)) {
-                    params.concat("F");
-                } else if (Pattern.matches("[a-zA-Z0-9]+", currentNode.value)) {
-                    params.concat("Ljava/lang/String;");
+                if (VarTable.containsKey("Number/" + (currentNode.value))){
+                    emit("fload " +  getReference("Number/" + (currentNode.value)));
+                    params.append("F");
+                } else if (VarTable.containsKey("String/" + (currentNode.value))){
+                    emit("aload " +  getReference("String/" + (currentNode.value)));
+                    params.append("Ljava/lang/String;");
                 }
-
             }
             emit("invokestatic " + node.Identifier.value + "(" + params + ")V");//TODO Add support for method call from classes
+        } else { //TODO make sure this works
+            emit("invokestatic " + node.Identifier.value + "()V");
         }
         return null;
     }
 
     @Override
     public String Visit(MethodDeclerationNode node) {
-        int nextID = incrementer.GetNextID();
-        if (node.Parameters != null){
-            for (int i=0; i<node.Parameters.size(); i++) {
-                String typeValue = node.Types.get(i).value;
-                String paramValue = node.Parameters.get(i).value;
-                if (typeValue.equals("number")) {
-                    VarTable.put("Number/" + paramValue, nextID);
-                } else if (typeValue.equals("string")) {
-                    VarTable.put("String/" + paramValue, nextID);
-                } else {
-                    VarTable.put(typeValue + "/" + paramValue, nextID);
-                }
-            }
-        }
+        methods.add(node);
         return null;
     }
 
@@ -508,6 +500,44 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             }
         }
         return false;
+    }
+
+    public void EmitMethods() {
+        for (MethodDeclerationNode node: methods)
+        {
+            StringBuilder paraTypes = new StringBuilder();
+            int nextID;
+            if (node.Parameters != null){
+                paraTypes.append("(");
+                for (int i=0; i<node.Parameters.size(); i++) {
+                    nextID = incrementer.GetNextID();
+                    String typeValue = node.Types.get(i).value;
+                    String paramValue = node.Parameters.get(i).value;
+                    if (typeValue.equals("number")) {
+                        paraTypes.append("F");
+                        VarTable.put("Number/" + paramValue, nextID);
+                    } else if (typeValue.equals("string")) {
+                        paraTypes.append("Ljava/lang/String;");
+                        VarTable.put("String/" + paramValue, nextID);
+                    } else {
+                        VarTable.put(typeValue + "/" + paramValue, nextID);
+                    }
+                }
+                paraTypes.append(")");
+                emit(".method public " + node.Identifier.value + paraTypes + "V");
+                for (AbstractNodeBase a:  node.Statements) {
+                    this.Visit(a);
+                }
+            } else { //TODO create declaration for parameterless methods
+                emit(".method public " + node.Identifier.value + "V");
+                for (AbstractNodeBase a:  node.Statements) {
+                    this.Visit(a);
+                }
+            }
+
+            emit("return");
+            emit(".end method");
+        }
     }
 
     private void LoadNumber(BinaryOperator node) {

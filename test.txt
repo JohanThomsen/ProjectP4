@@ -1,3 +1,12 @@
-There is a string called input.
-input is Do read..
-Do print with input.
+plus with number nOne and number nTwo does
+    nOne + nTwo.
+then continue
+
+There is a number called NumOne.
+NumOne is 5.
+There is a number called NumTwo.
+NumTwo is 12.
+
+Do plus with NumOne, NumTwo.
+
+
