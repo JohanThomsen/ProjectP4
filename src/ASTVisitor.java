@@ -28,6 +28,7 @@ public abstract class ASTVisitor<T> {
     public abstract T Visit(WhileNode node);
     public abstract T Visit(ForNode node);
     public abstract T Visit(StringEqualsNode node);
+    public abstract T Visit(BreakNode node);
     /*public abstract T Visit(node);For Copying, so that it is easier to expand.*/
 
     public T Visit(AbstractNodeBase node){//Remember to expand this when a new node is made.
@@ -62,6 +63,7 @@ public abstract class ASTVisitor<T> {
         else if(node instanceof WhileNode){return Visit((WhileNode) node);}
         else if(node instanceof ForNode){return Visit((ForNode) node);}
         else if(node instanceof StringEqualsNode){return Visit((StringEqualsNode) node);}
+        else if(node instanceof BreakNode){return Visit((BreakNode) node);}
         /*else if(node instanceof ){return Visit(()node);} For copying*/
         else if(node != null){
             return Visit(node.Children.get(0));

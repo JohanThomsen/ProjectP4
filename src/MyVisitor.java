@@ -1,3 +1,5 @@
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
@@ -91,7 +93,10 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         indentation++;
         AssignNode node = new AssignNode();
         node.Target = new IdNode(ctx.Id(0).toString());
-        if(ctx.expression() != null || ctx.Id(1) != null || ctx.Number() != null || ctx.String() != null){
+        if (ctx.expression() != null ){
+            node.Value = visitChildren(ctx).Children.get(1);
+        }
+        else if(ctx.Id(1) != null || ctx.Number() != null || ctx.String() != null){
             node.Value = visitChildren(ctx).Children.get(1);
         }else{
             node.attributes = AbstractRemoval(visitChildren(ctx.attributes()));
@@ -300,9 +305,22 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
                 return new IdNode(node.toString());
             case gParser.Number:
                 return new NumberNode(Float.parseFloat(node.toString()));
+            case gParser.Break:
+                return new BreakNode(GetParent(node.getParent()));
             default:
                 return super.visitTerminal(node);
         }
+    }
+
+    private String GetParent(ParseTree ctx){
+        if (ctx instanceof gParser.CtrlforContext){
+            return "ForNode";
+        } else if (ctx instanceof gParser.CtrlwhileContext){
+            return "WhileNode";
+        } else if (ctx instanceof gParser.ProgramContext) {
+            return "";
+        }
+        return GetParent(ctx.getParent());
     }
 
     @Override public AbstractNodeBase aggregateResult(AbstractNodeBase aggregate, AbstractNodeBase nextResult) {

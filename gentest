@@ -1,7 +1,20 @@
-Do print with "go NORTH to learn more".
+There is a number called x.
 There is a string called input.
-input is Do read.
-as long as not input is equal to "NORTH" is true, do
-    input is Do read.
+input is do read.
+//x is repeat i from 1 to 5
+//    do print with i.
+//    if i is equal to 3 then do
+//        break loop.
+//    then continue
+//then continue
+
+x is as long as not input is equal to "north" is true, do
+    do print with "gz".
+    if (input is equal to "south") then do
+        break loop.
+    then continue
+    input is do read.
 then continue
-do print with "Good job going North".
+
+do print with "".
+do print with x.
