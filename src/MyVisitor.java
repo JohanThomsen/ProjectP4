@@ -237,7 +237,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         printTabs(indentation);
         System.out.println("For Loop");
         indentation++;
-        ForNode node = new ForNode((new IdNode(ctx.Id().toString())), visitChildren(ctx.math(0)), visitChildren(ctx.math(1)), AbstractRemoval(visitChildren(ctx.statements())).Children);
+        ForNode node = new ForNode((new IdNode(ctx.Id().toString())),this.visit(ctx.math(0)), this.visit(ctx.math(1)), AbstractRemoval(visitChildren(ctx.statements())).Children);
         AbstractRemoval(node.From);
         indentation--;
         return node;

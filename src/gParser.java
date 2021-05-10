@@ -1,4 +1,4 @@
-// Generated from D:/Repos/ProjectP4\g.g4 by ANTLR 4.9.1
+// Generated from C:/Git/P4/Project\g.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -1535,23 +1535,6 @@ public class gParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class BoolIdContext extends BoolContext {
-		public TerminalNode Id() { return getToken(gParser.Id, 0); }
-		public BoolIdContext(BoolContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof gListener ) ((gListener)listener).enterBoolId(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof gListener ) ((gListener)listener).exitBoolId(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof gVisitor ) return ((gVisitor<? extends T>)visitor).visitBoolId(this);
-			else return visitor.visitChildren(this);
-		}
-	}
 	public static class BoolMathContext extends BoolContext {
 		public MathContext math() {
 			return getRuleContext(MathContext.class,0);
@@ -1568,6 +1551,23 @@ public class gParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof gVisitor ) return ((gVisitor<? extends T>)visitor).visitBoolMath(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class BoolIdContext extends BoolContext {
+		public TerminalNode Id() { return getToken(gParser.Id, 0); }
+		public BoolIdContext(BoolContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof gListener ) ((gListener)listener).enterBoolId(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof gListener ) ((gListener)listener).exitBoolId(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gVisitor ) return ((gVisitor<? extends T>)visitor).visitBoolId(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1710,29 +1710,29 @@ public class gParser extends Parser {
 				break;
 			case 4:
 				{
-				_localctx = new BoolIdContext(_localctx);
+				_localctx = new BoolMathContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(189);
-				match(Id);
+				math(0);
 				}
 				break;
 			case 5:
 				{
-				_localctx = new BoolNumberContext(_localctx);
+				_localctx = new BoolIdContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(190);
-				match(Number);
+				match(Id);
 				}
 				break;
 			case 6:
 				{
-				_localctx = new BoolMathContext(_localctx);
+				_localctx = new BoolNumberContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(191);
-				math(0);
+				match(Number);
 				}
 				break;
 			}
@@ -2194,7 +2194,7 @@ public class gParser extends Parser {
 		"\2\u00b4\u00b2\3\2\2\2\u00b5\u00b6\b\f\1\2\u00b6\u00b7\7 \2\2\u00b7\u00b8"+
 		"\5\26\f\2\u00b8\u00b9\7!\2\2\u00b9\u00c3\3\2\2\2\u00ba\u00bb\t\n\2\2\u00bb"+
 		"\u00bc\7&\2\2\u00bc\u00c3\t\n\2\2\u00bd\u00be\7-\2\2\u00be\u00c3\5\26"+
-		"\f\6\u00bf\u00c3\7\61\2\2\u00c0\u00c3\7\63\2\2\u00c1\u00c3\5\24\13\2\u00c2"+
+		"\f\6\u00bf\u00c3\5\24\13\2\u00c0\u00c3\7\61\2\2\u00c1\u00c3\7\63\2\2\u00c2"+
 		"\u00b5\3\2\2\2\u00c2\u00ba\3\2\2\2\u00c2\u00bd\3\2\2\2\u00c2\u00bf\3\2"+
 		"\2\2\u00c2\u00c0\3\2\2\2\u00c2\u00c1\3\2\2\2\u00c3\u00de\3\2\2\2\u00c4"+
 		"\u00c5\f\17\2\2\u00c5\u00c6\7&\2\2\u00c6\u00dd\5\26\f\20\u00c7\u00c8\f"+

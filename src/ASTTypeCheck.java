@@ -238,7 +238,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         this.Visit(node.init);
         this.Visit(node.assign);
         this.Visit(node.Id);
-        if (!(node.From instanceof NumberNode && node.To instanceof NumberNode)){
+        if (!(node.From instanceof BinaryOperator && node.To instanceof BinaryOperator)){
             Errors.add("Range parameters must be numbers");
             return "error";
         }

@@ -12,10 +12,10 @@ public class ForNode extends AbstractNodeBase implements IScopable {
 
     public ForNode(IdNode id, AbstractNodeBase from, AbstractNodeBase to, ArrayList<AbstractNodeBase> statements) {
         init = new InitializationNode(new IdNode("number"), id);
-        assign = new AssignNode(id, from.Children.get(0));
+        assign = new AssignNode(id, from);
         Id = id;
-        From = from.Children.get(0);
-        To = to.Children.get(0);
+        From = from;
+        To = to;
         Predicate = new BoolLessEqualNode(getPredicateValues(Id, To));
         Statements = statements;
     }

@@ -1,14 +1,14 @@
+plus with number nOne and number nTwo does
+    1+1.
+then continue
 
+There is a number called NumOne.
+NumOne is 5.
+There is a number called NumTwo.
+NumTwo is 12.
 
-
-Repeat i from 1+2 to 5*1
-    There is a number called x.
-    There is a number called Num.
-    Num is x.
-Then continue.
-
-Do plus.
-
+do print with 6.
+Do plus with NumOne, NumTwo.
 
 
 

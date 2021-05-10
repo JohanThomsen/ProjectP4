@@ -58,9 +58,9 @@ bool: '(' bool ')'                      #boolParanthesis
 | bool 'and' bool                       #boolAnd
 | bool 'or' bool                        #boolOr
 | 'not' bool                            #boolNot
+| math                                  #boolMath
 | Id                                    #BoolId
 | Number                                #BoolNumber
-| math                                  #boolMath
 ;
 
 attributes: String

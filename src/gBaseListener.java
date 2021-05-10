@@ -1,4 +1,4 @@
-// Generated from D:/Repos/ProjectP4\g.g4 by ANTLR 4.9.1
+// Generated from C:/Git/P4/Project\g.g4 by ANTLR 4.9.1
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -327,18 +327,6 @@ public class gBaseListener implements gListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBoolId(gParser.BoolIdContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBoolId(gParser.BoolIdContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterBoolMath(gParser.BoolMathContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -346,6 +334,18 @@ public class gBaseListener implements gListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBoolMath(gParser.BoolMathContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBoolId(gParser.BoolIdContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBoolId(gParser.BoolIdContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

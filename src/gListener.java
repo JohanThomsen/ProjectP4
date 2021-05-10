@@ -1,4 +1,4 @@
-// Generated from D:/Repos/ProjectP4\g.g4 by ANTLR 4.9.1
+// Generated from C:/Git/P4/Project\g.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -303,18 +303,6 @@ public interface gListener extends ParseTreeListener {
 	 */
 	void exitStringEquals(gParser.StringEqualsContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code BoolId}
-	 * labeled alternative in {@link gParser#bool}.
-	 * @param ctx the parse tree
-	 */
-	void enterBoolId(gParser.BoolIdContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code BoolId}
-	 * labeled alternative in {@link gParser#bool}.
-	 * @param ctx the parse tree
-	 */
-	void exitBoolId(gParser.BoolIdContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code boolMath}
 	 * labeled alternative in {@link gParser#bool}.
 	 * @param ctx the parse tree
@@ -326,6 +314,18 @@ public interface gListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBoolMath(gParser.BoolMathContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code BoolId}
+	 * labeled alternative in {@link gParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolId(gParser.BoolIdContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code BoolId}
+	 * labeled alternative in {@link gParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolId(gParser.BoolIdContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code boolAnd}
 	 * labeled alternative in {@link gParser#bool}.
