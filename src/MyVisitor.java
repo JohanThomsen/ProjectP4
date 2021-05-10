@@ -243,7 +243,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
         MethodDeclerationNode node;
         switch (ctx.Id().size()) {
             case 1:
-                node = new MethodDeclerationNode(new IdNode(ctx.Id(0).toString()), visitChildren(ctx.statements()).Children);
+                node = new MethodDeclerationNode(new IdNode(ctx.Id(0).toString()), AbstractRemoval(visitChildren(ctx.statements())).Children);
                 break;
             default:
                // String tempType = "";
@@ -259,7 +259,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
                         parameters.add(new IdNode(ctx.Id(i).toString()));
                     }
                 }
-                node = new MethodDeclerationNode(new IdNode(ctx.Id(0).toString()), parameters, types, visitChildren(ctx.statements()).Children);
+                node = new MethodDeclerationNode(new IdNode(ctx.Id(0).toString()), parameters, types, AbstractRemoval(visitChildren(ctx.statements())).Children);
                 break;
         }
         return node;

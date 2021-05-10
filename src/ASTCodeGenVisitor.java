@@ -371,6 +371,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(MethodCallNode node) {
+        int nextID;
         if (node.Identifier.value.equals("print")) {
             String concatenatedParameters = "";
 
@@ -403,14 +404,15 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 if (VarTable.containsKey("Number/" + (currentNode.value))){
                     emit("fload " +  getReference("Number/" + (currentNode.value)));
                     params.append("F");
+                    //nextID = incrementer.GetNextID();
                 } else if (VarTable.containsKey("String/" + (currentNode.value))){
                     emit("aload " +  getReference("String/" + (currentNode.value)));
                     params.append("Ljava/lang/String;");
                 }
             }
-            emit("invokestatic " + node.Identifier.value + "(" + params + ")V");//TODO Add support for method call from classes
+            emit("invokestatic " + "Out/" + node.Identifier.value + "(" + params + ")V");//TODO Add support for method call from classes
         } else { //TODO make sure this works
-            emit("invokestatic " + node.Identifier.value + "()V");
+            emit("invokestatic " + "Out/" + node.Identifier.value + "()V");
         }
         return null;
     }
@@ -439,6 +441,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public void EmitMethods() {
         for (MethodDeclerationNode node: methods)
         {
+            emit("\n");
             StringBuilder paraTypes = new StringBuilder();
             int nextID;
             if (node.Parameters != null){
@@ -458,19 +461,18 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     }
                 }
                 paraTypes.append(")");
-                emit(".method public " + node.Identifier.value + paraTypes + "V");
+                emit(".method public static " + node.Identifier.value + paraTypes + "V");
                 for (AbstractNodeBase a:  node.Statements) {
                     this.Visit(a);
                 }
             } else { //TODO create declaration for parameterless methods
-                emit(".method public " + node.Identifier.value + "V");
+                emit(".method public static " + node.Identifier.value + "()V");
                 for (AbstractNodeBase a:  node.Statements) {
                     this.Visit(a);
                 }
             }
 
-            emit("return");
-            emit(".end method");
+            genEnd();
         }
     }
 
@@ -534,7 +536,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void genEnd(){
-        emit(".limit locals "+VarTable.size());
+        emit(".limit locals "+VarTable.size() + 5);
         emit(".limit stack 10");
         emit("return");
         emit(".end method");
