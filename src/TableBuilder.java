@@ -70,6 +70,8 @@ public class TableBuilder {
                 check.Table = Target;
             }
 
+        }else if (CurrentNode instanceof AssignNode) {
+            BuildTableRec(Target, ((AssignNode) CurrentNode).Value, check, errors);
         } else {
             check.Table = Target;
             check.Visit(CurrentNode);

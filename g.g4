@@ -9,12 +9,13 @@ statements: statement statements
 statement: expression
 | classdcl ('then'|'Then') 'continue'
 | methoddcl ('then'|'Then') 'continue'
-| assign '.'
+| assign '.'?
 | init '.'
+| Break '.'
 ;
 
 expression: Id
-| methodcall '.'?
+| methodcall '.'
 | math '.'
 | bool
 | ctrlstruc ('then'|'Then') 'continue'
@@ -75,6 +76,10 @@ String: '"' [ a-zA-Z0-9]* '"';
 
 Number: [0-9]+ ('.' [0-9]+)?;
 
+Break: ('Break loop'|'break loop');
+
 LineComment: '//' ~[\r\n]* -> channel(HIDDEN);
+
+BlockComment: '/*' .*? '*/' -> channel(HIDDEN);
 
 WS: [ \t\r\n]+ -> channel(HIDDEN);

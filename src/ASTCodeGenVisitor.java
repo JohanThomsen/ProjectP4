@@ -1,3 +1,5 @@
+import jas.Var;
+
 import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +20,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     int level = 0;
+    final int reservedSpace = 4;
     private Hashtable<String, Integer> VarTable = new Hashtable<>();
-    Incrementer incrementer = new Incrementer(4);
+    Incrementer incrementer = new Incrementer(reservedSpace);
     Incrementer loopIncrementer = new Incrementer();
     Incrementer blockIncrementer = new Incrementer();
     Incrementer boolIncrementer = new Incrementer();
@@ -64,23 +67,32 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     this.Visit((MethodCallNode) node.Value);
                     emit("astore " + getReference("String/" + node.Target.value));
                 }
-            } else if (node.Value instanceof WhileNode){
-                //Basically a visit(while) but with an increment inside it.
-                int loopID = loopIncrementer.GetNextID();
-                int blockID = blockIncrementer.GetNextID();
-                emit("LoopStart" + loopID + ":");
-                this.Visit(((WhileNode) node.Value).Predicate);
-                emit("ifeq BranchEnd" + blockID);
-                for (AbstractNodeBase a:  ((WhileNode) node.Value).Statements) {
-                    this.Visit(a);
+            }else if (node.Value instanceof ForNode) {
+                String loopCount = this.Visit((ForNode) node.Value);
+                boolean Break = false;
+
+                Break = GetBreakInChildren(node.Value);
+
+                if (!Break){
+                    emit("fload " + getReference("Number/" + ((ForNode) node.Value).Id.value));
+                    emit("fconst_1");
+                    emit("fsub");
+                    emit("fstore " + getReference("Number/" + node.Target.value));
+                } else {
+                    emit("fload " + getReference("Number/" + ((ForNode) node.Value).Id.value));
+                    emit("fstore " + getReference("Number/" + node.Target.value));
                 }
-                // increment
-                emit("fconst_1");
-                emit("fload " +  getReference("Number/" + (node.Target.value)));
-                emit("fadd");
-                emit("fstore " + getReference("Number/" + (node.Target.value)));
-                emit("goto LoopStart" + loopID);
-                emit("BranchEnd" + blockID + ":");
+            } else if (node.Value instanceof IfNode) {
+                this.Visit((IfNode) node.Value);
+                this.Visit(((IfNode) node.Value).Predicate);
+                emit("i2f");
+                emit("fstore " + getReference("Number/" + node.Target.value));
+            }else if (node.Value instanceof WhileNode){
+                emit("ldc 0.0");
+                emit("fstore_0");
+                this.Visit((WhileNode) node.Value);
+                emit("fload_0");
+                emit("fstore " + getReference("Number/" + node.Target.value));
             } else {
                 this.Visit(node.Value);
                 emit("fstore " + getReference("Number/" + node.Target.value));
@@ -289,9 +301,16 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("LoopStart" + loopID + ":");
         this.Visit(node.Predicate);
         emit("ifeq BranchEnd" + blockID);
+
+        emit("fconst_1");
+        emit("fload_0");
+        emit("fadd");
+        emit("fstore_0");
+
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
         }
+
         emit("goto LoopStart" + loopID);
         emit("BranchEnd" + blockID + ":");
 
@@ -302,8 +321,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(ForNode node) {
         int loopID = loopIncrementer.GetNextID();
         int blockID = blockIncrementer.GetNextID();
+        int loops = 0;
         //Init
-        this.Visit(node.init);
+        if (!(VarTable.containsKey("Number/" + node.init.Identifier))) {
+            this.Visit(node.init);
+        }
         //Assign
         this.Visit(node.assign);
         emit("LoopStart" + loopID + ":");
@@ -313,16 +335,18 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
         }
+
         //Increment
         emit("fconst_1");
-        emit("fload " +  getReference("Number/" + (node.Id.value)));
+        emit("fload " + getReference("Number/" + (node.Id.value)));
         emit("fadd");
         emit("fstore " + getReference("Number/" + (node.Id.value)));
+        loops++;
         //Loop back
         emit("goto LoopStart" + loopID);
         //Or end
         emit("BranchEnd" + blockID + ":");
-        return null;
+        return Integer.toString(loops);
     }
 
     @Override
@@ -447,6 +471,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     @Override
+    public String Visit(BreakNode node) {
+        emit("goto BranchEnd" + loopIncrementer.ID);
+        return null;
+    }
+
+    @Override
     public String Visit(NumberNode node) {
         return null;
     }//Not important for now
@@ -460,6 +490,25 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(SubtractionNode node) {
         return null;
     }//Not important for now
+
+    private boolean GetBreakInChildren(AbstractNodeBase node){
+        if (node instanceof BreakNode){
+            return true;
+        } else if (node instanceof ForNode){
+            for (AbstractNodeBase statement : ((ForNode) node).Statements){
+                if (GetBreakInChildren(statement)){
+                    return true;
+                }
+            }
+        } else if (node instanceof IfNode){
+            for (AbstractNodeBase statement : ((IfNode) node).Statements){
+                if (GetBreakInChildren(statement)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     private void LoadNumber(BinaryOperator node) {
         if(node.LeftOperand instanceof NumberNode) {
@@ -498,7 +547,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             this.Visit(node.RightOperand);
             emit("i2f");
         }
-
     }
 
     public void genMain(){
@@ -510,6 +558,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("return");
         emit(".end method");
         emit(".method public static main([Ljava/lang/String;)V");
+        genPrintStream();
+        genInputScanner();
+
     }
 
     public void genInit(){
@@ -521,17 +572,13 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void genEnd(){
-        emit(".limit locals "+VarTable.size());
+        emit(".limit locals " + (incrementer.ID + 1));
         emit(".limit stack 10");
         emit("return");
         emit(".end method");
     }
 
     public void printStuff(float f){
-        if(!VarTable.containsKey("OutStream")){
-            genPrintStream();
-        }
-
         emit("aload " + VarTable.get("OutStream"));
         emit("ldc "+ f);
         emit("invokevirtual java/io/PrintStream/println(F)V");
@@ -546,27 +593,18 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void printStuff(String s){
-        if(!VarTable.containsKey("OutStream")){
-            genPrintStream();
-        }
         emit("aload " + VarTable.get("OutStream"));
         emit("ldc \""+ s +"\"");
         emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
     }
 
     public void printNumberFromStack(AbstractNodeBase node){
-        if(!VarTable.containsKey("OutStream")){
-            genPrintStream();
-        }
         emit("aload " + VarTable.get("OutStream"));
         this.Visit(node);
         emit("invokevirtual java/io/PrintStream/println(F)V");
     }
 
     public void printStringFromStack(AbstractNodeBase node){
-        if(!VarTable.containsKey("OutStream")){
-            genPrintStream();
-        }
         emit("aload " + VarTable.get("OutStream"));
         this.Visit(node);
         emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
@@ -597,9 +635,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void scanCall(){
-        if(!VarTable.containsKey("Scanner")){
-            genInputScanner();
-        }
         emit("aload "+ VarTable.get("Scanner"));
         emit("invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;");
     }

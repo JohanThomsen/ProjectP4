@@ -235,6 +235,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(ForNode node) {
+        this.Visit(node.init);
         this.Visit(node.assign);
         this.Visit(node.Id);
         if (!(node.From instanceof NumberNode && node.To instanceof NumberNode)){
@@ -284,6 +285,14 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(SubtractionNode node) {
+        return null;
+    }
+
+    @Override
+    public String Visit(BreakNode node) {
+        if (!(node.Parent.equals("ForNode") || node.Parent.equals("WhileNode"))){
+            Errors.add("Break loop can only be used inside a loop.");
+        }
         return null;
     }
 }
