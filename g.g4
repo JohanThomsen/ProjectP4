@@ -39,12 +39,12 @@ init: 'There is a'('n'?) Id 'called' Id
 | Id 'has' 'a'('n'?) Id 'called' Id
 ;
 
-math: '(' math ')'          #mathParenthesis
-| math '*' math             #mathMult
-| math '/' math             #mathDiv
-| math ('+' | '-') math     #mathAdd
-| Id                        #MathId
-| Number                    #MathNumber
+math: '(' (math | bool) ')'          #mathParenthesis
+| math '*' math                      #mathMult
+| math '/' math                      #mathDiv
+| math ('+' | '-') math              #mathAdd
+| Id                                 #MathId
+| Number                             #MathNumber
 ;
 
 bool: '(' bool ')'                      #boolParanthesis

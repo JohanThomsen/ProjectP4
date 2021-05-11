@@ -21,8 +21,6 @@ public class ASTTypeCheck extends ASTVisitor<String>{
                 return temp.Type;
             } else if (valueType.equals("ctrlStruc") && temp.Type.equals("number")) {
                 return "ctrlStruc";
-            } else if (valueType.equals("bool") && temp.Type.equals("number")) {
-                return "bool";
             } else if (!(valueType.equals("error"))) {
                 Errors.add("Assignment error: " + node.Target.value + " and " + valueType + " do not match");
             } else {
@@ -86,7 +84,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         String tempRight = this.Visit(node.RightOperand);
 
         if(temp.equals(tempRight)){
-            return "bool";
+            return "number";
         }
 
         Errors.add("Bool Type Error: Left bool type: " + temp + ". Right bool type: " + tempRight);
@@ -145,7 +143,7 @@ public class ASTTypeCheck extends ASTVisitor<String>{
         String temp = this.Visit(node.LeftOperand);
         String tempRight = this.Visit(node.RightOperand);
         if(temp.equals(tempRight)) {//Both operands are checked to see if they return float. If they do not then it is an illegal expression.
-            if (temp.equals("number")) {
+            if (temp.equals("number") || temp.equals("bool")) {
                 return temp;
             } else if (temp.equals("Failure")){
                 return "Failure";

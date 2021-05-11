@@ -445,10 +445,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             emit("ldc " + ((NumberNode)node.RightOperand).value);
         }else if (node.RightOperand instanceof IdNode){
             emit("fload " +  getReference("Number/" + ((IdNode)node.RightOperand).value));
-        }else if (node.LeftOperand instanceof IMath) {
-            this.Visit(node.LeftOperand);
+        }else if (node.RightOperand instanceof IMath) {
+            this.Visit(node.RightOperand);
         } else {
-            this.Visit(node.LeftOperand);
+            this.Visit(node.RightOperand);
             emit("i2f");
         }
     }
