@@ -449,9 +449,9 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     params.append("Ljava/lang/String;");
                 }
             }
-            emit("invokestatic " + node.Identifier.value + "(" + params + ")V");//TODO Add support for method call from classes
+            emit("invokestatic Out/" + node.Identifier.value + "(" + params + ")V");//TODO Add support for method call from classes
         } else { //TODO make sure this works
-            emit("invokestatic " + node.Identifier.value + "()V");
+            emit("invokestatic Out/" + node.Identifier.value + "()V");
         }
         return null;
     }
@@ -506,11 +506,15 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         for (MethodDeclerationNode node: methods)
         {
             StringBuilder paraTypes = new StringBuilder();
+            Hashtable<String, Integer> Remember = new Hashtable<>();
+            Remember = VarTable;
+
+            Incrementer LocalInc = new Incrementer();
             int nextID;
             if (node.Parameters != null){
                 paraTypes.append("(");
                 for (int i=0; i<node.Parameters.size(); i++) {
-                    nextID = incrementer.GetNextID();
+                    nextID = LocalInc.GetNextID();
                     String typeValue = node.Types.get(i).value;
                     String paramValue = node.Parameters.get(i).value;
                     if (typeValue.equals("number")) {
@@ -523,20 +527,24 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                         VarTable.put(typeValue + "/" + paramValue, nextID);
                     }
                 }
+
                 paraTypes.append(")");
-                emit(".method public " + node.Identifier.value + paraTypes + "V");
+                emit(".method public static " + node.Identifier.value + paraTypes + "V");
+                genPrintStream();
                 for (AbstractNodeBase a:  node.Statements) {
                     this.Visit(a);
                 }
             } else { //TODO create declaration for parameterless methods
-                emit(".method public " + node.Identifier.value + "V");
+                emit(".method public static " + node.Identifier.value + "V");
                 for (AbstractNodeBase a:  node.Statements) {
                     this.Visit(a);
                 }
             }
-
+            emit(".limit locals "+(VarTable.size()+1));
+            emit(".limit stack 10");
             emit("return");
             emit(".end method");
+            VarTable = Remember;
         }
     }
 
@@ -658,7 +666,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         int Id = incrementer.GetNextID();
         emit("new java/util/Scanner");
         emit("dup");
-        emit("getstatic java/lang/System.in Ljava/io/InputStream;");
+        emit("getstatic java/lang/System/in Ljava/io/InputStream;");
         emit("invokespecial java/util/Scanner.<init>(Ljava/io/InputStream;)V");
         emit("astore "+ Id);
         VarTable.put("Scanner", Id);
