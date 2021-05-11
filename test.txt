@@ -1,16 +1,6 @@
 
+There is a number called NumBool.
 
+NumBool is (4 + 4) is greater than 5.
 
-Repeat i from 1+2 to 5*1
-    There is a number called x.
-    There is a number called Num.
-    Num is x.
-Then continue.
-
-Do plus.
-
-
-
-
-
-
+Do print with NumBool.
