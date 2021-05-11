@@ -1,16 +1,6 @@
-plus with number nOne and number nTwo does
-    1+1.
-then continue
 
-There is a number called NumOne.
-NumOne is 5.
-There is a number called NumTwo.
-NumTwo is 12.
+There is a number called NumBool.
 
-do print with 6.
-Do plus with NumOne, NumTwo.
+NumBool is (4 + 4) is greater than 5.
 
-
-
-
-
+Do print with NumBool.
