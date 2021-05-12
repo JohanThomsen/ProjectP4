@@ -102,39 +102,3 @@ public class TableBuilder {
     }
 }
 
-
-
-
-        /*for (int i = 0; i < AST.Children.size(); i++) {
-
-            if (AST.Children.get(i) instanceof MethodDeclerationNode) {
-
-                Target.enterSymbol(((MethodDeclerationNode) AST.Children.get(i)).Identifier.value, "method");
-                check.Table = Target;
-
-            } else if (AST.Children.get(i) instanceof InitializationNode) {
-                if (check.Visit(AST.Children.get(i)) != null) {
-                    Target.enterSymbol(((InitializationNode) AST.Children.get(i)).Identifier.value, ((InitializationNode) AST.Children.get(i)).Type.value);
-                } else {
-                    System.out.println(((InitializationNode) AST.Children.get(i)).Type.value + " type has not been declared yet");
-                }
-
-            } else if (AST.Children.get(i) instanceof ClassDCLNode) {
-                if(check.Visit(AST.Children.get(i)).equals("fine")){
-                    Target.enterSymbol(((ClassDCLNode) AST.Children.get(i)).Identifier.value, "class");
-                    check.Table = Target;
-                }else{
-                    System.out.println("Class " + ((ClassDCLNode) AST.Children.get(i)).Identifier.value + " has already been declared");
-                }
-
-
-            } else {
-                check.Table = Target;
-                check.Visit(AST.Children.get(i));
-
-            }
-
-        }
-        return Target;
-    }
-}*/
