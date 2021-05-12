@@ -54,7 +54,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 emit("ldc " + ((NumberNode) node.Value).value);
                 emit("fstore " + getReference("Number/" + node.Target.value));
             } else if (node.Value instanceof StringNode){
-                emit("ldc " + ((StringNode) node.Value).value);
+                emit("ldc \"" + ((StringNode) node.Value).value+"\"");
                 emit("astore " + getReference("String/" + node.Target.value));
             } else if (node.Value instanceof IdNode) {
                 if (VarTable.containsKey("Number/" + ((IdNode) node.Value).value)){
@@ -477,7 +477,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 } else if (currentParam instanceof BinaryOperator){
                     printNumberFromStack(currentParam);
                     emit("i2f");
-                } else if (currentParam.Children.get(0) instanceof NumberNode) { //Its saved as a math node, so its hidden in children. Could make a fix in MyVisitor to add NumberNodes directly to avoid this.
+                } else if (currentParam.Children.get(0) instanceof NumberNode) {                                                //Its saved as a math node, so its hidden in children. Could make a fix in MyVisitor to add NumberNodes directly to avoid this.
                     printStuff(((NumberNode) currentParam.Children.get(0)).value);
                 }
             }
@@ -588,6 +588,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             } else { //TODO create declaration for parameterless methods
                 emit(".method public static " + node.Identifier.value + "()V");
                 genPrintStream();
+                genInputScanner();
                 for (AbstractNodeBase a:  node.Statements) {
                     this.Visit(a);
                 }
