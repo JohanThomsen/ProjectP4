@@ -556,24 +556,22 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             emit("\n");
             StringBuilder paraTypes = new StringBuilder();
             StringBuilder storeParams = new StringBuilder();
+            Incrementer local = new Incrementer();
             int nextID;
             if (node.Parameters != null){
                 paraTypes.append("(");
                 for (int i=0; i<node.Parameters.size(); i++) {
-                    nextID = incrementer.GetNextID();
+                    nextID = local.GetNextID();
                     String typeValue = node.Types.get(i).value;
                     String paramValue = node.Parameters.get(i).value;
                     if (typeValue.equals("number")) {
                         paraTypes.append("F");
                         VarTable.put("Number/" + paramValue, nextID);
-                        storeParams.append("fstore ").append(getReference("Number/" + paramValue));
-                        storeParams.append("\n");
 
                     } else if (typeValue.equals("string")) {
                         paraTypes.append("Ljava/lang/String;");
                         VarTable.put("String/" + paramValue, nextID);
-                        storeParams.append("astore ").append(getReference("String/" + paramValue));
-                        storeParams.append("\n");
+
                     } else {
                         VarTable.put(typeValue + "/" + paramValue, nextID);
                     }
@@ -581,7 +579,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 paraTypes.append(")");
                 emit(".method public static " + node.Identifier.value + paraTypes + "V");
                 genPrintStream();
-                emit(storeParams.deleteCharAt(storeParams.lastIndexOf("\n")).toString());
+
                 for (AbstractNodeBase a:  node.Statements) {
                     this.Visit(a);
                 }
