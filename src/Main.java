@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-//import jasmin.*;
+import jasmin.*;
 
 import static org.antlr.v4.runtime.CharStreams.fromFileName;
 
@@ -40,7 +40,7 @@ public class Main {
             if (Errors.isEmpty()) {
                 CodeGen(node);
 
-                //new jasmin.Main().assemble("out.j");
+                new jasmin.Main().assemble("out.j");
 
                 ProcessBuilder processBuilder;
                 if (args.length == 2) {
