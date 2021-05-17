@@ -191,7 +191,6 @@ public class ASTTypeCheck extends ASTVisitor<String>{
 
     @Override
     public String Visit(MethodDeclerationNode node) {
-
         if (node.Types != null) {
             boolean Success = true;
             for (IdNode type : node.Types) {
@@ -205,7 +204,6 @@ public class ASTTypeCheck extends ASTVisitor<String>{
             return "Success";
         }
     }
-
 
     @Override
     public String Visit(IdNode node) {
