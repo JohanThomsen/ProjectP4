@@ -594,7 +594,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 emit(".method public static " + node.Identifier.value + paraTypes + "V");
                 incrementer.ID = local.GetNextID();
                 genPrintStream();
-
+                genInputScanner();
                 for (AbstractNodeBase a:  node.Statements) {
                     this.Visit(a);
                 }
