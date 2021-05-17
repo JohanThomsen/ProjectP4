@@ -290,6 +290,13 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
                         parameters.add(this.visit(ctx.math(i-1)));
                     }
                 }
+                for(int i = 0; i < parameters.size(); i++){
+                    if(parameters.get(i).Children.size() >= 1){
+                        AbstractNodeBase temp = parameters.get(i);
+                        parameters.remove(i);
+                        parameters.add(i, temp.Children.get(0));
+                    }
+                }
                 node = new MethodCallNode(new IdNode(ctx.Id(0).toString()), parameters);
                 break;
         }
