@@ -487,14 +487,28 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
             StringBuilder params = new StringBuilder();
             for (int i = 0; i < node.Parameters.size(); i++) {
-                IdNode currentNode = (IdNode) node.Parameters.get(i);
-                if (VarTable.containsKey("Number/" + (currentNode.value))){
-                    emit("fload " +  getReference("Number/" + (currentNode.value)));
-                    params.append("F");
-                    //nextID = incrementer.GetNextID();
-                } else if (VarTable.containsKey("String/" + (currentNode.value))){
-                    emit("aload " +  getReference("String/" + (currentNode.value)));
+                if(node.Parameters.get(i) instanceof IdNode){
+                    IdNode currentNode = (IdNode) node.Parameters.get(i);
+
+                    if (VarTable.containsKey("Number/" + (currentNode.value))){
+                        emit("fload " +  getReference("Number/" + (currentNode.value)));
+                        params.append("F");
+
+                    } else if (VarTable.containsKey("String/" + (currentNode.value))){
+                        emit("aload " +  getReference("String/" + (currentNode.value)));
+                        params.append("Ljava/lang/String;");
+                    }
+                }else if(node.Parameters.get(i) instanceof StringNode){
+                    emit("ldc \""+ ((StringNode) node.Parameters.get(i)).value +"\"");
                     params.append("Ljava/lang/String;");
+
+                }else if(node.Parameters.get(i) instanceof IMath){
+                    this.Visit(node.Parameters.get(i));
+                    params.append("F");
+
+                }else if(node.Parameters.get(i) instanceof NumberNode){
+                    emit("ldc "+ ((NumberNode) node.Parameters.get(i)).value);
+                    params.append("F");
                 }
             }
             emit("invokestatic " + "Out/" + node.Identifier.value + "(" + params + ")V");//TODO Add support for method call from classes
@@ -578,6 +592,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 }
                 paraTypes.append(")");
                 emit(".method public static " + node.Identifier.value + paraTypes + "V");
+                incrementer.ID = local.GetNextID();
                 genPrintStream();
 
                 for (AbstractNodeBase a:  node.Statements) {
