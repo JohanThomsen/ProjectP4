@@ -124,6 +124,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }else {
             this.Visit(node.LeftOperand);
         }
+        emit("f2i");
         emit("ifeq falselabel" + boolID);
         //Then check if the second operand is true
         if(node.RightOperand instanceof NumberNode) {
@@ -131,6 +132,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }else {
             this.Visit(node.RightOperand);
         }
+        emit("f2i");
         emit("ifeq falselabel" + boolID);//If right operand is false, jump til end
 
         emit("iconst_1");
@@ -236,6 +238,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }else {
             this.Visit(node.LeftOperand);
         }
+        emit("f2i");
         emit("ifne truelabel" + boolID);
         //Then check if the second operand is true
         if(node.RightOperand instanceof NumberNode) {
@@ -243,6 +246,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }else {
             this.Visit(node.RightOperand);
         }
+        emit("f2i");
         emit("ifne truelabel" + boolID);//If right operand is true, jump til end and push true
 
         emit("iconst_0"); //If both are false, push false and end
@@ -302,6 +306,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(IfNode node) {
         int blockID = blockIncrementer.GetNextID();
         this.Visit(node.Predicate);
+        emit("f2i");
         emit("ifeq BranchEnd" + blockID);
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
@@ -316,6 +321,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         int blockID = blockIncrementer.GetNextID();
         emit("LoopStart" + loopID + ":");
         this.Visit(node.Predicate);
+        emit("f2i");
         emit("ifeq BranchEnd" + blockID);
 
         emit("fconst_1");
@@ -347,6 +353,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("LoopStart" + loopID + ":");
         //check Predicate
         this.Visit(node.Predicate);
+        emit("f2i");
         emit("ifeq BranchEnd" + blockID);
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
@@ -477,8 +484,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 } else if (currentParam instanceof BinaryOperator){
                     printNumberFromStack(currentParam);
                     emit("i2f");
-                } else if (currentParam.Children.get(0) instanceof NumberNode) {                                                //Its saved as a math node, so its hidden in children. Could make a fix in MyVisitor to add NumberNodes directly to avoid this.
-                    printStuff(((NumberNode) currentParam.Children.get(0)).value);
+                } else if (currentParam instanceof NumberNode) {                                                //Its saved as a math node, so its hidden in children. Could make a fix in MyVisitor to add NumberNodes directly to avoid this.
+                    printStuff(((NumberNode) currentParam).value);
                 }
             }
         } else if (node.Identifier.value.equals("read")) {
