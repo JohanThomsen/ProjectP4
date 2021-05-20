@@ -28,9 +28,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     Incrementer boolIncrementer = new Incrementer();
     Incrementer printIncrementer = new Incrementer();
     public ArrayList<MethodDeclerationNode> methods = new ArrayList<>();
-    public void emit(String s) {//TODO Change this to print to a .j file.
+    public void emit(String s) {
         System.out.println(s);
-        //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
         out(ps, s);
     }
     public void out(String s) {
@@ -337,7 +336,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(ForNode node) {
         int loopID = loopIncrementer.GetNextID();
         int blockID = blockIncrementer.GetNextID();
-        int loops = 0;
         //Init
         if (!(VarTable.containsKey("Number/" + node.init.Identifier))) {
             this.Visit(node.init);
@@ -357,12 +355,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("fload " + getReference("Number/" + (node.Id.value)));
         emit("fadd");
         emit("fstore " + getReference("Number/" + (node.Id.value)));
-        loops++;
+
         //Loop back
         emit("goto LoopStart" + loopID);
         //Or end
         emit("BranchEnd" + blockID + ":");
-        return Integer.toString(loops);
+        return null;
     }
 
     @Override
@@ -476,7 +474,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     printNumberFromStack(currentParam);
                 } else if (currentParam instanceof BinaryOperator){
                     printNumberFromStack(currentParam);
-                    emit("i2f");
                 } else if (currentParam.Children.get(0) instanceof NumberNode) {                                                //Its saved as a math node, so its hidden in children. Could make a fix in MyVisitor to add NumberNodes directly to avoid this.
                     printStuff(((NumberNode) currentParam.Children.get(0)).value);
                 }
