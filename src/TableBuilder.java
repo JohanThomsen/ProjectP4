@@ -12,6 +12,7 @@ public class TableBuilder {
 
         addBuiltinFunctionWithStringParam("print", Target, check);
         addBuiltinFunctionWithStringParam("read", Target, check);
+        addBuiltinFunctionWithStringParam("readNumber", Target, check);
 
         PrimTypes.forEach((primType) -> Target.enterSymbol(primType, primType));
         CheckChildren(Target, errors, check, AST.Children);

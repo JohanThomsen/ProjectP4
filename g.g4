@@ -23,7 +23,7 @@ expression: Id
 
 ctrlstruc: ('if'|'If') expression 'then do' statements  #ctrlif
 | ('as'|'As') 'long as' expression 'is true, do' statements #ctrlwhile
-| ('repeat'|'Repeat') Id 'from' math 'to' math statements #ctrlfor
+| ('repeat'|'Repeat') Id 'from' math 'to' math 'and for each do' statements #ctrlfor
 //| switch
 ;
 

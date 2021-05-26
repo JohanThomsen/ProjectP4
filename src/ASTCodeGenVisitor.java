@@ -69,6 +69,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     this.Visit((MethodCallNode) node.Value);
                     emit("astore " + getReference("String/" + node.Target.value));
                 }
+                if (((MethodCallNode) node.Value).Identifier.value.equals("readNumber")){ //TODO do not do this, give methods return types instead
+                    this.Visit((MethodCallNode) node.Value);
+                    emit("astore " + getReference("Number/" + node.Target.value));
+                }
             }else if (node.Value instanceof ForNode) {
                 String loopCount = this.Visit((ForNode) node.Value);
                 boolean Break = false;
@@ -483,6 +487,8 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             }
         } else if (node.Identifier.value.equals("read")) {
             scanCall();
+        } else if (node.Identifier.value.equals("readNumber")) {
+            scanNumberCall();
         } else if (node.Parameters != null){
 
             StringBuilder params = new StringBuilder();
@@ -697,6 +703,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public void scanCall(){
         emit("aload "+ VarTable.get("Scanner"));
         emit("invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;");
+    }
+
+    public void scanNumberCall(){
+        emit("aload "+ VarTable.get("Scanner"));
+        emit("invokevirtual java/util/Scanner.nextLine()F");
     }
 
     private void stringEquals(StringEqualsNode node){

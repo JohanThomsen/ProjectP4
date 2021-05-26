@@ -1,6 +1,50 @@
+There is a string called input.
+There is a number called secondaryInput.
+TheBeginning with string Direction and number Distance does
+    If Direction is equal to "NORTH" then do
+        If Distance is greater than 10 then do
+            Do print with "You walk off the edge of the world".
+        then continue
+        If Distance is less than 10 then do
+            Do print with "You arrive safely at home".
+        then continue
+    then continue
+    If Direction is equal to "SOUTH" then do
+       If Distance is greater than 10 then do
+           Do print with "You walk off the edge of the world".
+       then continue
+       If Distance is less than 10 then do
+           Do print with "You have ventured further into the forest".
+           Do print with "You can RETURN or PRESS ON".
+           input is do read.
+           If input is equal to "PRESS ON" then do
+               Do print with "You emerge from the forest".
+               Do print with "You are far from home now".
+               Do print with "As you turn to look behind the forest path seems to have disappeared".
+               Do print with "Seems your only option is to move forwards".
+               Do print with "Good Luck".
+           then continue
+       then continue
+    then continue
+then continue
 
-There is a number called NumBool.
 
-NumBool is (4 + 4) is greater than 5.
-
-Do print with NumBool.
+As long as 1 is true, do
+    Do print with "You awake in a forest".
+    Do print with "There are paths NORTH and SOUTH".
+    Do print with "Choose a path".
+    input is Do read.
+    If input is equal to "NORTH" then do
+        Do print with "Tell me how long you spend walking north".
+        secondaryInput is Do readNumber.
+        Do TheBeginning with input, secondaryInput.
+    then continue
+    If input is equal to "SOUTH" then do
+        Do print with "Tell me how long you spend walking South".
+        secondaryInput is Do readNumber.
+        Do TheBeginning with input, secondaryInput.
+    then continue
+    If input is equal to "PRESS ON" then do
+        Break loop.
+    then continue
+then continue
