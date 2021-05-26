@@ -13,29 +13,40 @@ dup
 getstatic java/lang/System.in Ljava/io/InputStream;
 invokespecial java/util/Scanner.<init>(Ljava/io/InputStream;)V
 astore 6
-LoopStart0:
-ifeq BranchEnd0
-fconst_1
-fload_0
-fadd
-fstore_0
+ldc "alive"
+astore 8
+ldc 1.0
+fstore 7
+ldc ""
+astore 10
 aload 5
-ldc "You awake in a forest"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-aload 5
-ldc "There are paths NORTH and SOUTH"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-aload 5
-ldc "Choose a path"
+ldc "Who are you"
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 aload 6
 invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;
-astore 7
-aload 7
-ldc "NORTH"
-invokevirtual java/lang/String.compareTo(Ljava/lang/String;)I
-i2f
+astore 9
+aload 5
+aload 9
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 5
+ldc "You wake in a dusty tavern room"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 5
+ldc "There is blood on the walls and dust on the floors"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 5
+ldc "You see footsteps leading from the door to your window"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 9
+invokestatic Out/CheckSanity(Ljava/lang/String;)V
+aload 5
+ldc "What do you check"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 fconst_0
+fstore_0
+LoopStart0:
+fload 7
+ldc 1.0
 fcmpl
 ifeq truelabel0
 iconst_0
@@ -44,19 +55,17 @@ truelabel0:
 iconst_1
 endlabel0:
 i2f
-ifeq BranchEnd1
-aload 5
-ldc "Tell me how long you spend walking north"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+f2i
+ifeq BranchEnd0
+fconst_1
+fload_0
+fadd
+fstore_0
 aload 6
-invokevirtual java/util/Scanner.nextLine()F
-astore 8
-aload 7
-fload 8
-invokestatic Out/TheBeginning(Ljava/lang/String;F)V
-BranchEnd1:
-aload 7
-ldc "SOUTH"
+invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;
+astore 10
+aload 10
+ldc "blood"
 invokevirtual java/lang/String.compareTo(Ljava/lang/String;)I
 i2f
 fconst_0
@@ -68,19 +77,16 @@ truelabel1:
 iconst_1
 endlabel1:
 i2f
-ifeq BranchEnd2
-aload 5
-ldc "Tell me how long you spend walking South"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-aload 6
-invokevirtual java/util/Scanner.nextLine()F
+f2i
+ifeq BranchEnd1
+aload 9
+invokestatic Out/HandleBlood(Ljava/lang/String;)V
+ldc "dead"
 astore 8
-aload 7
-fload 8
-invokestatic Out/TheBeginning(Ljava/lang/String;F)V
-BranchEnd2:
-aload 7
-ldc "PRESS ON"
+goto BranchEnd0
+BranchEnd1:
+aload 10
+ldc "footsteps"
 invokevirtual java/lang/String.compareTo(Ljava/lang/String;)I
 i2f
 fconst_0
@@ -92,27 +98,20 @@ truelabel2:
 iconst_1
 endlabel2:
 i2f
-ifeq BranchEnd3
+f2i
+ifeq BranchEnd2
+aload 5
+ldc "The footsteps are of a demon"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 5
+ldc "You hear a snarl and look up you see the eldritch horror and it kills you"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+ldc "dead"
+astore 8
 goto BranchEnd0
-BranchEnd3:
-goto LoopStart0
-BranchEnd0:
-.limit locals 9
-.limit stack 10
-return
-.end method
-
-
-.method public static TheBeginning(Ljava/lang/String;F)V
-getstatic java/lang/System/out Ljava/io/PrintStream;
-astore 3
-new java/util/Scanner
-dup
-getstatic java/lang/System.in Ljava/io/InputStream;
-invokespecial java/util/Scanner.<init>(Ljava/io/InputStream;)V
-astore 4
-aload 0
-ldc "NORTH"
+BranchEnd2:
+aload 10
+ldc "door"
 invokevirtual java/lang/String.compareTo(Ljava/lang/String;)I
 i2f
 fconst_0
@@ -124,24 +123,106 @@ truelabel3:
 iconst_1
 endlabel3:
 i2f
-ifeq BranchEnd4
-fload 1
-ldc 10.0
+f2i
+ifeq BranchEnd3
+aload 5
+ldc "You check the door and its open you leave"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+goto BranchEnd0
+BranchEnd3:
+aload 10
+ldc "window"
+invokevirtual java/lang/String.compareTo(Ljava/lang/String;)I
+i2f
+fconst_0
 fcmpl
-ifgt truelabel4
+ifeq truelabel4
 iconst_0
 goto endlabel4
 truelabel4:
 iconst_1
 endlabel4:
 i2f
-ifeq BranchEnd5
-aload 3
-ldc "You walk off the edge of the world"
+f2i
+ifeq BranchEnd4
+aload 5
+ldc "You check the window it creeks as you open it you hear a voice behind you"
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-BranchEnd5:
-fload 1
+aload 5
+ldc "Nyrlathep makes you become dead"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+ldc "dead"
+astore 8
+goto BranchEnd0
+BranchEnd4:
+aload 5
+ldc "Try again"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+goto LoopStart0
+BranchEnd0:
+aload 5
+ldc "You are"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 5
+aload 8
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+.limit locals 10000
+.limit stack 10
+return
+.end method
+
+
+.method public static HandleBlood(Ljava/lang/String;)V
+getstatic java/lang/System/out Ljava/io/PrintStream;
+astore 2
+new java/util/Scanner
+dup
+getstatic java/lang/System.in Ljava/io/InputStream;
+invokespecial java/util/Scanner.<init>(Ljava/io/InputStream;)V
+astore 3
+aload 2
+ldc "The blood comes to life"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 2
+ldc "It murders you"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 2
+aload 0
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 2
+ldc "rip"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+.limit locals 10000
+.limit stack 10
+return
+.end method
+
+
+.method public static CheckSanity(Ljava/lang/String;)V
+getstatic java/lang/System/out Ljava/io/PrintStream;
+astore 2
+new java/util/Scanner
+dup
+getstatic java/lang/System.in Ljava/io/InputStream;
+invokespecial java/util/Scanner.<init>(Ljava/io/InputStream;)V
+astore 3
+aload 2
+aload 0
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 2
+ldc "To ensure your sanity please say the number 42"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 ldc 10.0
+fstore 5
+ldc 0.0
+fstore 4
+ldc 0.0
+fstore_0
+fconst_0
+fstore_0
+LoopStart1:
+fload 5
+ldc 42.0
 fcmpl
 iflt truelabel5
 iconst_0
@@ -150,17 +231,17 @@ truelabel5:
 iconst_1
 endlabel5:
 i2f
-ifeq BranchEnd6
+f2i
+ifeq BranchEnd5
+fconst_1
+fload_0
+fadd
+fstore_0
 aload 3
-ldc "You arrive safely at home"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-BranchEnd6:
-BranchEnd4:
-aload 0
-ldc "SOUTH"
-invokevirtual java/lang/String.compareTo(Ljava/lang/String;)I
-i2f
-fconst_0
+invokevirtual java/util/Scanner.nextFloat()F
+fstore 5
+fload 5
+ldc 42.0
 fcmpl
 ifeq truelabel6
 iconst_0
@@ -169,75 +250,42 @@ truelabel6:
 iconst_1
 endlabel6:
 i2f
-ifeq BranchEnd7
-fload 1
-ldc 10.0
+f2i
+ifeq BranchEnd6
+aload 2
+ldc "correct"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+BranchEnd6:
+fload 5
+ldc 42.0
 fcmpl
-ifgt truelabel7
+iflt truelabel7
 iconst_0
 goto endlabel7
 truelabel7:
 iconst_1
 endlabel7:
 i2f
-ifeq BranchEnd8
-aload 3
-ldc "You walk off the edge of the world"
+f2i
+ifeq BranchEnd7
+aload 2
+ldc "not quite right try again"
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-BranchEnd8:
-fload 1
-ldc 10.0
-fcmpl
-iflt truelabel8
-iconst_0
-goto endlabel8
-truelabel8:
-iconst_1
-endlabel8:
-i2f
-ifeq BranchEnd9
-aload 3
-ldc "You have ventured further into the forest"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-aload 3
-ldc "You can RETURN or PRESS ON"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-aload 4
-invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;
-astore 7
-aload 7
-ldc "PRESS ON"
-invokevirtual java/lang/String.compareTo(Ljava/lang/String;)I
-i2f
-fconst_0
-fcmpl
-ifeq truelabel9
-iconst_0
-goto endlabel9
-truelabel9:
-iconst_1
-endlabel9:
-i2f
-ifeq BranchEnd10
-aload 3
-ldc "You emerge from the forest"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-aload 3
-ldc "You are far from home now"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-aload 3
-ldc "As you turn to look behind the forest path seems to have disappeared"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-aload 3
-ldc "Seems your only option is to move forwards"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-aload 3
-ldc "Good Luck"
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-BranchEnd10:
-BranchEnd9:
 BranchEnd7:
-.limit locals 5
+goto LoopStart1
+BranchEnd5:
+fload_0
+fstore 4
+aload 2
+ldc "You are fine it only took you"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+aload 2
+fload 4
+invokevirtual java/io/PrintStream/println(F)V
+aload 2
+ldc "tries"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+.limit locals 10000
 .limit stack 10
 return
 .end method
