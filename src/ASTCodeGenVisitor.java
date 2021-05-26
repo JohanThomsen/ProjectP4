@@ -637,7 +637,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void genEnd(){
-        emit(".limit locals " + (10000));
+        emit(".limit locals 100");
         emit(".limit stack 10");
         emit("return");
         emit(".end method");
