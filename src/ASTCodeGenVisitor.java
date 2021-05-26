@@ -313,7 +313,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
         int loopID = loopIncrementer.GetNextID();
         int blockID = blockIncrementer.GetNextID();
-        emit("fconst_1");
+        emit("fconst_0");
         emit("fstore_0");
         emit("LoopStart" + loopID + ":");
         this.Visit(node.Predicate);

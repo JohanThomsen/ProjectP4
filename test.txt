@@ -1,50 +1,76 @@
-There is a string called input.
-There is a number called secondaryInput.
-TheBeginning with string Direction and number Distance does
-    If Direction is equal to "NORTH" then do
-        If Distance is greater than 10 then do
-            Do print with "You walk off the edge of the world".
-        then continue
-        If Distance is less than 10 then do
-            Do print with "You arrive safely at home".
-        then continue
-    then continue
-    If Direction is equal to "SOUTH" then do
-       If Distance is greater than 10 then do
-           Do print with "You walk off the edge of the world".
-       then continue
-       If Distance is less than 10 then do
-           Do print with "You have ventured further into the forest".
-           Do print with "You can RETURN or PRESS ON".
-           input is do read.
-           If input is equal to "PRESS ON" then do
-               Do print with "You emerge from the forest".
-               Do print with "You are far from home now".
-               Do print with "As you turn to look behind the forest path seems to have disappeared".
-               Do print with "Seems your only option is to move forwards".
-               Do print with "Good Luck".
-           then continue
-       then continue
-    then continue
+There is a number called OnTheMoney.
+There is a string called LifeStatus.
+There is a string called Name.
+LifeStatus is "alive".
+OnTheMoney is 1.0.
+There is a string called Input.
+Input is "".
+HandleBlood with string Name does
+   do print with "The blood comes to life".
+   do print with "It murders you".
+   do print with Name.
+   do print with "rip".
 then continue
 
+CheckSanity with string Name does
+    do print with Name.
+    do print with "To ensure your sanity please say the number 42".
+    There is a number called x.
+    There is a number called answer.
+    answer is 10.0.
+    x is 0.
 
-As long as 1 is true, do
-    Do print with "You awake in a forest".
-    Do print with "There are paths NORTH and SOUTH".
-    Do print with "Choose a path".
-    input is Do read.
-    If input is equal to "NORTH" then do
-        Do print with "Tell me how long you spend walking north".
-        secondaryInput is Do readNumber.
-        Do TheBeginning with input, secondaryInput.
+    x is as long as answer is less than 42 is true, do
+        answer is do readNumber.
+        if answer is equal to 42 then do
+            do print with "correct".
+        then continue
+        if answer is less than 42 then do
+            do print with "not quite right try again".
+        then continue
     then continue
-    If input is equal to "SOUTH" then do
-        Do print with "Tell me how long you spend walking South".
-        secondaryInput is Do readNumber.
-        Do TheBeginning with input, secondaryInput.
-    then continue
-    If input is equal to "PRESS ON" then do
-        Break loop.
-    then continue
+
+    do print with "You are fine it only took you".
+    do print with x.
+    do print with "tries".
 then continue
+
+do print with "Who are you".
+Name is do read.
+do print with Name.
+do print with "You wake in a dusty tavern room".
+do print with "There is blood on the walls and dust on the floors".
+do print with "You see footsteps leading from the door to your window".
+do CheckSanity with Name.
+do print with "What do you check".
+as long as OnTheMoney is equal to 1.0 is true, do
+    Input is do read.
+    if Input is equal to "blood" then do
+        do HandleBlood with Name.
+        LifeStatus is "dead".
+        break loop.
+    then continue
+    if Input is equal to "footsteps" then do
+        do print with "The footsteps are of a demon".
+        do print with "You hear a snarl and look up you see the eldritch horror and it kills you".
+        LifeStatus is "dead".
+        break loop.
+    then continue
+    if Input is equal to "door" then do
+        do print with "You check the door and its open you leave".
+        break loop.
+    then continue
+    if Input is equal to "window" then do
+            do print with "You check the window it creaks as you open it you hear a voice behind you".
+            do print with "Nyrlathep makes you become dead".
+            LifeStatus is "dead".
+            break loop.
+        then continue
+    do print with "Try again".
+then continue
+
+do print with "You are".
+do print with LifeStatus.
+
+
+
