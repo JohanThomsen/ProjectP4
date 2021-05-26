@@ -9,8 +9,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     private int indentation = 0;
 
     @Override public AbstractNodeBase visitProgram(gParser.ProgramContext ctx) {
-        printTabs(indentation);
-        System.out.println("ProgramNode");
         indentation++;
 
         AbstractNodeBase node;
@@ -27,8 +25,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
 
     @Override public AbstractNodeBase visitExpression(gParser.ExpressionContext ctx) {
-        printTabs(indentation);
-        System.out.println("Expression");
         indentation++;
 
         AbstractNodeBase node = visitChildren(ctx);
@@ -38,11 +34,7 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
 
     @Override public AbstractNodeBase visitCtrlif(gParser.CtrlifContext ctx) {
-
-        printTabs(indentation);
-        System.out.println("CtrlIf");
         indentation++;
-
 
         AbstractNodeBase nodeBase = visitChildren(ctx);
 
@@ -54,8 +46,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override public AbstractNodeBase visitClassdcl(gParser.ClassdclContext ctx) {
 
-        printTabs(indentation);
-        System.out.println("Classdcl");
         indentation++;
         ClassDCLNode Class = new ClassDCLNode();
         Class.Identifier = new IdNode(ctx.Id().toString());
@@ -65,8 +55,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     }
 
     @Override public AbstractNodeBase visitInit(gParser.InitContext ctx) {
-        printTabs(indentation);
-        System.out.println("Init");
         indentation++;
         InitializationNode node = new InitializationNode();
         if(ctx.Id(2) != null){
@@ -88,8 +76,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     }
 
     @Override public AbstractNodeBase visitAssign(gParser.AssignContext ctx) {
-        printTabs(indentation);
-        System.out.println("Assign");
         indentation++;
         AssignNode node = new AssignNode();
         node.Target = new IdNode(ctx.Id(0).toString());
@@ -107,8 +93,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override public AbstractNodeBase visitAttributes(gParser.AttributesContext ctx) {
 
-        printTabs(indentation);
-        System.out.println("Attributes");
         indentation++;
         AbstractNodeBase node = visitChildren(ctx);
         indentation--;
@@ -116,8 +100,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     }
 
     @Override public AbstractNodeBase visitMathMult(gParser.MathMultContext ctx) {
-        printTabs(indentation);
-        System.out.println("MathMult");
         indentation++;
 
         MathMultNode node = new MathMultNode(visitChildren(ctx).Children);
@@ -126,8 +108,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     }
 
     @Override public AbstractNodeBase visitMathDiv(gParser.MathDivContext ctx) {
-        printTabs(indentation);
-        System.out.println("MathDiv");
         indentation++;
 
         MathDivNode node = new MathDivNode(visitChildren(ctx).Children);
@@ -136,8 +116,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     }
 
     @Override public AbstractNodeBase visitMathAdd(gParser.MathAddContext ctx) {
-        printTabs(indentation);
-        System.out.println("MathAdd");
         indentation++;
 
         MathAddNode node = new MathAddNode(visitChildren(ctx).Children);
@@ -146,8 +124,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
     }
 
     @Override public AbstractNodeBase visitMathParenthesis(gParser.MathParenthesisContext ctx) {
-        printTabs(indentation);
-        System.out.println("MathParenthesis");
         indentation++;
 
         MathParenthesisNode node = new MathParenthesisNode(visitChildren(ctx).Children.get(0));
@@ -224,8 +200,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override
     public AbstractNodeBase visitCtrlwhile(gParser.CtrlwhileContext ctx) {
-        printTabs(indentation);
-        System.out.println("While Loop");
         indentation++;
         WhileNode node = new WhileNode(reduce(visitChildren(ctx.expression())), AbstractRemoval(visitChildren(ctx.statements())).Children);
         indentation--;
@@ -234,8 +208,6 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
     @Override
     public AbstractNodeBase visitCtrlfor(gParser.CtrlforContext ctx) {
-        printTabs(indentation);
-        System.out.println("For Loop");
         indentation++;
         ForNode node = new ForNode((new IdNode(ctx.Id().toString())),this.visit(ctx.math(0)), this.visit(ctx.math(1)), AbstractRemoval(visitChildren(ctx.statements())).Children);
         AbstractRemoval(node.From);
@@ -251,16 +223,13 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
                 node = new MethodDeclerationNode(new IdNode(ctx.Id(0).toString()), AbstractRemoval(visitChildren(ctx.statements())).Children);
                 break;
             default:
-               // String tempType = "";
                 int paramCount = ctx.Id().size()-1;
                 ArrayList<IdNode> parameters = new ArrayList<>();
                 ArrayList<IdNode> types = new ArrayList<>();
                 for (int i = 1; i <= paramCount; i = i+1){
                     if (!(i % 2 == 0)) {
                         types.add(new IdNode(ctx.Id(i).toString()));
-                        //tempType = ctx.Id(i).toString().equals("number") ? "Number/" : "String/";
                     } else {
-                        //parameters.add(new IdNode(tempType + ctx.Id(i).toString()));
                         parameters.add(new IdNode(ctx.Id(i).toString()));
                     }
                 }
@@ -376,9 +345,5 @@ public class MyVisitor extends gBaseVisitor <AbstractNodeBase>{
 
 
         return root;
-    }
-
-    private void printTabs(int indentation){
-        System.out.print(String.join("",Collections.nCopies(indentation,"    ")));
     }
 }

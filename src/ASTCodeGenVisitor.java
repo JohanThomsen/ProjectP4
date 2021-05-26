@@ -29,16 +29,14 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     Incrementer printIncrementer = new Incrementer();
     public ArrayList<MethodDeclerationNode> methods = new ArrayList<>();
     public void emit(String s) {//TODO Change this to print to a .j file.
-        System.out.println(s);
-        //PrintStream ps = System.out;//System.out will probably be changed to the .j file for output
         out(ps, s);
     }
     public void out(String s) {
         out(this.ps, s);
-    }//ps is a PrintStream
+    }
     public void out(PrintStream ps, String s)  {
         String tab = "";
-        for (int i=1; i <= level; ++i) tab += "  ";//level is an int
+        for (int i=1; i <= level; ++i) tab += "  ";
         ps.println(tab + s);
     }
 
@@ -414,7 +412,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("fdiv");
 
         return null;
-    }//Done for now
+    }
 
     @Override
     public String Visit(MathMultNode node) {
@@ -422,7 +420,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
         emit("fmul");
         return null;
-    }//Done for now
+    }
 
     @Override
     public String Visit(MathParenthesisNode node) {
@@ -430,7 +428,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         this.Visit(node.Operand);
 
         return null;
-    }//Done for now
+    }
 
     private void LoadNumber(BinaryOperator node) {
         if(node.LeftOperand instanceof NumberNode) {
@@ -480,7 +478,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 } else if (currentParam instanceof BinaryOperator){
                     printNumberFromStack(currentParam);
                     emit("i2f");
-                } else if (currentParam instanceof NumberNode) {                                                //Its saved as a math node, so its hidden in children. Could make a fix in MyVisitor to add NumberNodes directly to avoid this.
+                } else if (currentParam instanceof NumberNode) {
                     printStuff(((NumberNode) currentParam).value);
                 }
             }
@@ -538,17 +536,17 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     @Override
     public String Visit(NumberNode node) {
         return null;
-    }//Not important for now
+    }
 
     @Override
     public String Visit(StringNode node) {
         return null;
-    }//Not important for now
+    }
 
     @Override
     public String Visit(SubtractionNode node) {
         return null;
-    }//Not important for now
+    }
 
     private boolean GetBreakInChildren(AbstractNodeBase node){
         if (node instanceof BreakNode){
