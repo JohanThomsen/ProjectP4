@@ -1,6 +1,76 @@
+There is a number called OnTheMoney.
+There is a string called LifeStatus.
+There is a string called Name.
+LifeStatus is "alive".
+OnTheMoney is 1.0.
+There is a string called Input.
+Input is "".
+HandleBlood with string Name does
+   do print with "The blood comes to life".
+   do print with "It murders you".
+   do print with Name.
+   do print with "rip".
+then continue
 
-There is a number called NumBool.
+CheckSanity with string Name does
+    do print with Name.
+    do print with "To ensure your sanity please say the number 42".
+    There is a number called x.
+    There is a number called answer.
+    answer is 10.0.
+    x is 0.
 
-NumBool is (4 + 4) is greater than 5.
+    x is as long as answer is less than 42 is true, do
+        answer is do readNumber.
+        if answer is equal to 42 then do
+            do print with "correct".
+        then continue
+        if answer is less than 42 then do
+            do print with "not quite right try again".
+        then continue
+    then continue
 
-Do print with NumBool.
+    do print with "You are fine it only took you".
+    do print with x.
+    do print with "tries".
+then continue
+
+do print with "Who are you".
+Name is do read.
+do print with Name.
+do print with "You wake in a dusty tavern room".
+do print with "There is blood on the walls and dust on the floors".
+do print with "You see footsteps leading from the door to your window".
+do CheckSanity with Name.
+do print with "What do you check".
+as long as OnTheMoney is equal to 1.0 is true, do
+    Input is do read.
+    if Input is equal to "blood" then do
+        do HandleBlood with Name.
+        LifeStatus is "dead".
+        break loop.
+    then continue
+    if Input is equal to "footsteps" then do
+        do print with "The footsteps are of a demon".
+        do print with "You hear a snarl and look up you see the eldritch horror and it kills you".
+        LifeStatus is "dead".
+        break loop.
+    then continue
+    if Input is equal to "door" then do
+        do print with "You check the door and its open you leave".
+        break loop.
+    then continue
+    if Input is equal to "window" then do
+            do print with "You check the window it creaks as you open it you hear a voice behind you".
+            do print with "Nyrlathep makes you become dead".
+            LifeStatus is "dead".
+            break loop.
+        then continue
+    do print with "Try again".
+then continue
+
+do print with "You are".
+do print with LifeStatus.
+
+
+

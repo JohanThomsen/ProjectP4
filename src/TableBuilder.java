@@ -12,6 +12,7 @@ public class TableBuilder {
 
         addBuiltinFunctionWithStringParam("print", Target, check);
         addBuiltinFunctionWithStringParam("read", Target, check);
+        addBuiltinFunctionWithStringParam("readNumber", Target, check);
 
         PrimTypes.forEach((primType) -> Target.enterSymbol(primType, primType));
         CheckChildren(Target, errors, check, AST.Children);
@@ -82,7 +83,6 @@ public class TableBuilder {
                 check.Table.openScope();
             }
             CheckChildren(Target, errors, check, ((MethodDeclerationNode) CurrentNode).Statements);
-            Target.printCurrentScope();
             check.Table.closeScope();
         }
     }
@@ -99,7 +99,6 @@ public class TableBuilder {
             TypesString.append(type.value).append(",");
         }
         return TypesString.toString();
-        //return TypesString.deleteCharAt(TypesString.lastIndexOf(",")).toString();
     }
 
     private void addBuiltinFunctionWithStringParam(String name, SymbolTable Target, ASTTypeCheck check) {
@@ -110,45 +109,3 @@ public class TableBuilder {
         check.Table.closeScope();
     }
 }
-
-        /* else if (CurrentNode instanceof ClassDCLNode) {
-            if (check.Visit(CurrentNode).equals("fine")) {
-                Target.enterSymbol(((ClassDCLNode) CurrentNode).Identifier.value, "class");
-                check.Table = Target;
-            }
-        } */
-
-
-        /*for (int i = 0; i < AST.Children.size(); i++) {
-
-            if (AST.Children.get(i) instanceof MethodDeclerationNode) {
-
-                Target.enterSymbol(((MethodDeclerationNode) AST.Children.get(i)).Identifier.value, "method");
-                check.Table = Target;
-
-            } else if (AST.Children.get(i) instanceof InitializationNode) {
-                if (check.Visit(AST.Children.get(i)) != null) {
-                    Target.enterSymbol(((InitializationNode) AST.Children.get(i)).Identifier.value, ((InitializationNode) AST.Children.get(i)).Type.value);
-                } else {
-                    System.out.println(((InitializationNode) AST.Children.get(i)).Type.value + " type has not been declared yet");
-                }
-
-            } else if (AST.Children.get(i) instanceof ClassDCLNode) {
-                if(check.Visit(AST.Children.get(i)).equals("fine")){
-                    Target.enterSymbol(((ClassDCLNode) AST.Children.get(i)).Identifier.value, "class");
-                    check.Table = Target;
-                }else{
-                    System.out.println("Class " + ((ClassDCLNode) AST.Children.get(i)).Identifier.value + " has already been declared");
-                }
-
-
-            } else {
-                check.Table = Target;
-                check.Visit(AST.Children.get(i));
-
-            }
-
-        }
-        return Target;
-    }
-}*/

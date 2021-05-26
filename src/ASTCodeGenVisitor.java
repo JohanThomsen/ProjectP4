@@ -28,16 +28,15 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     Incrementer boolIncrementer = new Incrementer();
     Incrementer printIncrementer = new Incrementer();
     public ArrayList<MethodDeclerationNode> methods = new ArrayList<>();
-    public void emit(String s) {
-        System.out.println(s);
+    public void emit(String s) {//TODO Change this to print to a .j file.
         out(ps, s);
     }
     public void out(String s) {
         out(this.ps, s);
-    }//ps is a PrintStream
+    }
     public void out(PrintStream ps, String s)  {
         String tab = "";
-        for (int i=1; i <= level; ++i) tab += "  ";//level is an int
+        for (int i=1; i <= level; ++i) tab += "  ";
         ps.println(tab + s);
     }
 
@@ -67,6 +66,10 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 if (((MethodCallNode) node.Value).Identifier.value.equals("read")){ //TODO do not do this, give methods return types instead
                     this.Visit((MethodCallNode) node.Value);
                     emit("astore " + getReference("String/" + node.Target.value));
+                }
+                if (((MethodCallNode) node.Value).Identifier.value.equals("readNumber")){ //TODO do not do this, give methods return types instead
+                    this.Visit((MethodCallNode) node.Value);
+                    emit("fstore " + getReference("Number/" + node.Target.value));
                 }
             }else if (node.Value instanceof ForNode) {
                 String loopCount = this.Visit((ForNode) node.Value);
@@ -99,18 +102,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 emit("fstore " + getReference("Number/" + node.Target.value));
             }
         }
-        /* This would allow for initialization in assignment
-        else {
-            //Everything under here is essentially an Initialization
-            int nextID = incrementer.GetNextID();
-            if (node.Value instanceof NumberNode){
-                VarTable.put("Number/" + node.Target.value, nextID);
-                emit("fstore " + ((NumberNode) node.Value).value + nextID);
-            } else if (node.Value instanceof StringNode){
-                VarTable.put("String/" + node.Target.value, nextID);
-                emit("astore " + ((StringNode) node.Value).value + nextID);
-            }
-        }*/
         return null;
     }
 
@@ -123,6 +114,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }else {
             this.Visit(node.LeftOperand);
         }
+        emit("f2i");
         emit("ifeq falselabel" + boolID);
         //Then check if the second operand is true
         if(node.RightOperand instanceof NumberNode) {
@@ -130,6 +122,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }else {
             this.Visit(node.RightOperand);
         }
+        emit("f2i");
         emit("ifeq falselabel" + boolID);//If right operand is false, jump til end
 
         emit("iconst_1");
@@ -235,6 +228,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }else {
             this.Visit(node.LeftOperand);
         }
+        emit("f2i");
         emit("ifne truelabel" + boolID);
         //Then check if the second operand is true
         if(node.RightOperand instanceof NumberNode) {
@@ -242,6 +236,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         }else {
             this.Visit(node.RightOperand);
         }
+        emit("f2i");
         emit("ifne truelabel" + boolID);//If right operand is true, jump til end and push true
 
         emit("iconst_0"); //If both are false, push false and end
@@ -301,6 +296,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(IfNode node) {
         int blockID = blockIncrementer.GetNextID();
         this.Visit(node.Predicate);
+        emit("f2i");
         emit("ifeq BranchEnd" + blockID);
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
@@ -311,10 +307,15 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(WhileNode node) {
+        boolean first = true;
+
         int loopID = loopIncrementer.GetNextID();
         int blockID = blockIncrementer.GetNextID();
+        emit("fconst_0");
+        emit("fstore_0");
         emit("LoopStart" + loopID + ":");
         this.Visit(node.Predicate);
+        emit("f2i");
         emit("ifeq BranchEnd" + blockID);
 
         emit("fconst_1");
@@ -345,6 +346,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("LoopStart" + loopID + ":");
         //check Predicate
         this.Visit(node.Predicate);
+        emit("f2i");
         emit("ifeq BranchEnd" + blockID);
         for (AbstractNodeBase a:  node.Statements) {
             this.Visit(a);
@@ -409,7 +411,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("fdiv");
 
         return null;
-    }//Done for now
+    }
 
     @Override
     public String Visit(MathMultNode node) {
@@ -417,7 +419,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
         emit("fmul");
         return null;
-    }//Done for now
+    }
 
     @Override
     public String Visit(MathParenthesisNode node) {
@@ -425,7 +427,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         this.Visit(node.Operand);
 
         return null;
-    }//Done for now
+    }
 
     private void LoadNumber(BinaryOperator node) {
         if(node.LeftOperand instanceof NumberNode) {
@@ -474,24 +476,41 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                     printNumberFromStack(currentParam);
                 } else if (currentParam instanceof BinaryOperator){
                     printNumberFromStack(currentParam);
-                } else if (currentParam.Children.get(0) instanceof NumberNode) {                                                //Its saved as a math node, so its hidden in children. Could make a fix in MyVisitor to add NumberNodes directly to avoid this.
-                    printStuff(((NumberNode) currentParam.Children.get(0)).value);
+                    emit("i2f");
+                } else if (currentParam instanceof NumberNode) {
+                    printStuff(((NumberNode) currentParam).value);
                 }
             }
         } else if (node.Identifier.value.equals("read")) {
             scanCall();
+        } else if (node.Identifier.value.equals("readNumber")) {
+            scanNumberCall();
         } else if (node.Parameters != null){
 
             StringBuilder params = new StringBuilder();
             for (int i = 0; i < node.Parameters.size(); i++) {
-                IdNode currentNode = (IdNode) node.Parameters.get(i);
-                if (VarTable.containsKey("Number/" + (currentNode.value))){
-                    emit("fload " +  getReference("Number/" + (currentNode.value)));
-                    params.append("F");
-                    //nextID = incrementer.GetNextID();
-                } else if (VarTable.containsKey("String/" + (currentNode.value))){
-                    emit("aload " +  getReference("String/" + (currentNode.value)));
+                if(node.Parameters.get(i) instanceof IdNode){
+                    IdNode currentNode = (IdNode) node.Parameters.get(i);
+
+                    if (VarTable.containsKey("Number/" + (currentNode.value))){
+                        emit("fload " +  getReference("Number/" + (currentNode.value)));
+                        params.append("F");
+
+                    } else if (VarTable.containsKey("String/" + (currentNode.value))){
+                        emit("aload " +  getReference("String/" + (currentNode.value)));
+                        params.append("Ljava/lang/String;");
+                    }
+                }else if(node.Parameters.get(i) instanceof StringNode){
+                    emit("ldc \""+ ((StringNode) node.Parameters.get(i)).value +"\"");
                     params.append("Ljava/lang/String;");
+
+                }else if(node.Parameters.get(i) instanceof IMath){
+                    this.Visit(node.Parameters.get(i));
+                    params.append("F");
+
+                }else if(node.Parameters.get(i) instanceof NumberNode){
+                    emit("ldc "+ ((NumberNode) node.Parameters.get(i)).value);
+                    params.append("F");
                 }
             }
             emit("invokestatic " + "Out/" + node.Identifier.value + "(" + params + ")V");//TODO Add support for method call from classes
@@ -516,17 +535,17 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     @Override
     public String Visit(NumberNode node) {
         return null;
-    }//Not important for now
+    }
 
     @Override
     public String Visit(StringNode node) {
         return null;
-    }//Not important for now
+    }
 
     @Override
     public String Visit(SubtractionNode node) {
         return null;
-    }//Not important for now
+    }
 
     private boolean GetBreakInChildren(AbstractNodeBase node){
         if (node instanceof BreakNode){
@@ -553,32 +572,31 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
             emit("\n");
             StringBuilder paraTypes = new StringBuilder();
             StringBuilder storeParams = new StringBuilder();
+            Incrementer local = new Incrementer();
             int nextID;
             if (node.Parameters != null){
                 paraTypes.append("(");
                 for (int i=0; i<node.Parameters.size(); i++) {
-                    nextID = incrementer.GetNextID();
+                    nextID = local.GetNextID();
                     String typeValue = node.Types.get(i).value;
                     String paramValue = node.Parameters.get(i).value;
                     if (typeValue.equals("number")) {
                         paraTypes.append("F");
                         VarTable.put("Number/" + paramValue, nextID);
-                        storeParams.append("fstore ").append(getReference("Number/" + paramValue));
-                        storeParams.append("\n");
 
                     } else if (typeValue.equals("string")) {
                         paraTypes.append("Ljava/lang/String;");
                         VarTable.put("String/" + paramValue, nextID);
-                        storeParams.append("astore ").append(getReference("String/" + paramValue));
-                        storeParams.append("\n");
+
                     } else {
                         VarTable.put(typeValue + "/" + paramValue, nextID);
                     }
                 }
                 paraTypes.append(")");
                 emit(".method public static " + node.Identifier.value + paraTypes + "V");
+                incrementer.ID = local.GetNextID();
                 genPrintStream();
-                emit(storeParams.deleteCharAt(storeParams.lastIndexOf("\n")).toString());
+                genInputScanner();
                 for (AbstractNodeBase a:  node.Statements) {
                     this.Visit(a);
                 }
@@ -618,7 +636,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void genEnd(){
-        emit(".limit locals " + (incrementer.ID + 1));
+        emit(".limit locals 100");
         emit(".limit stack 10");
         emit("return");
         emit(".end method");
@@ -681,6 +699,11 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public void scanCall(){
         emit("aload "+ VarTable.get("Scanner"));
         emit("invokevirtual java/util/Scanner.nextLine()Ljava/lang/String;");
+    }
+
+    public void scanNumberCall(){
+        emit("aload "+ VarTable.get("Scanner"));
+        emit("invokevirtual java/util/Scanner.nextFloat()F");
     }
 
     private void stringEquals(StringEqualsNode node){
