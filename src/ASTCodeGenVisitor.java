@@ -71,7 +71,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 }
                 if (((MethodCallNode) node.Value).Identifier.value.equals("readNumber")){ //TODO do not do this, give methods return types instead
                     this.Visit((MethodCallNode) node.Value);
-                    emit("astore " + getReference("Number/" + node.Target.value));
+                    emit("fstore " + getReference("Number/" + node.Target.value));
                 }
             }else if (node.Value instanceof ForNode) {
                 String loopCount = this.Visit((ForNode) node.Value);
@@ -104,18 +104,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
                 emit("fstore " + getReference("Number/" + node.Target.value));
             }
         }
-        /* This would allow for initialization in assignment
-        else {
-            //Everything under here is essentially an Initialization
-            int nextID = incrementer.GetNextID();
-            if (node.Value instanceof NumberNode){
-                VarTable.put("Number/" + node.Target.value, nextID);
-                emit("fstore " + ((NumberNode) node.Value).value + nextID);
-            } else if (node.Value instanceof StringNode){
-                VarTable.put("String/" + node.Target.value, nextID);
-                emit("astore " + ((StringNode) node.Value).value + nextID);
-            }
-        }*/
         return null;
     }
 
@@ -321,8 +309,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     @Override
     public String Visit(WhileNode node) {
+        boolean first = true;
+
         int loopID = loopIncrementer.GetNextID();
         int blockID = blockIncrementer.GetNextID();
+        emit("fconst_1");
+        emit("fstore_0");
         emit("LoopStart" + loopID + ":");
         this.Visit(node.Predicate);
         emit("f2i");
@@ -647,7 +639,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void genEnd(){
-        emit(".limit locals " + (VarTable.size() + 1));
+        emit(".limit locals " + (10000));
         emit(".limit stack 10");
         emit("return");
         emit(".end method");
@@ -714,7 +706,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
 
     public void scanNumberCall(){
         emit("aload "+ VarTable.get("Scanner"));
-        emit("invokevirtual java/util/Scanner.nextLine()F");
+        emit("invokevirtual java/util/Scanner.nextFloat()F");
     }
 
     private void stringEquals(StringEqualsNode node){
