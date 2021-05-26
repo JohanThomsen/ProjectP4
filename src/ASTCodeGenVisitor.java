@@ -337,7 +337,6 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     public String Visit(ForNode node) {
         int loopID = loopIncrementer.GetNextID();
         int blockID = blockIncrementer.GetNextID();
-        int loops = 0;
         //Init
         if (!(VarTable.containsKey("Number/" + node.init.Identifier))) {
             this.Visit(node.init);
@@ -358,12 +357,12 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
         emit("fload " + getReference("Number/" + (node.Id.value)));
         emit("fadd");
         emit("fstore " + getReference("Number/" + (node.Id.value)));
-        loops++;
+
         //Loop back
         emit("goto LoopStart" + loopID);
         //Or end
         emit("BranchEnd" + blockID + ":");
-        return Integer.toString(loops);
+        return null;
     }
 
     @Override
