@@ -640,7 +640,7 @@ public class ASTCodeGenVisitor extends ASTVisitor<String>{
     }
 
     public void genEnd(){
-        emit(".limit locals " + (incrementer.ID + 1));
+        emit(".limit locals " + (VarTable.size() + 1));
         emit(".limit stack 10");
         emit("return");
         emit(".end method");
